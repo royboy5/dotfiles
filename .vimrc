@@ -47,7 +47,10 @@ set clipboard=unnamedplus
 
 " NERDTree
 " ========
-"  Ctrl-n to toggle
+" git clone https://github.com/scrooloose/nerdtree.git ~/.vim/pack/vendor/start/nerdtree
+" vim -u NONE -c "helptags ~/.vim/pack/vendor/start/nerdtree/doc" -c q
+
+" Ctrl-n to toggle
 map <C-n> :NERDTreeToggle<CR>
 
 " show hidden files
