@@ -27,15 +27,7 @@ echo "Creating $DOTFILES_OLD for backup of any existing dotfiles in ~ ..."
 mkdir -p $DOTFILES_OLD
 echo "Done!"
 
-# move any existing dotfiles in homedir to DOTFILES_OLD directory, 
-# then create symlinks from the homedir to any files in the ~/dotfiles directory specified in $files
-# for file in $CONFIG_FILES; do
-#     echo "Moving any existing dotfiles from ~ to $DOTFILES_OLD"
-#     mv ~/.$file $DOTFILES_OLD
-#     echo "Creating symlink to $file in home directory."
-    
-#     # ln -s $DOTFILES_DIR/$file ~/.$file
-# done
+echo "Linking dotfiles..."
 
 for SRC in $(find "$DOTFILES_DIR" -maxdepth 2 -name '*.symlink')
 do
@@ -44,3 +36,5 @@ do
     backup_file
     link_file
 done
+
+echo "Linking dotfiles done!"

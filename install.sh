@@ -24,6 +24,8 @@ while true; do
         #     ;;
         [dD])
             OS="Debian"
+            echo "You have selected $OS"
+            scripts/ubuntu-packages.sh
             break
             ;;
         *)
@@ -32,29 +34,6 @@ while true; do
     esac
 done
 
-echo "You have selected $OS"
-echo "Let's update your packages..."
-
-while true; do
-    case $OS in
-        # Arch)
-        #     sudo pacman -Syu
-        #     break
-        #     ;;
-        # Fedora)
-        #     sudo dnf update && dnf upgrade
-        #     break
-        #     ;;
-        Debian)
-            sudo apt update -y && sudo apt upgrade -y
-            break
-            ;;
-    esac
-done
-
-echo "Packages updated!"
-
 # TODO
 # options for full install / basics / apps / etc
 
-scripts/ubuntu-packages.sh
