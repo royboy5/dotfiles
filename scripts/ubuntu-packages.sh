@@ -14,7 +14,14 @@ install_packages () {
     echo "Finished installing packages!"
 }
 
+echo "Installing packages..."
+install_packages
+echo "Packages installed!"
+
 echo "Configuring system..."
 # configure packages
 # set zsh as default shell
-sudo usermod -s /usr/bin/zsh $(whoami)
+chsh -s $(which zsh)
+
+echo "Linking dotfiles..."
+scripts/link-files.sh
