@@ -20,6 +20,26 @@ install_oh_my_zsh() {
     fi
 }
 
+install_nvm() {
+    # Checks to see if NVM is installed
+    if [[ ! -d $HOME/.nvm/ ]]; then
+        echo "Installing NVM..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
+        echo "NVM installed!"
+    else
+        echo ".nvm directory already exists"
+    fi
+
+}
+
+install_poetry() {
+    echo "Installing poetry..."
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
+    echo "Poetry installed!"
+}
+
 echo "Installing common packages..."
 install_oh_my_zsh
+install_nvm
+install_poetry
 echo "Common packages installed!"
