@@ -13,3 +13,6 @@ $  cd ~/.dotfiles
 $  chmod +x -R install.sh scripts/
 $  ./install.sh
 ```
+
+## Post Install
+- Set up your node version with nvm

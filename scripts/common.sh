@@ -20,6 +20,19 @@ install_oh_my_zsh() {
     fi
 }
 
+install_vim_plugins() {
+  # NERDTree
+  echo "Installing NERDTree"
+  git clone https://github.com/preservim/nerdtree.git ~/.vim/pack/vendor/start/nerdtree
+  vim -u NONE -c "helptags ~/.vim/pack/vendor/start/nerdtree/doc" -c q
+  echo "Done!"
+
+  # Vim Polyglot
+  echo "Installing Vim Polyglot"
+  git clone --depth 1 https://github.com/sheerun/vim-polyglot ~/.vim/pack/plugins/start/vim-polyglot
+  echo "Done!"
+}
+
 install_nvm() {
     # Checks to see if NVM is installed
     if [[ ! -d $HOME/.nvm/ ]]; then
@@ -40,6 +53,7 @@ install_poetry() {
 
 echo "Installing common packages..."
 install_oh_my_zsh
+install_vim_plugins
 install_nvm
 install_poetry
 echo "Common packages installed!"
