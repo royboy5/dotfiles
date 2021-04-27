@@ -16,3 +16,22 @@ $  ./install.sh
 
 ## Post Install
 - Set up your node version with nvm
+
+## neoVim
+Config
+```
+$HOME/.config/nvim/init.vim
+```
+Plugins location
+```
+$HOME/.local/share/nvim/plugged
+```
+
+## vim-plug
+# Vim (~/.vim/autoload)
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Neovim (~/.local/share/nvim/site/autoload)
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
