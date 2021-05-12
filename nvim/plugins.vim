@@ -7,6 +7,7 @@ call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'alvan/vim-closetag'
 Plug 'sheerun/vim-polyglot'
+Plug 'townk/vim-autoclose'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()

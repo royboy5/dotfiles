@@ -1,5 +1,9 @@
 " GENERAL
 
+set encoding=utf-8
+
+set clipboard=unnamedplus
+
 " filetype plugin detection
 filetype plugin indent on
 
@@ -47,6 +51,8 @@ set tabstop=2
 " tabs as spaces
 set expandtab
 
-set encoding=utf-8
-set clipboard=unnamedplus
+" set fold to syntax
+set foldmethod=syntax
 
+" search index
+set shortmess-=S
