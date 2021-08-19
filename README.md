@@ -5,7 +5,8 @@
 
 ## Prerequisite
 - git
-
+- fzf
+- ripgrep
 ## Install
 ```
 $  git clone https://github.com/royboy5/dotfiles.git ~/.dotfiles
@@ -28,10 +29,13 @@ $HOME/.local/share/nvim/plugged
 ```
 
 ## vim-plug
-# Vim (~/.vim/autoload)
+### Vim (~/.vim/autoload)
+```
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-# Neovim (~/.local/share/nvim/site/autoload)
+```
+### Neovim (~/.local/share/nvim/site/autoload)
+```
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```

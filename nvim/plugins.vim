@@ -8,6 +8,8 @@ Plug 'scrooloose/nerdtree'
 Plug 'alvan/vim-closetag'
 Plug 'sheerun/vim-polyglot'
 Plug 'townk/vim-autoclose'
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
