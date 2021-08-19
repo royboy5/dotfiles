@@ -4,6 +4,12 @@ ZSH=$HOME/.oh-my-zsh
 # Poetry Path
 export PATH=$HOME/.poetry/bin:$PATH
 
+# Use ripgrep by default
+if type rg &> /dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+fi
+
 # Set up the prompt
 autoload -Uz promptinit
 promptinit
