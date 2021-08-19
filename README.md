@@ -2,11 +2,11 @@
 
 ## Overview
 
-
 ## Prerequisite
 - git
 - fzf
 - ripgrep
+
 ## Install
 ```
 $  git clone https://github.com/royboy5/dotfiles.git ~/.dotfiles
@@ -39,3 +39,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
+
+## Troubleshooting
+- error while reading shada
+  - clear `~/.local/share/nvim/shada` folder
