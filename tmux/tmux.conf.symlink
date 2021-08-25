@@ -26,6 +26,9 @@ set -g history-limit 5000
 # Beep beep
 set -g visual-bell on
 
+# Allow copy to clipboard
+set -g set-clipboard on
+
 ###########
 # DISPLAY #
 ###########
