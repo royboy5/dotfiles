@@ -25,6 +25,9 @@ set wildmenu
 " shows line numbers
 set number
 
+" show relative numbers
+set relativenumber
+
 " shows highlight search
 set hlsearch
 set incsearch
@@ -56,3 +59,7 @@ set foldmethod=syntax
 
 " search index
 set shortmess-=S
+
+" Scroll offset
+set scrolloff=8
+
