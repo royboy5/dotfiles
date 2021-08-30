@@ -1,6 +1,9 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
+# aliases
+alias vi="nvim"
+
 # Poetry Path
 export PATH=$HOME/.poetry/bin:$PATH
 
