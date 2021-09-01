@@ -12,6 +12,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
