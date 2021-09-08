@@ -51,7 +51,7 @@ if [ "$TMUX" = "" ]; then tmux; fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-if command -v tmux >/dev/null 2>&1 && [ "${DISPLAY}" ]; then
-  # if not inside a tmux session, and if no session is started, start a new session
-  [ -z "${TMUX}" ] && (tmux attach || tmux) >/dev/null 2>&1
-fi
+# if command -v tmux >/dev/null 2>&1 && [ "${DISPLAY}" ]; then
+#  # if not inside a tmux session, and if no session is started, start a new session
+#  [ -z "${TMUX}" ] && (tmux attach || tmux) >/dev/null 2>&1
+# fi
