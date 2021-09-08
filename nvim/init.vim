@@ -5,4 +5,5 @@ source $HOME/.config/nvim/vim-closetag.vim
 source $HOME/.config/nvim/vim-polyglot.vim
 source $HOME/.config/nvim/vim-fzf.vim
 source $HOME/.config/nvim/vim-coc.vim
+source $HOME/.config/nvim/vim-gitgutter.vim
 
