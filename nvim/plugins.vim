@@ -4,7 +4,11 @@
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 
 " Declare the list of plugins.
-Plug 'scrooloose/nerdtree'
+Plug 'joshdick/onedark'
+Plug 'preservim/nerdtree' 
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight' 
+Plug 'Xuyuanp/nerdtree-git-plugin'  
+Plug 'ryanoasis/vim-devicons'
 Plug 'alvan/vim-closetag'
 Plug 'sheerun/vim-polyglot'
 Plug 'townk/vim-autoclose'

@@ -10,6 +10,13 @@ filetype plugin indent on
 " syntax highlighting
 syntax on
 
+" load theme
+if (has("termguicolors")) 
+ set termguicolors 
+endif 
+
+colorscheme onedark
+
 " keeps 1000 items in history
 set history=1000
 
