@@ -6,7 +6,7 @@
 - git
 - fzf
 - ripgrep
-- [nerd-fonts](https://github.com/ryanoasis/nerd-fonts]
+- [nerd-fonts](https://github.com/ryanoasis/nerd-fonts)
 
 ## Install
 ```
