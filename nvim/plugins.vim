@@ -4,12 +4,14 @@
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 
 " Declare the list of plugins.
-Plug 'joshdick/onedark'
+Plug 'joshdick/onedark.vim'
 Plug 'preservim/nerdtree' 
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight' 
 Plug 'Xuyuanp/nerdtree-git-plugin'  
 Plug 'ryanoasis/vim-devicons'
 Plug 'alvan/vim-closetag'
+Plug 'itchyny/lightline.vim'
+Plug 'vim-airline/vim-airline'
 Plug 'sheerun/vim-polyglot'
 Plug 'townk/vim-autoclose'
 Plug 'junegunn/fzf.vim'

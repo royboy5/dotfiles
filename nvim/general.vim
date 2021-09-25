@@ -2,12 +2,15 @@
 
 set encoding=utf-8
 
+set nocompatible
+
 set clipboard=unnamedplus
 
 " filetype plugin detection
 filetype plugin indent on
 
 " syntax highlighting
+syntax enable
 syntax on
 
 " load theme

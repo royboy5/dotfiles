@@ -40,6 +40,11 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
+### onedark theme in lightline and airline
+```
+cp ~/.local/share/nvim/plugged/onedark.vim/autoload/lightline/colorscheme/onedark.vim ~/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme/
+cp ~/.local/share/nvim/plugged/onedark.vim/autoload/airline/themes/onedark.vim ~/.local/share/nvim/plugged/vim-airline/autoload/airline/themes/
+```
 
 ## Troubleshooting
 - error while reading shada

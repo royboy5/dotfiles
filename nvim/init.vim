@@ -6,4 +6,5 @@ source $HOME/.config/nvim/vim-polyglot.vim
 source $HOME/.config/nvim/vim-fzf.vim
 source $HOME/.config/nvim/vim-coc.vim
 source $HOME/.config/nvim/vim-gitgutter.vim
-
+source $HOME/.config/nvim/vim-lightline.vim
+source $HOME/.config/nvim/vim-airline.vim
