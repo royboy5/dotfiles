@@ -62,8 +62,8 @@ set -g monitor-activity on
 set -g visual-activity off
 
 # split panes in current directory using | and -
-bind | split-window -h -c '#{pane_current_path}' \; select-layout tiled
-bind - split-window -v -c '#{pane_current_path}' \; select-layout tiled
+bind | split-window -h -c '#{pane_current_path}' \; 
+bind - split-window -v -c '#{pane_current_path}' \;
 bind -r M-m select-layout main-vertical
 bind -r M-M select-layout main-horizontal
 
