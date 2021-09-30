@@ -45,6 +45,10 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 cp ~/.local/share/nvim/plugged/onedark.vim/autoload/lightline/colorscheme/onedark.vim ~/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme/
 cp ~/.local/share/nvim/plugged/onedark.vim/autoload/airline/themes/onedark.vim ~/.local/share/nvim/plugged/vim-airline/autoload/airline/themes/
 ```
+### [powerlevel10k](https://github.com/romkatv/powerlevel10k#oh-my-zsh)
+```
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+```
 
 ## Troubleshooting
 - error while reading shada
