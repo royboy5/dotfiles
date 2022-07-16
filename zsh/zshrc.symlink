@@ -11,8 +11,10 @@ ZSH=$HOME/.oh-my-zsh
 # aliases
 alias vi="nvim"
 
-# Poetry Path
+# Paths
 export PATH=$HOME/.poetry/bin:$PATH
+export PATH=$HOME/sdks/flutter/bin:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
 
 # Use ripgrep by default
 if type rg &> /dev/null; then
@@ -52,7 +54,7 @@ plugins=(
 )
 
 # Start tmux on terminal startup
-ZSH_TMUX_AUTOSTART=true
+# ZSH_TMUX_AUTOSTART=true
 
 source $ZSH/oh-my-zsh.sh
 

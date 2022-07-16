@@ -9,47 +9,59 @@
 - [nerd-fonts](https://github.com/ryanoasis/nerd-fonts)
 
 ## Install
-```
-$  git clone https://github.com/royboy5/dotfiles.git ~/.dotfiles
-$  cd ~/.dotfiles
-$  chmod +x -R install.sh scripts/
-$  ./install.sh
-```
 
 ## Post Install
 - Set up your node version with nvm
 
-## neoVim
-Config
-```
-$HOME/.config/nvim/init.vim
-```
-Plugins location
-```
-$HOME/.local/share/nvim/plugged
-```
+## Important Directories
 
-## vim-plug
-### Vim (~/.vim/autoload)
-```
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-```
-### Neovim (~/.local/share/nvim/site/autoload)
-```
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-```
-### onedark theme in lightline and airline
-```
-cp ~/.local/share/nvim/plugged/onedark.vim/autoload/lightline/colorscheme/onedark.vim ~/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme/
-cp ~/.local/share/nvim/plugged/onedark.vim/autoload/airline/themes/onedark.vim ~/.local/share/nvim/plugged/vim-airline/autoload/airline/themes/
-```
-### [powerlevel10k](https://github.com/romkatv/powerlevel10k#oh-my-zsh)
-```
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-```
+### nvim 
+config: `~/.config/nvim`
+data: `~/.local/share/nvim/`
+plugins: `~/.local/share/nvim/site/pack/packer/`
+logs: `~/.cache`
+state: `~/.local/state`
+
+### Linux
+fonts: `~/.local/share/fonts`
+
+## Installing nerd-fonts
+### Linux
+- Manual
+  - Goto [nerd-fonts](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/)
+  - pick and download font
+  - copy font files into `~/.local/share/fonts`
+- Script
+  - View `./scripts/install_firacode.sh` as an example and use your own font from nerd-fonts.
+- Package Manager
+  - Use your linux distro package manager to install font
 
 ## Troubleshooting
 - error while reading shada
   - clear `~/.local/share/nvim/shada` folder
+
+### MacOS
+In the downloaded TTF folder:
+
+-  Select all font files
+-  Right click and select Open (alternatively Open With Font Book)
+-  Select "Install Font"
+
+### Windows
+In the ttf folder
+- double-click each font file, click “Install font”
+  - to install all at once, select all files, right-click, and choose “Install”
+
+*On some systems (especially Windows 10), you may need to "Unblock" each font file before installing. To do so, right-click each font file, click Properties, then check Unblock next to Security at the bottom of the General tab. Click OK, and then install.
+
+Or,
+- On Windows 10 open the System Settings, 
+- go to Fonts and drag and drop the the font files from the ttf folder into the drop area indicated at the top of the dialog.
+
+## Helpful Links
+- [nerd-fonts](https://www.nerdfonts.com/)
+- [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer)
+- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
+- [jsonls schemas]( https://www.schemastore.org/json/)
+- [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
+

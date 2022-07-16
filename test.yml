@@ -1,0 +1,5 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Install zsh
+      pacman: name=zsh

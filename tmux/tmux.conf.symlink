@@ -108,10 +108,10 @@ bind P choose-buffer # choose which buffer to paste from
 #########
 
 # Set net speed format
-# set -g @net_speed_format " %8s  %8s"
+set -g @net_speed_format " %8s  %8s"
 
 # Update interval
-# set -g status-interval 1
+set -g status-interval 1
 
 # modes
 setw -g clock-mode-colour "#af5f00"
@@ -163,8 +163,8 @@ setw -g clock-mode-colour "#af5f00"
 # set -g display-panes-active-colour colour245
 
 # Clock mode
-# set -g clock-mode-colour colour39
-# set -g clock-mode-style 24
+set -g clock-mode-colour colour39
+set -g clock-mode-style 24
 
 # Message
 # set -g message-bg colour39
@@ -177,4 +177,6 @@ setw -g clock-mode-colour "#af5f00"
 # Mode
 # set -g mode-bg colour39
 # set -g mode-fg colour232
+
+source /usr/share/powerline/bindings/tmux/powerline.conf
 
