@@ -12,6 +12,7 @@
 
 ## Post Install
 - Set up your node version with nvm
+- :LspInstallInfo to select languages for LSP.
 
 ## Important Directories
 
@@ -64,4 +65,9 @@ Or,
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
 - [jsonls schemas]( https://www.schemastore.org/json/)
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
+- [nvim-telescope](https://github.com/nvim-telescope/telescope.nvim)
+- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+
+## Troubleshooting
+- Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
 
