@@ -70,6 +70,7 @@ Or,
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 - [nvim-autopairs](https://github.com/windwp/nvim-autopairs)
 - [Comment.nvim](https://github.com/numToStr/Comment.nvim)
+- [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
 
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
