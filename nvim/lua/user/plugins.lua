@@ -47,6 +47,7 @@ return packer.startup(function(use)
   use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
   use "preservim/nerdtree" -- File explorer
   use "ryanoasis/vim-devicons" -- Add icons to your plugins
+  use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
 
  -- Colorschemes
   use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out

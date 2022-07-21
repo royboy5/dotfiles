@@ -61,12 +61,14 @@ Or,
 
 ## Helpful Links
 - [nerd-fonts](https://www.nerdfonts.com/)
+- [awesome-neovim](https://github.com/rockerBOO/awesome-neovim)
 - [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer)
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
 - [jsonls schemas]( https://www.schemastore.org/json/)
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
 - [nvim-telescope](https://github.com/nvim-telescope/telescope.nvim)
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- [nvim-autopairs](https://github.com/windwp/nvim-autopairs)
 
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
