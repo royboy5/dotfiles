@@ -48,6 +48,7 @@ return packer.startup(function(use)
   use "preservim/nerdtree" -- File explorer
   use "ryanoasis/vim-devicons" -- Add icons to your plugins
   use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
+  use "numToStr/Comment.nvim" -- Easily comment stuff
 
  -- Colorschemes
   use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out
@@ -80,6 +81,7 @@ return packer.startup(function(use)
     run = ":TSUpdate",
   }
   use "p00f/nvim-ts-rainbow"
+  use 'JoosepAlviste/nvim-ts-context-commentstring' -- Treesitter context for comments
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
