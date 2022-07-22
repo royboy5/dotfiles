@@ -72,7 +72,8 @@ Or,
 - [Comment.nvim](https://github.com/numToStr/Comment.nvim)
 - [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
 - [nvim-tree](https://github.com/kyazdani42/nvim-tree.lua)
-
+- [nvim-tree keybindings](https://github.com/kyazdani42/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L976)
+  
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
 
