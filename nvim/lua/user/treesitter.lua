@@ -5,7 +5,7 @@ end
 
 configs.setup {
   ensure_installed = "all", -- A list of parser names, or "all"
-  sync_install = false, -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = true, -- Install parsers synchronously (only applied to `ensure_installed`).  Set to true to prevent some freezing with download
   auto_install = true, -- Automatically install missing parsers when entering buffer
   ignore_install = { "" }, -- List of parsers to ignore installing
   highlight = {
