@@ -124,11 +124,6 @@ _G.packer_plugins = {
     path = "/home/roy/.local/share/nvim/site/pack/packer/start/gitsigns.nvim",
     url = "https://github.com/lewis6991/gitsigns.nvim"
   },
-  nerdtree = {
-    loaded = true,
-    path = "/home/roy/.local/share/nvim/site/pack/packer/start/nerdtree",
-    url = "https://github.com/preservim/nerdtree"
-  },
   ["nvim-autopairs"] = {
     loaded = true,
     path = "/home/roy/.local/share/nvim/site/pack/packer/start/nvim-autopairs",
@@ -149,6 +144,11 @@ _G.packer_plugins = {
     path = "/home/roy/.local/share/nvim/site/pack/packer/start/nvim-lspconfig",
     url = "https://github.com/neovim/nvim-lspconfig"
   },
+  ["nvim-tree.lua"] = {
+    loaded = true,
+    path = "/home/roy/.local/share/nvim/site/pack/packer/start/nvim-tree.lua",
+    url = "https://github.com/kyazdani42/nvim-tree.lua"
+  },
   ["nvim-treesitter"] = {
     loaded = true,
     path = "/home/roy/.local/share/nvim/site/pack/packer/start/nvim-treesitter",
@@ -163,6 +163,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/roy/.local/share/nvim/site/pack/packer/start/nvim-ts-rainbow",
     url = "https://github.com/p00f/nvim-ts-rainbow"
+  },
+  ["nvim-web-devicons"] = {
+    loaded = true,
+    path = "/home/roy/.local/share/nvim/site/pack/packer/start/nvim-web-devicons",
+    url = "https://github.com/kyazdani42/nvim-web-devicons"
   },
   ["packer.nvim"] = {
     loaded = true,
@@ -193,11 +198,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/roy/.local/share/nvim/site/pack/packer/start/tokyonight.nvim",
     url = "https://github.com/folke/tokyonight.nvim"
-  },
-  ["vim-devicons"] = {
-    loaded = true,
-    path = "/home/roy/.local/share/nvim/site/pack/packer/start/vim-devicons",
-    url = "https://github.com/ryanoasis/vim-devicons"
   }
 }
 
