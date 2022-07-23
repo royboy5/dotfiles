@@ -77,6 +77,7 @@ Or,
 - [vim-bbye](https://github.com/moll/vim-bbye)
 - [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim)
 - [null-ls support](https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins) 
+- [lualine](https://github.com/nvim-lualine/lualine.nvim)
 
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
