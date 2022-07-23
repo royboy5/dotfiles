@@ -80,6 +80,7 @@ Or,
 - [null-ls support](https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins) 
 - [lualine](https://github.com/nvim-lualine/lualine.nvim)
 - [impatient.nvim](https://github.com/lewis6991/impatient.nvim)
+- [indent-blankline](https://github.com/lukas-reineke/indent-blankline.nvim)
 
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
