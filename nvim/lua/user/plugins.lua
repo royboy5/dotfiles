@@ -48,6 +48,7 @@ return packer.startup(function(use)
   use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
   use "numToStr/Comment.nvim" -- Easily comment stuff
   use "kyazdani42/nvim-web-devicons" -- Add icons to your plugins
+  use 'lewis6991/impatient.nvim' -- Speed up loading lua modules to improve startup time
 
  -- Colorschemes
   use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out
