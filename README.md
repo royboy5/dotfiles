@@ -4,6 +4,7 @@
 
 ## Prerequisite
 - git
+- [gitui](https://github.com/extrawurst/gitui)
 - fzf
 - ripgrep
 - [nerd-fonts](https://github.com/ryanoasis/nerd-fonts)
