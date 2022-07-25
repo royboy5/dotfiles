@@ -49,6 +49,8 @@ return packer.startup(function(use)
   use "numToStr/Comment.nvim" -- Easily comment stuff
   use "kyazdani42/nvim-web-devicons" -- Add icons to your plugins
   use 'lewis6991/impatient.nvim' -- Speed up loading lua modules to improve startup time
+  use "antoinemadec/FixCursorHold.nvim" -- This is needed to fix lsp doc highlight
+  use "folke/which-key.nvim"
 
  -- Colorschemes
   use "lunarvim/colorschemes" -- A bunch of colorschemes you can try out

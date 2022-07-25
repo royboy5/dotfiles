@@ -15,3 +15,5 @@ require("user.bufferline")
 require("user.lualine")
 require("user.toggleterm")
 require("user.indent-blankline")
+require("user.whichkey")
+
