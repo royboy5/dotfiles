@@ -45,3 +45,7 @@ end
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
 vim.cmd [[set iskeyword+=-]]
+
+vim.wo.foldmethod="expr"
+vim.o.foldexpr="nvim_treesitter#foldexpr()"
+vim.wo.foldenable=false -- can be enabled directly in opened file - using 'zi' - toogle fold
