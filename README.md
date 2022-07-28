@@ -84,6 +84,7 @@ Or,
 - [alpha-nvim](https://github.com/goolord/alpha-nvim)
 - [whichkey](https://github.com/folke/which-key.nvim)
 - [project.nvim](https://github.com/ahmedkhalf/project.nvim)
+- [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag)
 
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
