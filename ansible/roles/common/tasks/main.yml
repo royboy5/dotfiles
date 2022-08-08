@@ -1,0 +1,54 @@
+# Common terminal packages
+
+- name: Common packages
+  tags: common
+  block:
+    - name: Install command-line-tools
+      include_tasks: "command-line-tools.yml"
+
+    - name: Install bat 
+      ansible.builtin.package:
+        name: bat 
+        state: latest
+
+    - name: Install exa 
+      ansible.builtin.package:
+        name: exa 
+        state: latest
+
+    - name: Install fzf 
+      ansible.builtin.package:
+        name: fzf 
+        state: latest
+
+    - name: Install httpie 
+      ansible.builtin.package:
+        name: httpie 
+        state: latest
+
+    - name: Install jless 
+      ansible.builtin.package:
+        name: jless 
+        state: latest
+
+    - name: Install jq 
+      ansible.builtin.package:
+        name: jq 
+        state: latest
+
+    - name: Install ripgrep 
+      ansible.builtin.package:
+        name: ripgrep 
+        state: latest
+
+    - name: Install tmux 
+      ansible.builtin.package:
+        name: tmux 
+        state: latest
+
+    - name: Install tree 
+      ansible.builtin.package:
+        name: tree 
+        state: latest
+
+

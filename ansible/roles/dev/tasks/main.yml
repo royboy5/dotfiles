@@ -1,0 +1,23 @@
+# Dev specific packages
+
+- name: dev tasks
+  tags: dev
+  block:
+  - name: Install nvim
+    tags: nvim
+    ansible.builtin.package:
+      name: neovim
+      state: latest
+
+  - name: Install gitui 
+    tags: gitui
+    ansible.builtin.package:
+      name: gitui
+      state: latest
+
+  - name: Install K9s 
+    tags: k9s
+    ansible.builtin.package:
+      name: k9s
+      state: latest
+

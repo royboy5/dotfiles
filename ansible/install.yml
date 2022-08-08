@@ -1,0 +1,6 @@
+
+- hosts: localhost
+  become: false 
+  roles:
+    - role: common 
+    - role: dev

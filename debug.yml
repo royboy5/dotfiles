@@ -1,0 +1,5 @@
+- hosts: localhost
+  # become: true
+  tasks:
+    - debug:
+        msg: System {{ ansible_facts['os_family'] }}
