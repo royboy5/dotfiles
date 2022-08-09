@@ -1,3 +1,4 @@
+---
 # Common terminal packages
 
 - name: Common packages
@@ -5,6 +6,7 @@
   block:
     - name: Install command-line-tools
       include_tasks: "command-line-tools.yml"
+      when: ansible_facts['os_family'] == "Darwin"
 
     - name: Install bat 
       ansible.builtin.package:
@@ -19,6 +21,11 @@
     - name: Install fzf 
       ansible.builtin.package:
         name: fzf 
+        state: latest
+ 
+    - name: Install git 
+      ansible.builtin.package:
+        name: git 
         state: latest
 
     - name: Install httpie 
@@ -41,6 +48,11 @@
         name: ripgrep 
         state: latest
 
+    - name: Install stow 
+      ansible.builtin.package:
+        name: stow 
+        state: latest
+
     - name: Install tmux 
       ansible.builtin.package:
         name: tmux 
@@ -50,5 +62,4 @@
       ansible.builtin.package:
         name: tree 
         state: latest
-
-
+...

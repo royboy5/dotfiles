@@ -4,3 +4,4 @@
   roles:
     - role: common 
     - role: dev
+    - role: config 

@@ -1,0 +1,5 @@
+---
+dotfiles_repo: "https://github.com/royboy5/dotfiles.git"
+dotfiles_repo_version: master
+dotfiles_repo_accept_hostkey: false
+...

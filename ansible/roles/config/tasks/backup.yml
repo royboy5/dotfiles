@@ -1,0 +1,35 @@
+---
+# Backup all dotfiles to .rc.old directory
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.rc.old" 
+    state: directory
+    mode: '0755'
+
+- name: Check for zsh files
+  block:
+    - name: Check for .zshrc
+      stat:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+      register: zshrc
+
+    - name: Report .zshrc
+      debug:
+        msg: "Found .zshrc"
+      when: zshrc.stat.exists
+
+- name: Move zsh files to .rc.old
+  block:
+    - name: Copy .zshrc to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.zshrc"
+        dest: "{{ ansible_env.HOME }}/.rc.old/.zshrc"
+      when: zshrc.stat.exists
+
+    - name: Remove .zshrc
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        state: absent
+      when: zshrc.stat.exists
+...
