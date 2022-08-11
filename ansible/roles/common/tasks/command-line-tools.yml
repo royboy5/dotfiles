@@ -31,3 +31,5 @@
   become: true
   shell: xcode-select --install
   when: xcode_select.rc != 0 or not clt.stat.exists
+
+...

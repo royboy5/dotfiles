@@ -7,8 +7,28 @@
     state: directory
     mode: '0755'
 
-- name: Check for zsh files
+- name: Check for rc files
   block:
+    - name: Check for .tmux.conf
+      stat:
+        path: "{{ ansible_env.HOME }}/.tmux.conf"
+      register: tmux 
+
+    - name: Report .tmux.conf
+      debug:
+        msg: "Found .tmux.conf"
+      when: tmux.stat.exists
+
+    - name: Check for .zshenv
+      stat:
+        path: "{{ ansible_env.HOME }}/.zshenv"
+      register: zshenv 
+
+    - name: Report .zshenv
+      debug:
+        msg: "Found .zshenv"
+      when: zshenv.stat.exists
+
     - name: Check for .zshrc
       stat:
         path: "{{ ansible_env.HOME }}/.zshrc"
@@ -19,8 +39,32 @@
         msg: "Found .zshrc"
       when: zshrc.stat.exists
 
-- name: Move zsh files to .rc.old
+- name: Move rc files to .rc.old
   block:
+    - name: Copy .tmux.conf to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.tmux.conf"
+        dest: "{{ ansible_env.HOME }}/.rc.old/.tmux.conf"
+      when: tmux.stat.exists and not tmux.stat.islnk
+
+    - name: Remove .tmux.conf
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.tmux.conf"
+        state: absent
+      when: tmux.stat.exists
+
+    - name: Copy .zshenv to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.zshenv"
+        dest: "{{ ansible_env.HOME }}/.rc.old/.zshenv"
+      when: zshenv.stat.exists
+
+    - name: Remove .zshenv
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.zshenv"
+        state: absent
+      when: zshenv.stat.exists
+
     - name: Copy .zshrc to .rc.old
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.zshrc"
