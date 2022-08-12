@@ -1,10 +1,10 @@
 ---
 # tasks file for ansible-osx-command-line-tools
-
-- name: Am I running on Mac OS X?
-  fail:
-    msg: Target host is not running Mac OS X
-  when: ansible_distribution != 'MacOSX'
+#
+# - name: Am I running on Mac OS X?
+#   fail:
+#     msg: Target host is not running Mac OS X
+#   when: ansible_distribution != 'MacOSX'
 
 - name: Check that the Command Line Tools path is present
   stat:
