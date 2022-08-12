@@ -7,12 +7,12 @@
       - name: Backup dotfiles
         include_tasks: "backup.yml"
 
-# - name: Stow dotfiles
-#   tags: config
-#   environment:
-#     STOW_DIR: "{{ ansible_env.HOME }}/.dotfiles"
-#   ansible.builtin.shell: |
-#     stow nvim tmux zsh 
-#   changed_when: false
-#   become: false
+  - name: Stow dotfiles
+    tags: config
+    environment:
+      STOW_DIR: "{{ ansible_env.HOME }}/.dotfiles/configs"
+    ansible.builtin.shell: |
+      stow -t ~/ nvim tmux zsh 
+    changed_when: false
+    become: false
 ...

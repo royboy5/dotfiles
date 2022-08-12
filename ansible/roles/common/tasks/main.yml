@@ -18,6 +18,12 @@
         name: exa 
         state: latest
 
+    - name: Install fd 
+      ansible.builtin.package:
+        name: fd 
+        state: latest
+      when: ansible_facts['os_family'] != "Darwin"
+ 
     - name: Install fzf 
       ansible.builtin.package:
         name: fzf 
@@ -62,4 +68,10 @@
       ansible.builtin.package:
         name: tree 
         state: latest
+
+    - name: Install zsh
+      ansible.builtin.package:
+        name: zsh
+        state: latest
+      when: ansible_facts['os_family'] != "Darwin"
 ...

@@ -45,6 +45,8 @@
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.tmux.conf"
         dest: "{{ ansible_env.HOME }}/.rc.old/.tmux.conf"
+        backup: yes
+        force: no
       when: tmux.stat.exists and not tmux.stat.islnk
 
     - name: Remove .tmux.conf
@@ -57,6 +59,8 @@
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.zshenv"
         dest: "{{ ansible_env.HOME }}/.rc.old/.zshenv"
+        backup: yes
+        force: no
       when: zshenv.stat.exists
 
     - name: Remove .zshenv
@@ -69,6 +73,8 @@
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.zshrc"
         dest: "{{ ansible_env.HOME }}/.rc.old/.zshrc"
+        backup: yes
+        force: no
       when: zshrc.stat.exists
 
     - name: Remove .zshrc

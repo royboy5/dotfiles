@@ -85,6 +85,8 @@ Or,
 - [whichkey](https://github.com/folke/which-key.nvim)
 - [project.nvim](https://github.com/ahmedkhalf/project.nvim)
 - [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag)
+- [zsh prompt](https://subscription.packtpub.com/book/application-development/9781783282937/1/ch01lvl1sec10/the-shell-prompt)
+- [zsh files](https://unix.stackexchange.com/questions/71253/what-should-shouldnt-go-in-zshenv-zshrc-zlogin-zprofile-zlogout)
 
 ## Troubleshooting
 - Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
