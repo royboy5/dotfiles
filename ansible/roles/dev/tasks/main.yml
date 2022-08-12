@@ -4,46 +4,11 @@
 - name: dev tasks
   tags: dev
   block:
-  - name: Install alacritty 
-    tags: alacritty 
-    ansible.builtin.package:
-      name: alacritty 
-      state: latest
+    - name: Install MacOS dev packages 
+      include_tasks: "macos.yml"
+      when: ansible_facts['os_family'] == "Darwin"
 
-  - name: Install direnv 
-    tags: direnv 
-    ansible.builtin.package:
-      name: direnv 
-      state: latest
-
-  - name: Install gitui 
-    tags: gitui
-    ansible.builtin.package:
-      name: gitui
-      state: latest
-
-  - name: Install K9s 
-    tags: k9s
-    ansible.builtin.package:
-      name: k9s
-      state: latest
-
-  - name: Install nvim
-    tags: nvim
-    ansible.builtin.package:
-      name: neovim
-      state: latest
-
-  - name: Install Node Version Manager (nvm)
-    tags: nvm
-    shell: >
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-    args:
-      creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
-
-  - name: Install Rust 
-    tags: rust 
-    shell: >
-      curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
-
+    - name: Install Linux dev packages 
+      include_tasks: "linux.yml"
+      when: ansible_facts['os_family'] != "Darwin"
 ...

@@ -9,6 +9,6 @@
       when: ansible_facts['os_family'] == "Darwin"
 
     - name: Install Linux packages 
-      include_tasks: "macos.yml"
+      include_tasks: "linux.yml"
       when: ansible_facts['os_family'] != "Darwin"
 ...
