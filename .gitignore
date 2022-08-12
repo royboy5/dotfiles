@@ -1,2 +1,5 @@
 # packer
 nvim/plugin/packer_compiled.lua
+
+# zsh
+configs/zsh/local_envs.zsh

@@ -3,13 +3,11 @@
 ## Overview
 
 ## Prerequisite
-- git
-- [gitui](https://github.com/extrawurst/gitui)
-- fzf
-- ripgrep
-- [nerd-fonts](https://github.com/ryanoasis/nerd-fonts)
+- make
 
 ## Install
+- rename `configs/zsh/local_envs.zsh.sample` to `configs/zsh/local_envs.zsh`
+- `$ make macosx` 
 
 ## Post Install
 - Set up your node version with nvm
