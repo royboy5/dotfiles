@@ -3,16 +3,27 @@
 ## Overview
 This repo simplif
 
+## TOC
+1. [Prerequisite](#prerequisite)
+2. [Installation](#installation)
+3. [Post Install](#post-install)
+4. [Links](#links)
+
 ## Prerequisite
 - make
 
-## Install
+## Installation
 - rename `configs/zsh/local_envs.zsh.sample` to `configs/zsh/local_envs.zsh`
 - `$ make macosx` 
 
 ## Post Install
 - Set up your node version with nvm
 - :LspInstallInfo to select languages for LSP.
+
+### Links
+- [nvim](configs/nvim/README.md)
+- [tmux](configs/tmux/README.md)
+- [zsh](configs/zsh/README.md)
 
 ## Important Directories
 
