@@ -48,10 +48,6 @@ fonts: `~/.local/share/fonts`
 - Package Manager
   - Use your linux distro package manager to install font
 
-## Troubleshooting
-- error while reading shada
-  - clear `~/.local/share/nvim/shada` folder
-
 ### MacOS
 In the downloaded TTF folder:
 
@@ -101,7 +97,10 @@ Or,
 - [awesome-dotfiles](https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/)
 
 ## Troubleshooting
-- Not sure why nvim-treesitter throws an error when installig for the 1st time.  Restart nvim and let the languages install.
+- error while reading shada
+  - clear `~/.local/share/nvim/shada` folder
+- Not sure why nvim-treesitter throws an error sometimes when installing for the 1st time.
+  - Restart nvim and let the languages install.
 
 ## Ansible
 - List of [ansible-facts](https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html) 
