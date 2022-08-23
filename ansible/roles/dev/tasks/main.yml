@@ -53,6 +53,13 @@
       args:
         creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
 
+    - name: Install Python 
+      become: "{{ use_root }}"
+      tags: python 
+      ansible.builtin.package:
+        name: python 
+        state: latest
+
     - name: Install Rust 
       become: "{{ use_root }}"
       tags: rust 
