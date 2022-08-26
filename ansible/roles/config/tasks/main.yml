@@ -12,7 +12,7 @@
     environment:
       STOW_DIR: "{{ ansible_env.HOME }}/.dotfiles/configs"
     ansible.builtin.shell: |
-      stow -t ~/ nvim tmux zsh starship
+      stow -t {{ ansible_env.HOME }} nvim tmux zsh starship
     changed_when: false
     become: false
 ...
