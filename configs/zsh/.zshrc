@@ -1,6 +1,11 @@
 # Load all zsh configs
 for config (~/.zsh/*.zsh) source $config
 
+# Load plugins
+source ~/.zsh/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 # Load colors 
 autoload -Uz colors && colors
 
