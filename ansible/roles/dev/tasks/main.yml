@@ -65,5 +65,12 @@
       tags: rust 
       shell: >
         curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+
+    - name: Install Starship 
+      become: "{{ use_root }}"
+      tags: starship 
+      ansible.builtin.package:
+        name: starship
+        state: latest
 ...
     

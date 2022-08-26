@@ -9,7 +9,7 @@ autoload -Uz promptinit && promptinit
 # prompt adam1
 
 # Load theme
-source ~/.zsh/themes/agnoster.zsh-theme
+# source ~/.zsh/themes/agnoster.zsh-theme
 
 setopt histignorealldups sharehistory
 
@@ -22,3 +22,4 @@ HISTFILE=~/.zsh_history
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
+eval "$(starship init zsh)"
