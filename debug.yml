@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  # become: true
+  tasks:
+    - debug:
+        msg: 
+        - System - {{ ansible_facts['os_family'] }}
+        - Distribution - {{ ansible_facts['distribution'] }}
+        - $HOME - {{ ansible_env.HOME }}
+
+...

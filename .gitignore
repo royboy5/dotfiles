@@ -1,0 +1,10 @@
+# MacOSX
+.DS_Store
+
+# packer
+configs/nvim/.config/nvim/plugin/packer_compiled.lua
+
+# zsh
+configs/zsh/.zsh/local_envs.zsh
+configs/zsh/.zsh/plugins
+

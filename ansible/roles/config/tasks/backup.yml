@@ -1,0 +1,121 @@
+---
+# Backup all dotfiles to .rc.old directory
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.rc.old" 
+    state: directory
+    mode: '0755'
+
+- name: Check for rc files
+  block:
+    - name: Check for nvim 
+      stat:
+        path: "{{ ansible_env.HOME }}/.config/nvim/"
+      register: nvim 
+
+    - name: Report nvim 
+      debug:
+        msg: "Found nvim dir" 
+      when: nvim.stat.exists
+
+    - name: Check for .tmux.conf
+      stat:
+        path: "{{ ansible_env.HOME }}/.tmux.conf"
+      register: tmux 
+
+    - name: Report .tmux.conf
+      debug:
+        msg: "Found .tmux.conf"
+      when: tmux.stat.exists
+
+    - name: Check for .zshenv
+      stat:
+        path: "{{ ansible_env.HOME }}/.zshenv"
+      register: zshenv 
+
+    - name: Report .zshenv
+      debug:
+        msg: "Found .zshenv"
+      when: zshenv.stat.exists
+
+    - name: Check for .zshrc
+      stat:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+      register: zshrc
+
+    - name: Report .zshrc
+      debug:
+        msg: "Found .zshrc"
+      when: zshrc.stat.exists
+
+- name: Move rc files to .rc.old
+  block:
+    - name: Copy nvim to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.config/nvim/"
+        dest: "{{ ansible_env.HOME }}/.rc.old/nvim/"
+        backup: yes
+        force: no
+      when: nvim.stat.exists and not nvim.stat.islnk
+
+    - name: nvim debug
+      ansible.builtin.debug:
+        msg: "{{ nvim }}"
+
+    - name: Remove nvim 
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/nvim"
+        state: absent
+      ignore_errors: yes
+      when: nvim.stat.exists or nvim.stat.islnk
+    
+    - name: Copy .tmux.conf to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.tmux.conf"
+        dest: "{{ ansible_env.HOME }}/.rc.old/.tmux.conf"
+        backup: yes
+        force: no
+      when: tmux.stat.exists and not tmux.stat.islnk
+
+    - name: tmux debug
+      ansible.builtin.debug:
+        msg: Tmux - {{ tmux }}
+
+    - name: Remove .tmux.conf
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.tmux.conf"
+        state: absent
+      ignore_errors: yes
+      when: tmux.stat.exists or tmux.stat.islnk
+
+    - name: Copy .zshenv to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.zshenv"
+        dest: "{{ ansible_env.HOME }}/.rc.old/.zshenv"
+        backup: yes
+        force: no
+      when: zshenv.stat.exists and not zshenv.stat.islnk
+
+    - name: Remove .zshenv
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.zshenv"
+        state: absent
+      ignore_errors: yes
+      when: zshenv.stat.exists or zshenv.stat.islnk
+
+    - name: Copy .zshrc to .rc.old
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.zshrc"
+        dest: "{{ ansible_env.HOME }}/.rc.old/.zshrc"
+        backup: yes
+        force: no
+      when: zshrc.stat.exists and not zshrc.stat.islnk
+
+    - name: Remove .zshrc
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        state: absent
+      ignore_errors: yes
+      when: zshrc.stat.exists or zshrc.stat.islnk
+...

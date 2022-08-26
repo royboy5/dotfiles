@@ -1,0 +1,35 @@
+---
+# tasks file for ansible-osx-command-line-tools
+#
+# - name: Am I running on Mac OS X?
+#   fail:
+#     msg: Target host is not running Mac OS X
+#   when: ansible_distribution != 'MacOSX'
+
+- name: Check that the Command Line Tools path is present
+  stat:
+    path: "/Library/Developer/CommandLineTools"
+  register: clt
+
+- name: Is xcode-select path set?
+  command: xcode-select -p
+  register: xcode_select
+  check_mode: no
+  ignore_errors: true
+  changed_when: false
+
+# - debug:
+#     msg: 
+#     - "{{ clt.stat.exists }}"
+#     - "{{ xcode_select.rc }}"
+
+- name: Update Command Line Tools
+  shell: softwareupdate --all --install --force 
+  when: xcode_select.rc == "0" or clt.stat.exists
+
+- name: Install Command Line Tools
+  become: true
+  shell: xcode-select --install
+  when: xcode_select.rc != 0 or not clt.stat.exists
+
+...

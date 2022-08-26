@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  become: false 
+  vars:
+    use_root: true
+  roles:
+    - role: common 
+    - role: dev
+    - role: config
+      
+...

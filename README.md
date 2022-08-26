@@ -1,55 +1,83 @@
 # Dotfiles
 
 ## Overview
+This repo simplifies provisioning your computer.  
+
+## TOC
+1. [Prerequisite](#prerequisite)
+2. [Installation](#installation)
+3. [Post Install](#post-install)
+4. [Links](#links)
 
 ## Prerequisite
-- git
-- fzf
-- ripgrep
-- [nerd-fonts](https://github.com/ryanoasis/nerd-fonts)
+- make
 
-## Install
-```
-$  git clone https://github.com/royboy5/dotfiles.git ~/.dotfiles
-$  cd ~/.dotfiles
-$  chmod +x -R install.sh scripts/
-$  ./install.sh
-```
+## Installation
+- rename `configs/zsh/local_envs.zsh.sample` to `configs/zsh/local_envs.zsh`
+- `$ make macosx` 
 
 ## Post Install
 - Set up your node version with nvm
+- :LspInstallInfo to select languages for LSP.
 
-## neoVim
-Config
-```
-$HOME/.config/nvim/init.vim
-```
-Plugins location
-```
-$HOME/.local/share/nvim/plugged
-```
+### Links
+- [nvim](configs/nvim/README.md)
+- [tmux](configs/tmux/README.md)
+- [zsh](configs/zsh/README.md)
 
-## vim-plug
-### Vim (~/.vim/autoload)
-```
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-```
-### Neovim (~/.local/share/nvim/site/autoload)
-```
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-```
-### onedark theme in lightline and airline
-```
-cp ~/.local/share/nvim/plugged/onedark.vim/autoload/lightline/colorscheme/onedark.vim ~/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme/
-cp ~/.local/share/nvim/plugged/onedark.vim/autoload/airline/themes/onedark.vim ~/.local/share/nvim/plugged/vim-airline/autoload/airline/themes/
-```
-### [powerlevel10k](https://github.com/romkatv/powerlevel10k#oh-my-zsh)
-```
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-```
+## Important Directories
+
+### nvim 
+config: `~/.config/nvim`
+data: `~/.local/share/nvim/`
+plugins: `~/.local/share/nvim/site/pack/packer/`
+logs: `~/.cache`
+state: `~/.local/state`
+
+### Linux
+fonts: `~/.local/share/fonts`
+
+## Installing nerd-fonts
+### Linux
+- Manual
+  - Goto [nerd-fonts](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/)
+  - pick and download font
+  - copy font files into `~/.local/share/fonts`
+- Script
+  - View `./scripts/install_firacode.sh` as an example and use your own font from nerd-fonts.
+- Package Manager
+  - Use your linux distro package manager to install font
+
+### MacOS
+In the downloaded TTF folder:
+
+-  Select all font files
+-  Right click and select Open (alternatively Open With Font Book)
+-  Select "Install Font"
+
+### Windows
+In the ttf folder
+- double-click each font file, click “Install font”
+  - to install all at once, select all files, right-click, and choose “Install”
+
+*On some systems (especially Windows 10), you may need to "Unblock" each font file before installing. To do so, right-click each font file, click Properties, then check Unblock next to Security at the bottom of the General tab. Click OK, and then install.
+
+Or,
+- On Windows 10 open the System Settings, 
+- go to Fonts and drag and drop the the font files from the ttf folder into the drop area indicated at the top of the dialog.
+
+## Helpful Links
+- [nerd-fonts](https://www.nerdfonts.com/)
+- [awesome-dotfiles](https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/)
+- [https://starship.rs/](https://starship.rs/)
+- [https://github.com/ogham/exa](https://github.com/ogham/exa)
+
 
 ## Troubleshooting
 - error while reading shada
   - clear `~/.local/share/nvim/shada` folder
+- Not sure why nvim-treesitter throws an error sometimes when installing for the 1st time.
+  - Restart nvim and let the languages install.
+
+## Ansible
+- List of [ansible-facts](https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html) 
