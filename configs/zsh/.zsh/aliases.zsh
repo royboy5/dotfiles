@@ -4,7 +4,7 @@ alias cat='bat --style=plain'
 # exa
 alias l='exa'
 alias la='exa -a'
-alias ll='exa -lah'
+alias ll='exa -lah --group-directories-first'
 alias ls='exa --color=auto'
 
 # nvim 
