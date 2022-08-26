@@ -1,7 +1,7 @@
 # Dotfiles
 
 ## Overview
-This repo simplif
+This repo simplifies provisioning your computer.  
 
 ## TOC
 1. [Prerequisite](#prerequisite)
@@ -68,33 +68,10 @@ Or,
 
 ## Helpful Links
 - [nerd-fonts](https://www.nerdfonts.com/)
-- [awesome-neovim](https://github.com/rockerBOO/awesome-neovim)
-- [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer)
-- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
-- [jsonls schemas]( https://www.schemastore.org/json/)
-- [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-- [nvim-telescope](https://github.com/nvim-telescope/telescope.nvim)
-- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
-- [nvim-autopairs](https://github.com/windwp/nvim-autopairs)
-- [Comment.nvim](https://github.com/numToStr/Comment.nvim)
-- [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
-- [nvim-tree](https://github.com/kyazdani42/nvim-tree.lua)
-- [nvim-tree keybindings](https://github.com/kyazdani42/nvim-tree.lua/blob/master/doc/nvim-tree-lua.txt#L976)
-- [bufferline.nvim](https://github.com/akinsho/bufferline.nvim)
-- [vim-bbye](https://github.com/moll/vim-bbye)
-- [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim)
-- [null-ls support](https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins) 
-- [lualine](https://github.com/nvim-lualine/lualine.nvim)
-- [impatient.nvim](https://github.com/lewis6991/impatient.nvim)
-- [indent-blankline](https://github.com/lukas-reineke/indent-blankline.nvim)
-- [alpha-nvim](https://github.com/goolord/alpha-nvim)
-- [whichkey](https://github.com/folke/which-key.nvim)
-- [project.nvim](https://github.com/ahmedkhalf/project.nvim)
-- [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag)
-- [zsh prompt](https://subscription.packtpub.com/book/application-development/9781783282937/1/ch01lvl1sec10/the-shell-prompt)
-- [zsh files](https://unix.stackexchange.com/questions/71253/what-should-shouldnt-go-in-zshenv-zshrc-zlogin-zprofile-zlogout)
-- [zsh startup files loading order](https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/)
 - [awesome-dotfiles](https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/)
+- [https://starship.rs/](https://starship.rs/)
+- [https://github.com/ogham/exa](https://github.com/ogham/exa)
+
 
 ## Troubleshooting
 - error while reading shada
