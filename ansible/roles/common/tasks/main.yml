@@ -13,6 +13,9 @@
       include_tasks: "command-line-tools.yml"
       when: ansible_facts['os_family'] == "Darwin"
 
+    - name: Install fonts 
+      include_tasks: "fonts.yml"
+
     - name: Install bat 
       become: "{{ use_root }}" 
       ansible.builtin.package:
