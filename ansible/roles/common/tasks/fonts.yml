@@ -1,0 +1,16 @@
+---
+- name: Fira Code 
+  block:
+    - name: Tap cask-fonts 
+      community.general.homebrew_tap:
+        name: homebrew/cask-fonts
+        state: present
+      when: ansible_facts['os_family'] == "Darwin"
+
+    - name: Install Fira Code (macos) 
+      ansible.builtin.package:
+        name: font-fira-code
+        state: latest 
+      ignore_errors: true
+      when: ansible_facts['os_family'] == "Darwin"
+...

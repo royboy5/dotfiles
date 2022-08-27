@@ -55,7 +55,7 @@
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.config/nvim/"
         dest: "{{ ansible_env.HOME }}/.rc.old/nvim/"
-        backup: yes
+        backup: true
         force: no
       when: nvim.stat.exists and not nvim.stat.islnk
 
@@ -67,14 +67,14 @@
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.config/nvim"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
       when: nvim.stat.exists or nvim.stat.islnk
     
     - name: Copy .tmux.conf to .rc.old
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.tmux.conf"
         dest: "{{ ansible_env.HOME }}/.rc.old/.tmux.conf"
-        backup: yes
+        backup: true
         force: no
       when: tmux.stat.exists and not tmux.stat.islnk
 
@@ -86,14 +86,14 @@
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.tmux.conf"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
       when: tmux.stat.exists or tmux.stat.islnk
 
     - name: Copy .zshenv to .rc.old
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.zshenv"
         dest: "{{ ansible_env.HOME }}/.rc.old/.zshenv"
-        backup: yes
+        backup: true
         force: no
       when: zshenv.stat.exists and not zshenv.stat.islnk
 
@@ -101,14 +101,14 @@
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.zshenv"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
       when: zshenv.stat.exists or zshenv.stat.islnk
 
     - name: Copy .zshrc to .rc.old
       ansible.builtin.copy:
         src: "{{ ansible_env.HOME }}/.zshrc"
         dest: "{{ ansible_env.HOME }}/.rc.old/.zshrc"
-        backup: yes
+        backup: true
         force: no
       when: zshrc.stat.exists and not zshrc.stat.islnk
 
@@ -116,6 +116,6 @@
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/.zshrc"
         state: absent
-      ignore_errors: yes
+      ignore_errors: true
       when: zshrc.stat.exists or zshrc.stat.islnk
 ...
