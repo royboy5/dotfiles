@@ -21,6 +21,14 @@ brew-upgrade:
 		- brew update
 		-	brew upgrade
 	
+ubuntu: ubuntu-update ubuntu-install run-all
+
+ubuntu-update:
+	sudo apt update -y
+
+ubuntu-install:
+	sudo apt install ansible unzip -y
+
 run-all:
 		ansible-playbook ansible/install.yml --tags all -vK
 

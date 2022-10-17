@@ -1,16 +1,21 @@
 ---
 - name: Fira Code 
+  vars:
+    ver: "2.2.2"
+    fonts_dir: "{{ ansible_env.HOME }}/.local/share/fonts"
+    zip: "Fira_Code_v{{ ver }}.zip"
   block:
-    - name: Tap cask-fonts 
-      community.general.homebrew_tap:
-        name: homebrew/cask-fonts
-        state: present
+    - name: Set fonts_dir var 
+      set_fact:
+        fonts_dir: "{{ ansible_env.HOME }}/Library/Fonts"
       when: ansible_facts['os_family'] == "Darwin"
 
-    - name: Install Fira Code (macos) 
-      ansible.builtin.package:
-        name: font-fira-code
-        state: latest 
-      ignore_errors: true
-      when: ansible_facts['os_family'] == "Darwin"
+    - name: Install Fira Code 
+      become: "{{ use_root }}"
+      tags: fonts
+      shell: |
+        curl --fail --location --show-error https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ ver }}/FiraCode.zip --output {{ zip }}
+        unzip -o -q -d {{ fonts_dir }} {{ zip }}
+        rm {{ zip }}
 ...
+
