@@ -13,7 +13,7 @@ state: `~/.local/state`
 
 ## Helpful Links
 - [awesome-neovim](https://github.com/rockerBOO/awesome-neovim)
-- [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer)
+- ~~[nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer)~~
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
 - [jsonls schemas]( https://www.schemastore.org/json/)
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
@@ -36,3 +36,6 @@ state: `~/.local/state`
 - [project.nvim](https://github.com/ahmedkhalf/project.nvim)
 - [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag)
 
+- [mason.nvim](https://github.com/williamboman/mason.nvim)
+- [mason-lspconfig](https://github.com/williamboman/mason-lspconfig.nvim)
+- [mason-lspconfig-server-mapping](https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md)
