@@ -7,5 +7,6 @@
         - System - {{ ansible_facts['os_family'] }}
         - Distribution - {{ ansible_facts['distribution'] }}
         - $HOME - {{ ansible_env.HOME }}
+        - User - {{ ansible_user_id }}
 
 ...

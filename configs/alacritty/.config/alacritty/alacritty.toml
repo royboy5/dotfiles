@@ -1,0 +1,15 @@
+[font.bold]
+family = "FiraCode"
+style = "Bold"
+
+[font.bold_italic]
+family = "FiraCode"
+style = "Bold Italic"
+
+[font.italic]
+family = "FiraCode"
+style = "Italic"
+
+[font.normal]
+family = "FiraCode"
+style = "Regular"

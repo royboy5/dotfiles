@@ -1,4 +1,4 @@
-fonts_dir="${HOME}/.local/share/fonts/FiraCode"
+fonts_dir="~/.local/share/fonts/FiraCode"
 if [ ! -d "${fonts_dir}" ]; then
     echo "mkdir -p $fonts_dir"
     mkdir -p "${fonts_dir}"
@@ -6,7 +6,7 @@ else
     echo "Found fonts dir $fonts_dir"
 fi
 
-version=5.2
+version=6.2
 zip=Fira_Code_v${version}.zip
 curl --fail --location --show-error https://github.com/tonsky/FiraCode/releases/download/${version}/${zip} --output ${zip}
 unzip -o -q -d ${fonts_dir} ${zip}

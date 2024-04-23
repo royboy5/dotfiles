@@ -11,6 +11,7 @@
 
     - name: Install alacritty 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: alacritty 
       ansible.builtin.package:
         name: alacritty 
@@ -19,6 +20,7 @@
       
     - name: Install direnv 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: direnv 
       ansible.builtin.package:
         name: direnv 
@@ -26,6 +28,7 @@
 
     - name: Install gitui 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: gitui
       ansible.builtin.package:
         name: gitui
@@ -33,6 +36,7 @@
 
     - name: Install K9s 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: k9s
       ansible.builtin.package:
         name: k9s
@@ -40,6 +44,7 @@
 
     - name: Install nvim
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: nvim
       ansible.builtin.package:
         name: neovim
@@ -47,6 +52,7 @@
 
     - name: Install Node Version Manager (nvm)
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: nvm
       shell: >
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
@@ -55,6 +61,7 @@
 
     - name: Install Python 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: python 
       ansible.builtin.package:
         name: python 
@@ -62,12 +69,14 @@
 
     - name: Install Rust 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: rust 
       shell: >
         curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
 
     - name: Install Starship 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: starship 
       ansible.builtin.package:
         name: starship
@@ -75,6 +84,7 @@
 
     - name: Install zsh-autocomplete
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: zsh
       shell: >
         git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-autocomplete
@@ -82,6 +92,7 @@
 
     - name: Install zsh-autosuggestions 
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: zsh
       shell: >
         git clone https://github.com/zsh-users/zsh-autosuggestions {{ ansible_env.HOME }}/.zsh/plugins/zsh-autosuggestions
@@ -89,6 +100,7 @@
 
     - name: Install zsh-syntax-highlighting
       become: "{{ use_root }}"
+      become_user: "{{ ansible_user_id }}"
       tags: zsh
       shell: >
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-syntax-highlighting
