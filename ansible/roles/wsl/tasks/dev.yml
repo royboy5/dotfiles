@@ -50,7 +50,8 @@
       become: "{{ use_root }}"
       community.general.copr:
         name: atim/starship
-        
+      when: ansible_facts['os_family'] == "RedHat"
+
     - name: Install Starship 
       become: "{{ use_root }}"
       tags: starship 
