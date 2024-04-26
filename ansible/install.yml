@@ -1,11 +1,13 @@
 ---
 - hosts: localhost
-  become: false 
+  become: false
   vars:
     use_root: true
+    user: roy
   roles:
-    - role: common 
-    - role: dev
-    - role: config
+    # - role: common 
+    # - role: dev
+    # - role: config
+    - role: wsl
       
 ...

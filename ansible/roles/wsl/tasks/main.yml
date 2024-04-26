@@ -1,0 +1,14 @@
+---
+# Configure system 
+
+  - name: Configure dotfiles (WSL)
+    tags: wsl
+    block:
+      - name: Install Common
+        include_tasks: "common-fed.yml"
+      - name: Install dev
+        include_tasks: "dev.yml"
+      - name: Config
+        include_tasks: "config.yml"
+
+...

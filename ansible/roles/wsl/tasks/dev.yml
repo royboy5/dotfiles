@@ -1,0 +1,82 @@
+---
+# Dev specific packages
+
+- name: dev tasks
+  tags: wsl
+  block:
+    - name: Install direnv 
+      become: "{{ use_root }}"
+      tags: direnv 
+      ansible.builtin.package:
+        name: direnv 
+        state: latest
+
+    - name: Install gitui 
+      become: "{{ use_root }}"
+      tags: gitui
+      ansible.builtin.package:
+        name: gitui
+        state: latest
+
+    - name: Install nvim
+      become: "{{ use_root }}"
+      tags: nvim
+      ansible.builtin.package:
+        name: neovim
+        state: latest
+
+    - name: Install Node Version Manager (nvm)
+      become: "{{ use_root }}"
+      tags: nvm
+      shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+    - name: Install Python 
+      become: "{{ use_root }}"
+      tags: python 
+      ansible.builtin.package:
+        name: python 
+        state: latest
+
+    - name: Install Rust 
+      become: "{{ use_root }}"
+      tags: rust 
+      shell: >
+        curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+
+    - name: Enable Fedora Copr for Starship
+      become: "{{ use_root }}"
+      community.general.copr:
+        name: atim/starship
+        
+    - name: Install Starship 
+      become: "{{ use_root }}"
+      tags: starship 
+      ansible.builtin.package:
+        name: starship
+        state: latest
+
+    - name: Install zsh-autocomplete
+      become: "{{ use_root }}"
+      tags: zsh
+      shell: >
+        git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-autocomplete
+      ignore_errors: true
+
+    - name: Install zsh-autosuggestions 
+      become: "{{ use_root }}"
+      tags: zsh
+      shell: >
+        git clone https://github.com/zsh-users/zsh-autosuggestions {{ ansible_env.HOME }}/.zsh/plugins/zsh-autosuggestions
+      ignore_errors: true
+
+    - name: Install zsh-syntax-highlighting
+      become: "{{ use_root }}"
+      tags: zsh
+      shell: >
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-syntax-highlighting
+      ignore_errors: true
+...
+    
