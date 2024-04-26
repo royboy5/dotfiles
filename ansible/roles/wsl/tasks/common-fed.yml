@@ -45,6 +45,12 @@
       ansible.builtin.package:
         name: jq 
         state: latest
+      
+    - name: Install neofetch 
+      become: "{{ use_root }}" 
+      ansible.builtin.package:
+        name: neofetch 
+        state: latest
 
     - name: Install ripgrep 
       become: "{{ use_root }}"

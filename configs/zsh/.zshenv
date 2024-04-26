@@ -16,6 +16,6 @@ if type rg &> /dev/null; then
 fi
 
 # Chrome 
-export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+# export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
 
 . "$HOME/.cargo/env"
