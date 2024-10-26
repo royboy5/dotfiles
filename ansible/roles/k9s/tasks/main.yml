@@ -1,0 +1,5 @@
+- name: Install k9s
+  become: true
+  ansible.builtin.package:
+    name: k9s 
+    state: latest

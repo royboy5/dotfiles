@@ -1,0 +1,29 @@
+- name: Install golang
+  vars:
+    go_version: "1.23.2"  # Define Go version here
+  block:
+    - name: Check if go is installed
+      shell: command -v go
+      register: go_check
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Download Golang
+      become: true
+      when: go_check.rc != 0
+      shell: >
+        curl -sSL https://go.dev/dl/go{{ go_version }}.linux-amd64.tar.gz -o /tmp/go{{ go_version }}.linux-amd64.tar.gz
+      args:
+        creates: /tmp/go{{ go_version }}.linux-amd64.tar.gz
+
+    - name: Remove and extract go
+      become: true
+      when: go_check.rc != 0
+      shell: >
+        rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/go{{ go_version }}.linux-amd64.tar.gz
+
+    - name: Cleanup
+      become: true
+      when: go_check.rc != 0
+      shell: >
+        rm /tmp/go{{ go_version }}.linux-amd64.tar.gz

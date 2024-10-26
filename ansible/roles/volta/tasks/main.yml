@@ -1,0 +1,17 @@
+- name: Install volta (node ver manager)
+  block:
+    - name: Check if volta is installed
+      shell: command -v volta
+      register: volta_check
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Download and install Volta
+      when: volta_check.rc != 0
+      shell: >
+        curl https://get.volta.sh | bash
+      
+    - name: Install node latest
+      when: volta_check.rc != 0
+      shell: >
+        volta install node

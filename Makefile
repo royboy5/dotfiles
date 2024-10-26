@@ -1,7 +1,7 @@
 .PHONY: macosx ansible-macos brew brew-update run-all 
 .PHONY: arch arch-update run-all
 
-arch: arch-update ansible-arch run-all
+arch: arch-update ansible-arch run-arch
 
 arch-update:
 	sudo pacman -Syuu --noconfirm
@@ -12,14 +12,14 @@ ansible-arch:
 macosx: brew brew-upgrade ansible-macosx run-all
 
 ansible-macosx:
-		- brew install ansible
+	- brew install ansible
 
 brew:
-		- /bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	- /bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 brew-upgrade:
-		- brew update
-		-	brew upgrade
+	- brew update
+	- brew upgrade
 	
 ubuntu: ubuntu-update ubuntu-install run-all
 
@@ -30,5 +30,8 @@ ubuntu-install:
 	sudo apt install ansible unzip -y
 
 run-all:
-		ansible-playbook ansible/install.yml --tags all -vK
+	ansible-playbook ansible/install.yml --tags all -vK
+
+run-arch:
+	ansible-playbook ansible/install.yml --tags arch -vK
 

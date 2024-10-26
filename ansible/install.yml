@@ -1,13 +1,20 @@
 ---
-- hosts: localhost
-  become: false
-  vars:
-    use_root: true
-    user: roy
-  roles:
-    # - role: common 
-    # - role: dev
-    # - role: config
-    - role: wsl
-      
+- name: Configure System
+  hosts: localhost
+  tasks:
+    - name: Debug output (beginning)
+      debug:
+        msg: "Starting..."
+
+    - name: Find roles
+      ansible.builtin.find:
+        paths: ./roles
+        file_type: directory
+        recurse: no
+      register: role_dirs
+
+    - name: Include roles
+      include_role:
+        name: "{{ item.path | basename }}"
+      loop: "{{ role_dirs.files }}"
 ...

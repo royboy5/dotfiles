@@ -1,0 +1,5 @@
+- name: Install jless
+  become: true
+  ansible.builtin.package:
+    name: jless 
+    state: latest
