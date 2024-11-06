@@ -4,10 +4,8 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR=nvim
 
 # Paths
-# export PATH=$HOME/.poetry/bin:$PATH
 # export PATH=$HOME/sdks/flutter/bin:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
-# export PATH=$HOME/
 
 # Volta
 export VOLTA_HOME=$HOME/.volta
