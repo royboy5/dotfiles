@@ -1,4 +1,5 @@
 - name: Android Studio
+  when: "'WSL2' not in ansible_facts['kernel']"
   block:
   - name: Check if android studio is installed
     shell: command -v android-studio

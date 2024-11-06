@@ -1,5 +1,10 @@
 - name: Install fd
   become: true
+  vars:
+    fd_package: >
+      {{ 'fd-find' if ansible_os_family in ['RedHat', 'Fedora'] else
+          'fd' if ansible_os_family == 'Archlinux' else
+          'fd-find' if ansible_os_family == 'Debian' else '' }}
   ansible.builtin.package:
-    name: fd 
+    name: "{{ fd_package }}"
     state: latest

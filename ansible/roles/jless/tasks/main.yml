@@ -3,3 +3,4 @@
   ansible.builtin.package:
     name: jless 
     state: latest
+  when: ansible_facts['os_family'] == 'Archlinux'
