@@ -1,7 +1,7 @@
 .PHONY: arch arch-update run-all
 .PHONY: fedora-wsl fedora-update fedora-ansible run-all 
 
-arch: arch-update ansible-arch run-all
+arch: arch-update arch-ansible run-all
 
 arch-update:
 	sudo pacman -Syuu --noconfirm

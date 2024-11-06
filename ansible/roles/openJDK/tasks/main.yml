@@ -1,11 +1,15 @@
 ---
 - name: Install OpenJDK
   become: true
-  vars:
-    openjdk_package: >
-      {{ 'java-latest-openjdk.x86_64' if ansible_os_family in ['RedHat', 'Fedora'] else
-          'jdk-openjdk' if ansible_os_family == 'Archlinux' else
-          'openjdk-11-jdk' if ansible_os_family == 'Debian' else '' }}
-  ansible.builtin.package:
-    name: "{{ openjdk_package }}"
-    state: present
+  block:
+    - name: Install OpenJDK package (arch)
+      ansible.builtin.package:
+        name: jdk-openjdk
+        state: present
+      when: ansible_facts['os_family'] == "Archlinux"
+    
+    - name: Install OpenJDK package 
+      ansible.builtin.package:
+        name: java-latest-openjdk.x86_64
+        state: present
+      when: ansible_facts['os_family'] in ['RedHat', 'Fedora'] 
