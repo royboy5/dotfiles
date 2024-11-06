@@ -1,0 +1,12 @@
+- name: Android Studio
+  block:
+  - name: Check if android studio is installed
+    shell: command -v android-studio
+    register: as_check
+    ignore_errors: yes
+    changed_when: false
+
+  - name: Install Android Studio
+    shell: >
+      yay -Syu android-studio --noconfirm
+    when: as_check.rc != 0
