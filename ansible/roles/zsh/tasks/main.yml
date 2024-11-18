@@ -6,19 +6,16 @@
     state: latest
 
 - name: Install zsh-autocomplete
-  become: true
   shell: >
     git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-autocomplete
   ignore_errors: true
 
 - name: Install zsh-autosuggestions 
-  become: true
   shell: >
     git clone https://github.com/zsh-users/zsh-autosuggestions {{ ansible_env.HOME }}/.zsh/plugins/zsh-autosuggestions
   ignore_errors: true
 
 - name: Install zsh-syntax-highlighting
-  become: true
   shell: >
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-syntax-highlighting
   ignore_errors: true
