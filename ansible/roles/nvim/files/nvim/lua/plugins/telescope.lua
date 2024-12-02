@@ -51,7 +51,7 @@ return {
               ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
               ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
               ["<C-l>"] = actions.complete_tag,
-              ["<C-_>"] = actions.which_key,         -- keys from pressing <C-/>
+              ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
             },
 
             n = {
@@ -101,7 +101,7 @@ return {
             -- filetypes whitelist
             -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
             filetypes = { "png", "webp", "jpg", "jpeg" },
-            find_cmd = "rg"         -- find command (defaults to `fd`)
+            find_cmd = "rg" -- find command (defaults to `fd`)
           }
           -- Your extension configuration goes here:
           -- extension_name = {
@@ -112,9 +112,9 @@ return {
       })
 
       telescope.load_extension("media_files")
-  
+
       -- Telescope
-      -- vim.keymap.set("n", "<leader>ff", function() builtin.find_files({ hidden = true }) end, opts)
+     vim.keymap.set("n", "<leader>ff", function() builtin.find_files({ hidden = true }) end, opts)
       -- vim.keymap.set("n", "<leader>f", "<cmd>lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({ previewer = false }))<cr>", opts)
       -- vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts)
       -- vim.keymap.set("n", "<leader>fh", builtin.help_tags, opts)

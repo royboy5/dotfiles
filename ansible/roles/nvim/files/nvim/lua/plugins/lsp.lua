@@ -22,7 +22,7 @@ return {
       })
 
       require("mason-lspconfig").setup({
-        ensure_installed = { "eslint", "lua_ls", "rust_analyzer" },
+        ensure_installed = { "gopls", "eslint", "lua_ls", "rust_analyzer" },
         automatic_installation = true,
         handlers = {
           function(server_name)
@@ -43,6 +43,29 @@ return {
           end,
         }
       })
+
+
+      local config = {
+        -- disable virtual text
+        virtual_text = true,
+        -- show signs
+        signs = {
+          active = signs,
+        },
+        update_in_insert = true,
+        underline = true,
+        severity_sort = true,
+        float = {
+          focusable = false,
+          style = "minimal",
+          border = "rounded",
+          source = "always",
+          header = "",
+          prefix = "",
+        },
+      }
+
+      vim.diagnostic.config(config)
     end
   }
 }
