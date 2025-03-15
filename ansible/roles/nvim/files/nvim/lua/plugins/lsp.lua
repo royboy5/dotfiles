@@ -22,7 +22,7 @@ return {
       })
 
       require("mason-lspconfig").setup({
-        ensure_installed = { "gopls", "eslint", "lua_ls", "rust_analyzer" },
+        ensure_installed = { "ts_ls", "gopls", "eslint", "lua_ls", "rust_analyzer" },
         automatic_installation = true,
         handlers = {
           function(server_name)
@@ -39,6 +39,21 @@ return {
                   }
                 }
               }
+            })
+          end,
+          ["eslint"] = function()
+            lspconfig.eslint.setup({
+              capabilities = capabilities,
+            })
+          end,
+          ["ts_ls"] = function()
+            lspconfig.ts_ls.setup({
+              capabilities = capabilities,
+            })
+          end,
+          ["gopls"] = function()
+            lspconfig.gopls.setup({
+              capabilities = capabilities,
             })
           end,
         }
