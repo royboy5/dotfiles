@@ -1,0 +1,5 @@
+- name: Install python
+  become: true
+  ansible.builtin.package:
+    name: python 
+    state: latest

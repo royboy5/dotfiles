@@ -1,0 +1,5 @@
+- name: Install ttf-nerd-fonts-symbols-mono
+  become: true
+  ansible.builtin.package:
+    name: ttf-nerd-fonts-symbols-mono 
+    state: latest

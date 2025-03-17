@@ -1,0 +1,41 @@
+---
+- name: Hyprland Install
+  block:
+    - name: Install hyprland
+      become: true
+      ansible.builtin.package:
+        name: hyprland
+        state: latest
+
+    - name: Ensure the hpyr directory exists
+      file:
+        path: /home/roy/.config/hypr
+        state: directory
+        mode: '0755'
+
+    - name: Create symlink for hyprland.conf
+      ansible.builtin.file:
+        src: "{{ playbook_dir }}/roles/hyprland/files/hyprland.conf"
+        dest: "{{ ansible_env.HOME }}/.config/hypr/hyprland.conf"
+        state: link
+        force: true
+
+    - name: Install rofi-wayland
+      become: true
+      ansible.builtin.package:
+        name: rofi-wayland 
+        state: latest
+    
+    - name: Ensure the rofi directory exists
+      file:
+        path: /home/roy/.config/rofi
+        state: directory
+        mode: '0755'
+
+    - name: Create symlink for rofi config
+      ansible.builtin.file:
+        src: "{{ playbook_dir }}/roles/hyprland/files/config.rasi"
+        dest: "{{ ansible_env.HOME }}/.config/rofi/config.rasi"
+        state: link
+        force: true
+

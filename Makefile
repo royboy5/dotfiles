@@ -1,34 +1,29 @@
-.PHONY: macosx ansible-macos brew brew-update run-all 
 .PHONY: arch arch-update run-all
+.PHONY: fedora-wsl fedora-update fedora-ansible run-all 
 
-arch: arch-update ansible-arch run-all
+arch: arch-update arch-ansible run-all
 
 arch-update:
 	sudo pacman -Syuu --noconfirm
 
-ansible-arch:
+arch-ansible:
 	sudo pacman -S ansible --noconfirm
 
-macosx: brew brew-upgrade ansible-macosx run-all
+fedora-wsl: fedora-update fedora-ansible run-all
 
-ansible-macosx:
-		- brew install ansible
+fedora-update:
+	sudo dnf update && sudo dnf upgrade
 
-brew:
-		- /bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fedora-ansible:
+	sudo dnf install ansible
 
-brew-upgrade:
-		- brew update
-		-	brew upgrade
-	
-ubuntu: ubuntu-update ubuntu-install run-all
+# ubuntu: ubuntu-update ubuntu-install run-all
 
-ubuntu-update:
-	sudo apt update -y
+# ubuntu-update:
+# 	sudo apt update -y
 
-ubuntu-install:
-	sudo apt install ansible unzip -y
+# ubuntu-install:
+# 	sudo apt install ansible unzip -y
 
 run-all:
-		ansible-playbook ansible/install.yml --tags all -vK
-
+	ansible-playbook ansible/install.yml --tags all -vK

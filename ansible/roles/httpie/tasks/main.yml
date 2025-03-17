@@ -1,0 +1,5 @@
+- name: Install httpie
+  become: true
+  ansible.builtin.package:
+    name: httpie 
+    state: latest

@@ -8,3 +8,5 @@ configs/nvim/.config/nvim/plugin/packer_compiled.lua
 configs/zsh/.zsh/local_envs.zsh
 configs/zsh/.zsh/plugins
 
+# idea
+.idea

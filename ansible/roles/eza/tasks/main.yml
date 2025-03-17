@@ -1,0 +1,5 @@
+- name: Install eza
+  become: true
+  ansible.builtin.package:
+    name: eza 
+    state: latest

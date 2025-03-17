@@ -1,0 +1,5 @@
+- name: Install waybar 
+  become: true
+  ansible.builtin.package:
+    name: waybar 
+    state: latest

@@ -1,0 +1,19 @@
+- name: Install fd
+  become: true
+  vars:
+    fd_package: >
+      {{ 'fd-find' if ansible_os_family in ['RedHat', 'Fedora'] else
+          'fd' if ansible_os_family == 'Archlinux' else
+          'fd-find' if ansible_os_family == 'Debian' else '' }}
+  block:
+    - name: Install fd package (arch)
+      ansible.builtin.package:
+        name: fd
+        state: latest
+      when: ansible_facts['os_family'] == 'Archlinux'
+    - name: Install fd package (fd-find)
+      ansible.builtin.package:
+        name: fd-find
+        state: latest
+      when: ansible_facts['os_family'] != 'Archlinux'
+      

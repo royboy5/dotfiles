@@ -1,0 +1,55 @@
+---
+- name: Install zsh 
+  become: true
+  ansible.builtin.package:
+    name: zsh 
+    state: latest
+
+- name: Install zsh-autocomplete
+  shell: >
+    git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-autocomplete
+  ignore_errors: true
+
+- name: Install zsh-autosuggestions 
+  shell: >
+    git clone https://github.com/zsh-users/zsh-autosuggestions {{ ansible_env.HOME }}/.zsh/plugins/zsh-autosuggestions
+  ignore_errors: true
+
+- name: Install zsh-syntax-highlighting
+  shell: >
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git {{ ansible_env.HOME }}/.zsh/plugins/zsh-syntax-highlighting
+  ignore_errors: true
+
+- name: Ensure .zsh directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.zsh"
+    state: directory
+    mode: "0755"
+
+- name: Link zsh config
+  ansible.builtin.file:
+    src: "{{ playbook_dir }}/roles/zsh/files/zsh/.zshrc"
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+    state: link
+    force: true
+
+- name: Link zshenv config
+  ansible.builtin.file:
+    src: "{{ playbook_dir }}/roles/zsh/files/zsh/.zshenv"
+    dest: "{{ ansible_env.HOME }}/.zshenv"
+    state: link
+    force: true
+
+- name: Link aliases.zsh config
+  ansible.builtin.file:
+    src: "{{ playbook_dir }}/roles/zsh/files/zsh/aliases.zsh"
+    dest: "{{ ansible_env.HOME }}/.zsh/aliases.zsh"
+    state: link
+    force: true
+
+- name: Link functions.zsh config
+  ansible.builtin.file:
+    src: "{{ playbook_dir }}/roles/zsh/files/zsh/functions.zsh"
+    dest: "{{ ansible_env.HOME }}/.zsh/functions.zsh"
+    state: link
+    force: true
