@@ -5,8 +5,8 @@
 configs/nvim/.config/nvim/plugin/packer_compiled.lua
 
 # zsh
-configs/zsh/.zsh/local_envs.zsh
-configs/zsh/.zsh/plugins
+configs/zsh/local_envs.zsh
+configs/zsh/.zsh_history
 
 # idea
 .idea
