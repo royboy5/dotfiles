@@ -1,0 +1,257 @@
+#!/usr/bin/env bash
+set -e
+
+# Get the root directory
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# --- IMPROVEMENT 1: Safety check for helpers ---
+HELPERS_PATH="${ROOT_DIR}/lib/helpers.sh"
+if [[ ! -f "$HELPERS_PATH" ]]; then
+    echo "❌ Error: Cannot find helpers at $HELPERS_PATH"
+    echo "   Please ensure you are running this from the root of the dotfiles repo."
+    exit 1
+fi
+
+source "$HELPERS_PATH"
+
+# Export variables
+export ROOT_DIR
+export DRY_RUN=false
+export UPDATE_SYSTEM=true
+export REFRESH_MIRRORS=false
+
+# --- IMPROVEMENT 2: Sudo Keep-Alive Function ---
+# Keeps sudo timestamp updated in the background so you don't type passwords mid-script
+sudo_keep_alive() {
+    while true; do
+        sudo -n true
+        sleep 60
+        kill -0 "$$" || exit
+    done 2>/dev/null &
+}
+
+# Detect OS (sets OS variable)
+detect_os ""
+export OS
+
+usage() {
+    cat << EOF
+Usage: ./bootstrap [OPTIONS] [OS] [PACKAGES...]
+
+Bootstrap dotfiles for your system.
+
+PLATFORMS:
+    arch, macos, debian, fedora
+
+OPTIONS:
+    -h, --help           Show this help
+    -d, --dry-run        Perform a dry run
+    -l, --list           List available packages for OS
+    --no-update          Skip system package update
+    --refresh-mirrors    Update mirror list before sync (Arch only)
+EOF
+}
+
+update_system() {
+    local os=$1
+    
+    LOG_INFO "Updating system packages..."
+    
+    if [[ "$DRY_RUN" == true ]]; then
+        LOG_WARN "[DRY RUN] Would update system packages for $os"
+        return 0
+    fi
+
+    # Ask for sudo upfront once
+    sudo -v
+    sudo_keep_alive
+    
+    case $os in
+        arch)
+            if [[ "$REFRESH_MIRRORS" == true ]]; then
+                LOG_INFO "Refreshing Arch mirrors..."
+                if command -v reflector &> /dev/null; then
+                    # Added --download-timeout to prevent hanging
+                    if sudo reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist --download-timeout 5; then
+                        LOG_SUCCESS "Mirrors refreshed"
+                    else
+                        LOG_WARN "Mirror refresh failed, continuing..."
+                    fi
+                fi
+            fi
+
+            # 1. Update Pacman Packages
+            LOG_INFO "Running full system upgrade (pacman -Syu)..."
+            if sudo pacman -Syu --noconfirm; then
+                LOG_SUCCESS "Arch system updated"
+            else
+                LOG_ERROR "Failed to update Arch system"
+                return 1
+            fi
+
+            # 2. Update AUR Packages (User - only if yay exists)
+            if command -v yay &> /dev/null; then
+                LOG_INFO "Updating AUR packages (yay)..."
+                # -Sua = Sync, Upgrade, AUR-only (since we just ran pacman)
+                if yay -Sua --noconfirm; then
+                    LOG_SUCCESS "AUR packages updated"
+                else
+                    LOG_WARN "AUR update failed (continuing...)"
+                fi
+            fi
+            ;;
+        macos)
+            if brew update && brew upgrade; then
+                LOG_SUCCESS "Homebrew updated"
+            else
+                LOG_ERROR "Failed to update Homebrew"
+                return 1
+            fi
+            ;;
+        debian)
+            if sudo apt-get update && sudo apt-get upgrade -y; then
+                LOG_SUCCESS "APT packages updated"
+            else
+                LOG_ERROR "Failed to update APT"
+                return 1
+            fi
+            ;;
+        fedora)
+            if sudo dnf upgrade -y --refresh; then
+                LOG_SUCCESS "DNF packages updated"
+            else
+                LOG_ERROR "Failed to update DNF"
+                return 1
+            fi
+            ;;
+        *)
+            LOG_WARN "Unknown OS for update: $os"
+            return 1
+            ;;
+    esac
+    
+    echo ""
+    return 0
+}
+
+list_packages() {
+    local target_os=$1
+    if [[ -z "$target_os" ]]; then
+        LOG_ERROR "Specify OS to list packages: arch, macos, debian, fedora"
+        exit 1
+    fi
+    
+    local os_dir="${ROOT_DIR}/os/${target_os}"
+    if [[ ! -d "$os_dir" ]]; then
+        LOG_ERROR "OS directory not found: $target_os"
+        exit 1
+    fi
+    
+    LOG_INFO "Available packages for $target_os:"
+    # Use find to avoid errors if directory is empty
+    find "$os_dir" -maxdepth 1 -mindepth 1 -type d | sort | while read -r pkg_dir; do
+        if [[ -f "$pkg_dir/install.sh" ]]; then
+            echo "  - $(basename "$pkg_dir")"
+        fi
+    done
+}
+
+install_package() {
+    local pkg_path=$1
+    local pkg_name=$(basename "$pkg_path")
+    local install_script="$pkg_path/install.sh"
+    
+    if [[ ! -f "$install_script" ]]; then
+        LOG_ERROR "Install script not found: $install_script"
+        return 1
+    fi
+    
+    LOG_INFO "Installing $pkg_name..."
+    export PACKAGE="$pkg_name"
+    ensure_executable "$install_script"
+    
+    # Run the script
+    if bash "$install_script"; then
+        LOG_SUCCESS "$pkg_name installed!"
+        return 0
+    else
+        LOG_ERROR "$pkg_name failed!"
+        return 1
+    fi
+}
+
+main() {
+    local target_os="$OS" 
+    local packages_to_install=()
+    local list_mode=false
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help) usage; exit 0 ;;
+            -d|--dry-run) DRY_RUN=true; export DRY_RUN; shift ;;
+            -l|--list) list_mode=true; shift ;;
+            --no-update) UPDATE_SYSTEM=false; shift ;;
+            --refresh-mirrors) REFRESH_MIRRORS=true; shift ;;
+            arch|macos|debian|fedora) target_os=$1; shift ;;
+            -*) LOG_ERROR "Unknown option: $1"; usage; exit 1 ;;
+            *) packages_to_install+=("$1"); shift ;;
+        esac
+    done
+    
+    if [[ -z "$target_os" ]]; then
+        LOG_ERROR "Unable to determine platform. Please specify one."
+        usage
+        exit 1
+    fi
+    
+    [[ "$list_mode" == true ]] && list_packages "$target_os" && exit 0
+    
+    local os_dir="${ROOT_DIR}/os/${target_os}"
+    [[ ! -d "$os_dir" ]] && LOG_ERROR "OS directory not found: $os_dir" && exit 1
+    
+    LOG_INFO "════════════════════════════════════════"
+    LOG_INFO "Bootstrap for $target_os"
+    LOG_INFO "════════════════════════════════════════"
+    
+    if [[ "$UPDATE_SYSTEM" == true ]]; then
+        if ! update_system "$target_os"; then
+            LOG_WARN "System update failed, continuing with best effort..."
+        fi
+    fi
+    
+    local failed_packages=()
+    
+    if [[ ${#packages_to_install[@]} -eq 0 ]]; then
+        LOG_INFO "Installing ALL packages for $target_os..."
+        # Loop through directories
+        for pkg_dir in "$os_dir"/*/; do
+            [[ -e "$pkg_dir" ]] || continue # Handle empty dir case
+            if [[ -f "$pkg_dir/install.sh" ]]; then
+                install_package "$pkg_dir" || failed_packages+=("$(basename "$pkg_dir")")
+                echo ""
+            fi
+        done
+    else
+        LOG_INFO "Installing SPECIFIC packages: ${packages_to_install[*]}"
+        for pkg in "${packages_to_install[@]}"; do
+            local pkg_path="$os_dir/$pkg"
+            if [[ -d "$pkg_path" ]]; then
+                install_package "$pkg_path" || failed_packages+=("$pkg")
+                echo ""
+            else
+                LOG_WARN "Package not found: $pkg"
+                failed_packages+=("$pkg")
+            fi
+        done
+    fi
+    
+    LOG_INFO "════════════════════════════════════════"
+    if [[ ${#failed_packages[@]} -eq 0 ]]; then
+        LOG_SUCCESS "All packages installed successfully! 🚀"
+    else
+        LOG_WARN "Failed packages: ${failed_packages[*]}"
+        exit 1
+    fi
+}
+
+main "$@"

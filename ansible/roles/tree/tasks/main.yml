@@ -1,5 +1,0 @@
-- name: Install tree
-  become: true
-  ansible.builtin.package:
-    name: tree 
-    state: latest

@@ -1,0 +1,21 @@
+[user]
+    name = Roy Eng
+    email = me@royeng.com
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor = nvim
+    excludesfile = ~/.config/git/ignore
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemore = true
+
+[delta]
+    navigate = true
+    line-numbers = true
+    side-by-side = true
