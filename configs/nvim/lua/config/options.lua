@@ -37,6 +37,9 @@ local options = {
   guifont = "monospace:h17",               -- the font used in graphical neovim applications
 }
 
+vim.cmd([[filetype plugin indent on]])
+vim.cmd([[syntax enable]])
+
 vim.opt.shortmess:append "c"
 vim.opt.clipboard = "unnamedplus"
 

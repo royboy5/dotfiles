@@ -36,12 +36,8 @@ if command -v volta &> /dev/null; then
     fi
 
     # Install pnpm
-    if ! command -v pnpm &> /dev/null; then
-        LOG_INFO "Installing pnpm via Volta..."
-        run volta install pnpm
-    else
-        LOG_SUCCESS "pnpm is already installed"
-    fi
+    LOG_INFO "Installing / updating pnpm via Volta..."
+    run volta install pnpm
 
 else
     LOG_WARN "Skipping Node/pnpm installation because Volta failed to install."

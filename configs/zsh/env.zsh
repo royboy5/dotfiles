@@ -20,6 +20,14 @@ if [[ -d "$VOLTA_HOME" ]]; then
     export PATH="$VOLTA_HOME/bin:$PATH"
 fi
 
+# pnpm
+export PNPM_HOME="/home/roy/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
 # --- RUST ---
 # Sourcing env is the official way, as it handles PATH + other necessary vars
 if [[ -f "$HOME/.cargo/env" ]]; then

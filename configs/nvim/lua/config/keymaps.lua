@@ -1,61 +1,63 @@
-local opts = { noremap = true, silent = true }
+-- ~/.config/nvim/lua/config/keymaps.lua
 
-local term_opts = { silent = true }
-
--- Shorten function name
-local keymap = vim.api.nvim_set_keymap
-
---Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
+-- Set leader keys first
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Modes
---   normal_mode = "n",
---   insert_mode = "i",
---   visual_mode = "v",
---   visual_block_mode = "x",
---   term_mode = "t",
---   command_mode = "c",
+-- Shorten function name
+local keymap = vim.keymap.set
+local opts = { silent = true }
 
--- Normal --
+-- Remap Space as leader (empty so it doesn't do anything by default)
+keymap("", "<Space>", "<Nop>", opts)
+
+-- NORMAL MODE --
+
+keymap("n", "<leader>c", "<cmd>bd!<cr>", { desc = "Close Buffer" })
+keymap("n", "<leader>w", "<cmd>w<cr>", { desc = "Save File" })
+keymap("n", "<leader>q", "<cmd>qa<cr>", { desc = "Quit All" })
+keymap("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear Highlights" })
+
 -- Better window navigation
-keymap("n", "<C-h>", "<C-w>h", opts)
-keymap("n", "<C-j>", "<C-w>j", opts)
-keymap("n", "<C-k>", "<C-w>k", opts)
-keymap("n", "<C-l>", "<C-w>l", opts)
+-- (Note: These won't show in Which-Key popup because they trigger instantly)
+keymap("n", "<C-h>", "<C-w>h", { desc = "Window Left" })
+keymap("n", "<C-j>", "<C-w>j", { desc = "Window Down" })
+keymap("n", "<C-k>", "<C-w>k", { desc = "Window Up" })
+keymap("n", "<C-l>", "<C-w>l", { desc = "Window Right" })
 
 -- Resize with arrows
-keymap("n", "<C-Up>", ":resize +2<CR>", opts)
-keymap("n", "<C-Down>", ":resize -2<CR>", opts)
-keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
-keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
+keymap("n", "<C-Up>", ":resize +2<CR>", { desc = "Resize Up" })
+keymap("n", "<C-Down>", ":resize -2<CR>", { desc = "Resize Down" })
+keymap("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Resize Left" })
+keymap("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Resize Right" })
 
 -- Navigate buffers
-keymap("n", "<S-l>", ":bnext<CR>", opts)
-keymap("n", "<S-h>", ":bprevious<CR>", opts)
+keymap("n", "<S-l>", ":bnext<CR>", { desc = "Next Buffer" })
+keymap("n", "<S-h>", ":bprevious<CR>", { desc = "Prev Buffer" })
 
--- Visual --
--- Stay in indent mode
-keymap("v", "<", "<gv", opts)
-keymap("v", ">", ">gv", opts)
+-- VISUAL MODE --
+
+-- Stay in indent mode (Don't lose selection after shifting)
+keymap("v", "<", "<gv", { desc = "Indent Left" })
+keymap("v", ">", ">gv", { desc = "Indent Right" })
 
 -- Move text up and down
-keymap("v", "<A-j>", ":m .+1<CR>==", opts)
-keymap("v", "<A-k>", ":m .-2<CR>==", opts)
--- holds on to the value that was yanked after pasted
-keymap("v", "p", '"_dP', opts)
+keymap("v", "<A-j>", ":m .+1<CR>==", { desc = "Move Selection Down" })
+keymap("v", "<A-k>", ":m .-2<CR>==", { desc = "Move Selection Up" })
+keymap("v", "p", '"_dP', { desc = "Paste (Keep Yank)" }) -- Keep clipboard after paste
 
--- Visual Block --
+-- VISUAL BLOCK MODE --
+
 -- Move text up and down
-keymap("x", "J", ":move '>+1<CR>gv-gv", opts)
-keymap("x", "K", ":move '<-2<CR>gv-gv", opts)
-keymap("x", "<A-j>", ":move '>+1<CR>gv-gv", opts)
-keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", opts)
+keymap("x", "J", ":move '>+1<CR>gv-gv", { desc = "Move Block Down" })
+keymap("x", "K", ":move '<-2<CR>gv-gv", { desc = "Move Block Up" })
+keymap("x", "<A-j>", ":move '>+1<CR>gv-gv", { desc = "Move Block Down" })
+keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", { desc = "Move Block Up" })
 
--- Terminal --
+-- TERMINAL MODE --
+
 -- Better terminal navigation
-keymap("t", "<C-h>", "<C-\\><C-N><C-w>h", term_opts)
-keymap("t", "<C-j>", "<C-\\><C-N><C-w>j", term_opts)
-keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
-keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
+keymap("t", "<C-h>", "<C-\\><C-N><C-w>h", { desc = "Term Left" })
+keymap("t", "<C-j>", "<C-\\><C-N><C-w>j", { desc = "Term Down" })
+keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", { desc = "Term Up" })
+keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", { desc = "Term Right" })
