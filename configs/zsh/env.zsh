@@ -2,6 +2,9 @@
 # CORE PATH CONFIGURATION
 # =============================================================================
 
+# Ensure unique PATH entries
+typeset -U PATH path
+
 # Standard user bins
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
@@ -14,14 +17,20 @@ fi
 # 3. LANGUAGE & FRAMEWORK PATHS
 # =============================================================================
 
-# --- VOLTA (Node.js) ---
-export VOLTA_HOME="$HOME/.volta"
-if [[ -d "$VOLTA_HOME" ]]; then
-    export PATH="$VOLTA_HOME/bin:$PATH"
+# --- PROTO ---
+export PROTO_HOME="$HOME/.proto"
+if [[ -d "$PROTO_HOME" ]]; then
+    export PATH="$PROTO_HOME/shims:$PROTO_HOME/bin:$PATH"
 fi
 
+# --- OPENCODE ---
+if [[ -d "$HOME/.opencode/bin" ]]; then
+    export PATH="$HOME/.opencode/bin:$PATH"
+fi
+
+
 # pnpm
-export PNPM_HOME="/home/roy/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;

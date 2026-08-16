@@ -27,6 +27,7 @@ fi
 
 # Source Secrets (Gitignored file)
 [[ -f "$ZSH_ROOT/local_env.zsh" ]] && source "$ZSH_ROOT/local_env.zsh"
+[[ -f "$ZSH_ROOT/local_envs.zsh" ]] && source "$ZSH_ROOT/local_envs.zsh"
 
 # =============================================================================
 # 2. PLUGIN SETUP (PART 1)
@@ -52,12 +53,28 @@ if command -v starship &> /dev/null; then
     eval "$(starship init zsh)"
 fi
 
+# Zellij Auto-Start (only if installed and not already inside Zellij)
+if command -v zellij &> /dev/null && [[ -z "$ZELLIJ" ]]; then
+    eval "$(zellij setup --generate-auto-start zsh)"
+fi
+
 # History Options
-setopt histignorealldups sharehistory
-HISTSIZE=5000
-SAVEHIST=5000
+HISTSIZE=10000
+SAVEHIST=10000
 # Save history in the config dir, keeping $HOME clean
 HISTFILE="$ZSH_ROOT/.zsh_history"
+
+setopt EXTENDED_HISTORY          # Write timestamp and duration in history
+setopt HIST_EXPIRE_DUPS_FIRST   # Expire oldest duplicates first when trimming
+setopt HIST_IGNORE_DUPS         # Do not record consecutive duplicate commands
+setopt HIST_IGNORE_ALL_DUPS     # Delete older duplicate entries
+setopt HIST_IGNORE_SPACE        # Do not record commands beginning with a space
+setopt HIST_FIND_NO_DUPS        # Do not display duplicates during search
+setopt HIST_SAVE_NO_DUPS        # Do not write duplicate events to history file
+setopt HIST_REDUCE_BLANKS       # Remove superfluous blanks
+setopt HIST_VERIFY              # Show command with history expansion before running
+setopt INC_APPEND_HISTORY       # Append history entries immediately
+setopt SHARE_HISTORY            # Share history across active sessions
 
 # Colors
 autoload -Uz colors && colors

@@ -44,7 +44,7 @@ alias dt='cd ~/Desktop'
 alias src='cd ~/src'
 
 # System Maintenance
-alias reload='source "$ZDOTDIR/.zshrc" && echo "✅ Zsh config reloaded."'
+alias reload='source "${ZDOTDIR:-$HOME/.config/zsh}/.zshrc" && echo "✅ Zsh config reloaded."'
 
 # =============================================================================
 # 3. EDITORS
@@ -94,7 +94,7 @@ alias gpf='git push --force-with-lease' # Safer than --force
 # Context-aware Push/Pull (Requires git_current_branch function)
 alias ggpull='git pull origin "$(git_current_branch)"'
 alias ggpush='git push origin "$(git_current_branch)"'
-alias gpsup='git push --set-upstream origin $(git_current_branch)'
+alias gpsup='git push --set-upstream origin "$(git_current_branch)"'
 
 # Logs
 alias glog='git log --oneline --decorate --graph'
