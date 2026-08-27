@@ -1,0 +1,21 @@
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane split_direction="horizontal" size="65%" {
+            pane size="70%" {
+                name "editor"
+            }
+            pane {
+                name "shell"
+            }
+        }
+        pane {
+            name "llm"
+        }
+    }
+    pane size=1 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

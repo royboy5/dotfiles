@@ -114,7 +114,7 @@ return {
           fields = { "kind", "abbr", "menu" },
           format = function(entry, vim_item)
             -- Icon + Kind name
-            vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
+            vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind] or "", vim_item.kind)
             
             -- Source name
             vim_item.menu = ({

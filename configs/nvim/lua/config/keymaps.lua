@@ -17,6 +17,8 @@ keymap("n", "<leader>c", "<cmd>bd!<cr>", { desc = "Close Buffer" })
 keymap("n", "<leader>w", "<cmd>w<cr>", { desc = "Save File" })
 keymap("n", "<leader>q", "<cmd>qa<cr>", { desc = "Quit All" })
 keymap("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear Highlights" })
+keymap("n", "<leader>/", "gcc", { remap = true, desc = "Toggle Comment" })
+keymap("v", "<leader>/", "gc", { remap = true, desc = "Toggle Comment" })
 
 -- Better window navigation
 -- (Note: These won't show in Which-Key popup because they trigger instantly)

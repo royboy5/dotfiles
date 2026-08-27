@@ -76,9 +76,11 @@ return {
 							),
 							workingDirectories = { mode = "auto" },
 							on_new_config = function(config, new_root_dir)
-								config.settings = vim.tbl_deep_extend("force", config.settings or {}, {
-									nodePath = new_root_dir .. "/node_modules",
-								})
+								if new_root_dir then
+									config.settings = vim.tbl_deep_extend("force", config.settings or {}, {
+										nodePath = new_root_dir .. "/node_modules",
+									})
+								end
 							end,
 						})
 					end,
