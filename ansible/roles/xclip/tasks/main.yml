@@ -1,5 +1,0 @@
-- name: Install xclip
-  become: true
-  ansible.builtin.package:
-    name: xclip 
-    state: latest

@@ -10,14 +10,53 @@ This repo simplifies provisioning your computer.
 4. [Links](#links)
 
 ## Prerequisite
-- make
+- Make script executable
+```bash
+chmod +x bootstrap
+```
 
-## Installation
-- rename `configs/zsh/local_envs.zsh.sample` to `configs/zsh/local_envs.zsh`
-- `$ make macosx` 
+## Quick Start
+
+### Arch Linux
+```bash
+git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./bootstrap arch
+```
+
+### macOS
+```bash
+git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./bootstrap macos
+```
+
+### Ubuntu
+```bash
+git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./bootstrap ubuntu
+```
+### Install specific packages only
+```bash
+./bootstrap arch zsh tmux nvim git     # Only install these
+./bootstrap macos --list               # List available packages
+./bootstrap ubuntu --dry-run           # Dry run
+```
+
+## Structure
+
+- `configs/` - Configuration files (one per tool)
+- `os/arch/` - Arch-specific installation scripts
+- `os/macos/` - macOS-specific installation scripts  
+- `os/ubuntu/` - Ubuntu-specific installation scripts
+- `os/windows/` - Windows-specific installation scripts
+
+Each OS has its own installation scripts that handle dependencies,
+building from source, and symlinking configs appropriately.
+
 
 ## Post Install
-- Set up your node version with nvm
 - :LspInstallInfo to select languages for LSP.
 
 ### Links
@@ -78,6 +117,3 @@ Or,
   - clear `~/.local/share/nvim/shada` folder
 - Not sure why nvim-treesitter throws an error sometimes when installing for the 1st time.
   - Restart nvim and let the languages install.
-
-## Ansible
-- List of [ansible-facts](https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html) 

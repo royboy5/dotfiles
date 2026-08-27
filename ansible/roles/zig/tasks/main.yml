@@ -1,5 +1,0 @@
-- name: Install zig
-  become: true
-  ansible.builtin.package:
-    name: zig 
-    state: latest

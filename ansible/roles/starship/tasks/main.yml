@@ -1,5 +1,0 @@
-- name: Install starship
-  become: true
-  ansible.builtin.package:
-    name: starship
-    state: latest
