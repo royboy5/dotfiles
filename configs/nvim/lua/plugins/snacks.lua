@@ -17,6 +17,13 @@ return {
 						auto_close = true,
 						layout = { preset = "sidebar", preview = false },
 					},
+          files = {
+            hidden = true,
+            ignored = true,
+          },
+          grep = {
+            hidden = true,
+          },
 				},
 			}, -- Fuzzy Finder (replacing Telescope)
 			dashboard = { enabled = true }, -- Start screen
