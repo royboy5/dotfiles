@@ -51,7 +51,7 @@ keybinds clear-defaults=true {
         bind "Ctrl t" { SwitchToMode "normal"; }
         bind "x" { CloseTab; SwitchToMode "normal"; }
         bind "tab" { ToggleTab; }
-        bind "d" { NewTab { layout "dev"; } SwitchToMode "normal"; }
+        bind "d" { NewTab { layout "dev"; }; SwitchToMode "normal"; }
     }
     resize {
         bind "left" { Resize "Increase left"; }
@@ -309,7 +309,7 @@ web_client {
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-theme "tokyo-night-dark"
+theme "tokyo-night-storm"
  
 // Theme to use when the host terminal reports a dark color palette.
 // Requires `theme_light` to also be set; otherwise `theme` is used.
@@ -364,7 +364,8 @@ default_mode "normal"
 //   - true (default, enabled)
 //   - false
 // 
-// pane_frames false
+pane_frames true
+pane_frame_style "full"
  
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
