@@ -61,8 +61,10 @@ fi
 # History Options
 HISTSIZE=10000
 SAVEHIST=10000
-# Save history in the config dir, keeping $HOME clean
-HISTFILE="$ZSH_ROOT/.zsh_history"
+# Save history in XDG state directory, keeping dotfiles clean
+HIST_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/zsh"
+[[ ! -d "$HIST_DIR" ]] && mkdir -p "$HIST_DIR"
+HISTFILE="$HIST_DIR/history"
 
 setopt EXTENDED_HISTORY          # Write timestamp and duration in history
 setopt HIST_EXPIRE_DUPS_FIRST   # Expire oldest duplicates first when trimming
