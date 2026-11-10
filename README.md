@@ -64,7 +64,8 @@ Fedora under WSL, CLI only.
    `hostname -s` (prints `wsl`) and `ls -d /run/systemd/system`.
 3. **Clone and bootstrap:**
    ```bash
-   git clone https://github.com/royboy5/dotfiles.git ~/.dotfiles
+   # -b nix until the Nix port is merged to master
+   git clone -b nix https://github.com/royboy5/dotfiles.git ~/.dotfiles
    cd ~/.dotfiles
    ./bootstrap --dry   # preview
    ./bootstrap
