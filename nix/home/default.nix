@@ -13,6 +13,7 @@ in
     ./git.nix
     ./terminal.nix
     ./nvim.nix
+    ./dev
   ];
 
   _module.args = {

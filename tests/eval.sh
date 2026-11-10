@@ -108,5 +108,27 @@ eq home.shellAliases.v nvim
 json_eq 'xdg.configFile."nvim".enable' true
 grep -rqi mason "$ROOT/configs/nvim" && fail "configs/nvim still mentions Mason" || pass
 
+# --- Task 6: toolchains, dev shells, proto ----------------------------------
+for p in go gopls rustup zig zls uv ruff nodejs pnpm proto project; do has_pkg "$p"; done
+lacks_pkg python3
+lacks_pkg python3.13-jupyterlab
+lacks_pkg moon
+eq home.sessionVariables.GOPATH '$HOME/src/go'
+sp=$("${NIX[@]}" --json "$CFG.home.sessionPath" 2>&1)
+for d in '$HOME/src/go/bin' '$HOME/.cargo/bin' '$HOME/.local/bin'; do
+    [[ "$sp" == *"\"$d\""* ]] && pass || fail "sessionPath lacks $d"
+done
+json_eq programs.direnv.nix-direnv.enable true
+json_eq programs.direnv.config.global.hide_env_diff true
+contains programs.zsh.initContent "proto activate zsh"
+eq home.sessionVariables.PROTO_AUTO_INSTALL true
+files=$("${NIX[@]}" --json "$CFG.home.file" --apply builtins.attrNames 2>&1)
+[[ "$files" != *'.proto/'* ]] && pass || fail "no proto config file is linked (settings are env vars)"
+vars=$("${NIX[@]}" --json "$CFG.home.sessionVariables" --apply builtins.attrNames 2>&1)
+[[ "$vars" != *GCP_* && "$vars" != *MOON_TOOLCHAIN_FORCE_GLOBALS* ]] && pass || fail "work or moon vars set: $vars"
+shells=$("${NIX[@]}" --json "$ROOT/nix/shells#devShells.x86_64-linux" --apply builtins.attrNames 2>&1)
+[[ "$shells" == '["go","node","node22","node24","python312","python313","rust"]' ]] && pass \
+    || fail "dev shells: $shells"
+
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]
