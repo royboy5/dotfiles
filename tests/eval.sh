@@ -81,5 +81,16 @@ contains programs.zsh.initContent '-z "$ZELLIJ"'
 before programs.zsh.initContent "local_env.zsh" "ZELLIJ_AUTOSTART"
 json_eq programs.starship.enable true
 
+# --- Task 3: cli + git ------------------------------------------------------
+for p in bat eza fd fzf ripgrep jq yq-go httpie jless k9s tree curl wget htop \
+    git git-lfs delta lazygit; do has_pkg "$p"; done
+lacks_pkg glab
+eq home.shellAliases.lg lazygit
+eq home.shellAliases.find fd
+eq home.shellAliases.catp bat
+eq home.sessionVariables.FZF_DEFAULT_COMMAND "rg --files"
+contains programs.zsh.initContent "git_current_branch()"
+json_eq 'xdg.configFile."git".enable' true
+
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]

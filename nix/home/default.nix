@@ -9,6 +9,8 @@ in
 {
   imports = [
     ./shell
+    ./cli.nix
+    ./git.nix
   ];
 
   _module.args = {

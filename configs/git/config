@@ -8,14 +8,19 @@
 [core]
     editor = nvim
     excludesfile = ~/.config/git/ignore
+    pager = delta
 
 [pull]
     rebase = true
 
 [push]
-    autoSetupRemore = true
+    autoSetupRemote = true
 
+# delta: syntax-highlighted diffs
 [delta]
     navigate = true
     line-numbers = true
     side-by-side = true
+
+[interactive]
+    diffFilter = delta --color-only
