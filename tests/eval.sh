@@ -100,5 +100,13 @@ json_eq 'home.file.".tmux.conf".enable' true
 attrs=$("${NIX[@]}" --json "$CFG.xdg.configFile" --apply builtins.attrNames 2>&1)
 [[ "$attrs" != *'"ghostty"'* ]] && pass || fail "ghostty must not be linked on $HOST"
 
+# --- Task 5: nvim -----------------------------------------------------------
+for p in neovim tree-sitter lua-language-server typescript-language-server \
+    vscode-langservers-extracted stylua prettier black isort; do has_pkg "$p"; done
+eq home.sessionVariables.EDITOR nvim
+eq home.shellAliases.v nvim
+json_eq 'xdg.configFile."nvim".enable' true
+grep -rqi mason "$ROOT/configs/nvim" && fail "configs/nvim still mentions Mason" || pass
+
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]

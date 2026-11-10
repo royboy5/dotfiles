@@ -12,6 +12,8 @@ local opts = { silent = true }
 keymap("", "<Space>", "<Nop>", opts)
 
 -- NORMAL MODE --
+-- Ctrl-h/j/k/l (splits + zellij panes): plugins/smart-splits.lua
+-- Shift-h/l (buffers): plugins/bufferline.lua
 
 keymap("n", "<leader>c", "<cmd>bd!<cr>", { desc = "Close Buffer" })
 keymap("n", "<leader>w", "<cmd>w<cr>", { desc = "Save File" })
@@ -20,22 +22,11 @@ keymap("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear Highlights" })
 keymap("n", "<leader>/", "gcc", { remap = true, desc = "Toggle Comment" })
 keymap("v", "<leader>/", "gc", { remap = true, desc = "Toggle Comment" })
 
--- Better window navigation
--- (Note: These won't show in Which-Key popup because they trigger instantly)
-keymap("n", "<C-h>", "<C-w>h", { desc = "Window Left" })
-keymap("n", "<C-j>", "<C-w>j", { desc = "Window Down" })
-keymap("n", "<C-k>", "<C-w>k", { desc = "Window Up" })
-keymap("n", "<C-l>", "<C-w>l", { desc = "Window Right" })
-
 -- Resize with arrows
 keymap("n", "<C-Up>", ":resize +2<CR>", { desc = "Resize Up" })
 keymap("n", "<C-Down>", ":resize -2<CR>", { desc = "Resize Down" })
 keymap("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Resize Left" })
 keymap("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Resize Right" })
-
--- Navigate buffers
-keymap("n", "<S-l>", ":bnext<CR>", { desc = "Next Buffer" })
-keymap("n", "<S-h>", ":bprevious<CR>", { desc = "Prev Buffer" })
 
 -- VISUAL MODE --
 
