@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# A && pass || fail is intended (pass never fails); $HOME etc. are literal.
+# shellcheck disable=SC2015,SC2016
 # Evaluation checks for the home-manager configs. Runs on any machine with Nix
 # (nothing is built), so it works from the Mac as well as from a host.
 #

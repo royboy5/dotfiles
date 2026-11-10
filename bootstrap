@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Set up this machine from the repo. Dispatches on the hostname (or --host):
+# system-layer packages, Nix, then home-manager (or the NixOS system).
+#
+# Usage: ./bootstrap [--dry] [--host <name>] [--clean-backups]
+# Safe to re-run: each step checks the machine and skips what's done. When a
+# reboot or re-login is needed it stops and says so; run it again afterwards.
+
+DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# One entry per host, matching lib/hosts/<host>.sh and its flake output.
+KNOWN_HOSTS=(wsl)
+
+# shellcheck source=lib/utils.sh
+source "$DOTFILES_ROOT/lib/utils.sh"
+# shellcheck source=lib/common.sh
+source "$DOTFILES_ROOT/lib/common.sh"
+for host_file in "$DOTFILES_ROOT"/lib/hosts/*.sh; do
+    # shellcheck source=/dev/null
+    source "$host_file"
+done
+unset host_file
+
+main() {
+    parse_args "$@" || exit 2
+    if [[ "$CLEAN_BACKUPS" == "1" ]]; then
+        clean_backups
+        return
+    fi
+
+    check_user
+    check_repo_path
+    check_untracked
+    load_nix_env
+
+    local host
+    host=$(resolve_host)
+    log_info "Setting up $host$([[ "$DRY_RUN" == 1 ]] && echo ' (dry run)')..."
+    "host_${host//-/_}"
+
+    list_backups
+    log_success "Done. Open a new shell to pick up the environment."
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    set -euo pipefail
+    main "$@"
+fi
