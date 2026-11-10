@@ -11,6 +11,7 @@ in
     ./shell
     ./cli.nix
     ./git.nix
+    ./terminal.nix
   ];
 
   _module.args = {

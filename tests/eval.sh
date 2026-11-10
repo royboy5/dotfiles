@@ -92,5 +92,13 @@ eq home.sessionVariables.FZF_DEFAULT_COMMAND "rg --files"
 contains programs.zsh.initContent "git_current_branch()"
 json_eq 'xdg.configFile."git".enable' true
 
+# --- Task 4: tmux + zellij --------------------------------------------------
+has_pkg tmux
+has_pkg zellij
+json_eq 'xdg.configFile."zellij".enable' true
+json_eq 'home.file.".tmux.conf".enable' true
+attrs=$("${NIX[@]}" --json "$CFG.xdg.configFile" --apply builtins.attrNames 2>&1)
+[[ "$attrs" != *'"ghostty"'* ]] && pass || fail "ghostty must not be linked on $HOST"
+
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]
