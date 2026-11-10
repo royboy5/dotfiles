@@ -7,7 +7,9 @@ let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
 in
 {
-  imports = [ ];
+  imports = [
+    ./shell
+  ];
 
   _module.args = {
     inherit dotfiles;

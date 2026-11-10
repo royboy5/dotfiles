@@ -51,5 +51,35 @@ eq home.homeDirectory /home/roy
 json_eq targets.genericLinux.enable true
 json_eq targets.genericLinux.gpu.enable false
 
+# before <attr path> <first substring> <second substring>
+before() {
+    local got
+    got=$("${NIX[@]}" --raw "$CFG.$1" 2>&1) || { fail "$1: eval error"; return; }
+    local a="${got%%"$2"*}" b="${got%%"$3"*}"
+    [[ "$got" == *"$2"* && "$got" == *"$3"* && ${#a} -lt ${#b} ]] && pass \
+        || fail "$1: '$2' must appear before '$3'"
+}
+
+# --- Task 2: shell ----------------------------------------------------------
+eq home.shellAliases.nfu "nix flake update --flake /home/roy/.dotfiles/nix"
+eq home.shellAliases.nus "nix flake update --flake /home/roy/.dotfiles/nix/shells"
+eq home.shellAliases.nrs "home-manager switch --flake /home/roy/.dotfiles/nix#roy@wsl"
+eq home.shellAliases.ngc "nix-collect-garbage -d && sudo /nix/var/nix/profiles/default/bin/nix-collect-garbage -d"
+eq home.shellAliases.dot "cd /home/roy/.dotfiles"
+eq home.shellAliases.reload "exec zsh"
+json_eq programs.zsh.history.size 10000
+json_eq programs.zsh.history.save 10000
+eq programs.zsh.history.path /home/roy/.local/state/zsh/history
+json_eq programs.zsh.enableCompletion false
+contains programs.zsh.initContent "zsh-autocomplete.plugin.zsh"
+contains programs.zsh.initContent "setopt AUTO_CD"
+contains programs.zsh.initContent "HIST_REDUCE_BLANKS"
+contains programs.zsh.initContent "ZELLIJ_AUTOSTART"
+contains programs.zsh.initContent "[[ -o interactive ]]"
+contains programs.zsh.initContent '-z "$SSH_CONNECTION"'
+contains programs.zsh.initContent '-z "$ZELLIJ"'
+before programs.zsh.initContent "local_env.zsh" "ZELLIJ_AUTOSTART"
+json_eq programs.starship.enable true
+
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]
