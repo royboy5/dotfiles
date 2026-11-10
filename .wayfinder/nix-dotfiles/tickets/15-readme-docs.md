@@ -26,7 +26,7 @@ Decided with the user on 2026-11-10.
 - **Secrets**: a few lines. `~/.config/zsh/local_env.zsh` is gitignored, holds exports only, and is restored from backup on a reinstall.
 - **Troubleshooting**: cross-host problems only: a `before-nix` backup collision, GPU setup after a switch, WSL without systemd. Tool-specific fixes go on that tool's page.
 
-**New alias `nfu`** = `nix flake update --flake ~/.dotfiles/nix`. It sits next to `nrs` in the shell module, works from any directory, and only updates the lock file (it does not switch).
+**`nfu` alias** (ported from `~/.dotfiles`, already listed in [Bootstrap flow per target OS](05-bootstrap-flow.md)) = `nix flake update --flake ~/.dotfiles/nix`. It sits next to `nrs` in the shell module, works from any directory, and only updates the lock file (it does not switch).
 
 **`docs/` pages**, each opening with the `[Home](/README.md) > X` breadcrumb:
 - `nvim.md`: ported from `~/.dotfiles`, updated for this repo's base: Nix instead of Mason, `main`-branch treesitter, fidget, smart-splits. It links to `zellij.md` for navigation.
