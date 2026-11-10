@@ -70,16 +70,17 @@ Spec: tickets 07, 05 (everyday commands), 06 (starship), 10 (no Ctrl-l rebind).
 
 **Interfaces:**
 - Consumes: `dotfiles`, `linkConfig`, `username`, `hostName`.
-- Produces: aliases `nrs` (defined in `targets/generic-linux.nix` as `home-manager switch --flake ${dotfiles}/nix#${username}@${hostName}`, so the NixOS plan can define its own), and `nfu = nix flake update --flake ${dotfiles}/nix`, `nus = nix flake update --flake ${dotfiles}/nix/shells`, `dot = cd ${dotfiles}` in `zsh.nix`. Other modules add to `programs.zsh.initContent` at the default order (between 550 and the local-env/autostart block at `lib.mkOrder 1500`).
+- Produces: aliases `nrs` and `ngc`, defined per target in `targets/generic-linux.nix` so the NixOS plan can define its own: `nrs = home-manager switch --flake ${dotfiles}/nix#${username}@${hostName}`, `ngc = nix-collect-garbage -d && sudo /nix/var/nix/profiles/default/bin/nix-collect-garbage -d` (user profiles, then root's; absolute path because `sudo` doesn't see the user's PATH). Also `nfu = nix flake update --flake ${dotfiles}/nix`, `nus = nix flake update --flake ${dotfiles}/nix/shells`, `dot = cd ${dotfiles}` in `zsh.nix`. Other modules add to `programs.zsh.initContent` at the default order (between 550 and the local-env/autostart block at `lib.mkOrder 1500`).
 
 - [ ] **Step 1: Write failing eval checks.** These fail until the module exists:
   - `nix eval --raw $E.home.shellAliases.nfu` → `nix flake update --flake /home/roy/.dotfiles/nix`
   - `nix eval --raw $E.home.shellAliases.nrs` → `home-manager switch --flake /home/roy/.dotfiles/nix#roy@wsl`
+  - `nix eval --raw $E.home.shellAliases.ngc` → `nix-collect-garbage -d && sudo /nix/var/nix/profiles/default/bin/nix-collect-garbage -d`
   - `nix eval $E.programs.zsh.history.size` → `10000`
   - `nix eval --raw $E.programs.zsh.history.path` → `/home/roy/.local/state/zsh/history`
   - `nix eval --raw $E.programs.zsh.initContent | grep -c 'ZELLIJ_AUTOSTART'` → ≥1
   - the autostart block is guarded by `[[ -o interactive ]]`, `-z $ZELLIJ`, `-z $SSH_CONNECTION` and `command -v zellij`, and sits after the `local_env.zsh` source line. Check with `grep -n` order.
-- [ ] **Step 2: Implement `zsh.nix`.** Port `~/.dotfiles/nix/home/shell/zsh.nix` without Homebrew, Docker Desktop, `ndr`, `ngc` or `ulimit`. Apply ticket 07: `dotDir`, `enableCompletion = false`, zsh-autocomplete at `lib.mkOrder 550`, history settings and the full `setopt` list, `AUTO_CD`, `mkcd`/`extract`, `local_env.zsh` then autostart at `lib.mkOrder 1500`. Aliases: safety, navigation, `-`, `dl`/`dt`/`src`, `reload = exec zsh`, plus the four above. No `~` alias.
+- [ ] **Step 2: Implement `zsh.nix`.** Port `~/.dotfiles/nix/home/shell/zsh.nix` without Homebrew, Docker Desktop, `ndr` or `ulimit` (`ngc` moves to the target file, above). Apply ticket 07: `dotDir`, `enableCompletion = false`, zsh-autocomplete at `lib.mkOrder 550`, history settings and the full `setopt` list, `AUTO_CD`, `mkcd`/`extract`, `local_env.zsh` then autostart at `lib.mkOrder 1500`. Aliases: safety, navigation, `-`, `dl`/`dt`/`src`, `reload = exec zsh`, plus `nfu`, `nus` and `dot` above. No `~` alias.
 - [ ] **Step 3: User gate.** Show the user the full alias set (this module plus what Tasks 3–6 add, from ticket 07's list) and `starship.toml` (`~/.dotfiles` version minus the kubernetes module and its GKE pattern; `DEV_SHELL` segment kept). Adopt after approval.
 - [ ] **Step 4:** Move the sample to `configs/zsh/local_env.zsh.sample`. It lists exports only plus a commented `# export ZELLIJ_AUTOSTART=0`. Remove the rest of `configs/zsh/`.
 - [ ] **Step 5:** Run the Step 1 checks. All pass. Commit `feat(nix): zsh and starship`.
@@ -254,9 +255,9 @@ Spec: ticket 15. Written from what Task 8 actually ran.
   - **Install**: only the `wsl` section for now (systemd and hostname in `wsl.conf`, the manual Windows install of FiraCode and JetBrains Mono Nerd Fonts, `git clone … ~/.dotfiles`, `./bootstrap`, re-run after stops).
   - **Adding a new host**
   - **Layout**: links `GLOSSARY.md` and uses its terms. One line each for git and starship; ghostty and Hyprland lines come in plan 2.
-  - **Everyday use**: `nrs`, `nus`, `nfu`, `./bootstrap --dry`, `--clean-backups`.
+  - **Everyday use**: `nrs`, `nus`, `nfu`, `ngc`, `./bootstrap --dry`, `--clean-backups`.
   - **Where does it go?**
-  - **Updating and rolling back**: `nfu` then `nrs`; `home-manager generations` and activating an older one.
+  - **Updating and rolling back**: `nfu` then `nrs`; `home-manager generations` and activating an older one; `ngc` frees space but deletes every old generation, so there is nothing to roll back to afterwards.
   - **Reinstalling a host**: the ticket 14 backup checklist.
   - **Secrets**
   - **Troubleshooting**: `before-nix` collision, WSL without systemd.
