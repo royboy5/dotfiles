@@ -101,6 +101,9 @@ has_pkg tmux
 has_pkg zellij
 json_eq 'xdg.configFile."zellij".enable' true
 json_eq 'home.file.".tmux.conf".enable' true
+# Closing a terminal tab ends its auto-started session instead of leaving it running.
+grep -q '^on_force_close "quit"' "$ROOT/configs/zellij/config.kdl" && pass \
+    || fail "zellij on_force_close must be quit"
 attrs=$("${NIX[@]}" --json "$CFG.xdg.configFile" --apply builtins.attrNames 2>&1)
 [[ "$attrs" != *'"ghostty"'* ]] && pass || fail "ghostty must not be linked on $HOST"
 

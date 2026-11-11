@@ -76,7 +76,10 @@ zellij attach --create <name>   # attach, or create it if missing
 ## Notes
 
 - The config is read when a session starts. Changes apply to **new** sessions.
-- `session_serialization` is on, so sessions survive a reboot: `zellij attach <name>`.
+- Each terminal tab gets its own session, and closing the tab ends it. To
+  detach and keep a session running instead, use `Ctrl o` then `d`.
+- `session_serialization` is on, so a closed session can be brought back
+  (layout and scrollback, with fresh shells): `zellij attach <name>`.
 - Selecting text copies it to the system clipboard through the terminal
   (OSC 52), on every host including WSL.
 - Lock mode (`Ctrl g`) is the escape hatch when a zellij key collides with an app.

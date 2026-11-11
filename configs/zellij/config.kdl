@@ -42,8 +42,10 @@ mouse_mode true
 // copy_command is needed on any host, WSL included.
 copy_on_select true
 
-// Ask instead of silently killing panes on Ctrl-c / SIGTERM of the terminal.
-on_force_close "detach"
+// Closing the terminal (tab) ends its session. Every terminal auto-starts a
+// new session, so "detach" would leave one running per tab ever opened.
+// A closed session can still be resurrected: `zellij attach <name>`.
+on_force_close "quit"
 
 // Keep session layouts/scrollback across reboots so `zellij attach` resumes.
 session_serialization true
