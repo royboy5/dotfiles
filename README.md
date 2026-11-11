@@ -43,8 +43,18 @@ Run it as `roy`, not with `sudo` (it asks for sudo itself). Preview with
 
 Fedora under WSL, CLI only.
 
-1. **If an older clone of this repo is there,** remove the links it made, then
-   the clone. Check the list before deleting:
+1. **If an older clone of this repo is there,** save what lives only inside it,
+   then remove the links it made and the clone. The old setup kept secrets in
+   `configs/zsh/local_env*.zsh` inside the clone, so copy them out first, and
+   check for unpushed work:
+   ```bash
+   for f in ~/.dotfiles/configs/zsh/local_env*.zsh; do
+     [ -e "$f" ] && cp "$f" ~/"$(basename "$f").old"
+   done
+   git -C ~/.dotfiles status --short
+   git -C ~/.dotfiles log --branches --not --remotes --oneline   # unpushed commits
+   ```
+   Then check the list of links before deleting:
    ```bash
    find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -print
    find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -delete
@@ -80,7 +90,10 @@ Fedora under WSL, CLI only.
    install [FiraCode Nerd Font and JetBrains Mono Nerd Font](https://www.nerdfonts.com/font-downloads)
    on Windows (select the `.ttf` files → right-click → **Install**) and set
    Windows Terminal's font for the WSL profile to `FiraCode Nerd Font Mono`.
-5. **Open a new terminal tab.** zellij starts automatically. In tmux, press
+5. **Restore your secrets** (if step 1 saved any): copy the `export` lines from
+   `~/local_env*.zsh.old` into `~/.config/zsh/local_env.zsh` (see
+   [Secrets](#secrets)), then delete the `.old` files.
+6. **Open a new terminal tab.** zellij starts automatically. In tmux, press
    `prefix + I` (prefix is Ctrl-Space) once to install its plugins.
 
 ### Adding a new host

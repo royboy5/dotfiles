@@ -80,6 +80,8 @@ contains programs.zsh.initContent "ZELLIJ_AUTOSTART"
 contains programs.zsh.initContent "[[ -o interactive ]]"
 contains programs.zsh.initContent '-z "$SSH_CONNECTION"'
 contains programs.zsh.initContent '-z "$ZELLIJ"'
+contains programs.zsh.initContent '-z "$ZSH_EXECUTION_STRING"'
+contains programs.zsh.initContent '-t 0 && -t 1'
 before programs.zsh.initContent "local_env.zsh" "ZELLIJ_AUTOSTART"
 json_eq programs.starship.enable true
 

@@ -45,7 +45,8 @@ there, starting from `configs/zsh/local_env.zsh.sample`. See
 ## zellij auto-start
 
 An interactive shell starts [zellij](zellij.md) unless any of these hold:
-already inside zellij, connected over SSH, or `ZELLIJ_AUTOSTART=0`. Use
+already inside zellij, connected over SSH, run as `zsh -ic '<command>'` (how
+editors read your environment), no terminal attached, or `ZELLIJ_AUTOSTART=0`. Use
 `ZELLIJ_AUTOSTART=0 zsh` for a one-off plain shell, or export it in
 `local_env.zsh` to turn auto-start off on that machine.
 

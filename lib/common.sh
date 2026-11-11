@@ -150,6 +150,12 @@ hm_switch() {
         home-manager "$action" --flake "$ref"
     else
         log_info "First home-manager $action ($ref)..."
+        # A dry run on a fresh host never installed Nix, so there's nothing to
+        # build with: show the first switch instead.
+        if [[ "$action" == build ]] && ! command -v nix &> /dev/null; then
+            execute nix "${NIX_FLAGS[@]}" run home-manager/master -- switch -b before-nix --flake "$ref"
+            return 0
+        fi
         local backup=()
         [[ "$action" == switch ]] && backup=(-b before-nix)
         nix "${NIX_FLAGS[@]}" run home-manager/master -- "$action" "${backup[@]}" --flake "$ref"

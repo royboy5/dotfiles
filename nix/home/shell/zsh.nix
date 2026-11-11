@@ -85,8 +85,10 @@
 
         # Zellij auto-start: on by default in interactive local shells outside
         # zellij. Opt out with ZELLIJ_AUTOSTART=0 in local_env.zsh (per machine)
-        # or inline: `ZELLIJ_AUTOSTART=0 zsh`.
-        if [[ -o interactive ]] && [[ "''${ZELLIJ_AUTOSTART:-1}" != 0 ]] \
+        # or inline: `ZELLIJ_AUTOSTART=0 zsh`. `zsh -ic cmd` (editors reading
+        # the environment) and shells without a terminal are skipped.
+        if [[ -o interactive ]] && [[ -z "$ZSH_EXECUTION_STRING" ]] \
+          && [[ -t 0 && -t 1 ]] && [[ "''${ZELLIJ_AUTOSTART:-1}" != 0 ]] \
           && [[ -z "$ZELLIJ" ]] && [[ -z "$SSH_CONNECTION" ]] \
           && command -v zellij &> /dev/null; then
           eval "$(zellij setup --generate-auto-start zsh)"

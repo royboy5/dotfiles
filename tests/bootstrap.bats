@@ -249,6 +249,16 @@ unstub() {
     grep -q "hm-env DRY_RUN=unset" "$CALLS"
 }
 
+@test "hm_switch dry run on a host without Nix only prints the first switch" {
+    unstub nix
+    unstub home-manager
+    PATH="$STUBS:/usr/bin:/bin"
+    BOOTSTRAP_DRY=1
+    run hm_switch wsl
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"[DRY] Would run:"*"switch -b before-nix --flake $DOTFILES_ROOT/nix#roy@wsl"* ]]
+}
+
 @test "hm_switch only builds in dry-run mode" {
     BOOTSTRAP_DRY=1
     hm_switch wsl
@@ -319,6 +329,16 @@ unstub() {
     touch "$HOME/.zshrc.before-nix"
     run clean_backups <<< "y"
     [ ! -e "$HOME/.zshrc.before-nix" ]
+}
+
+# --- main -------------------------------------------------------------------
+
+@test "main refuses root before cleaning backups" {
+    stub_out id "0"
+    touch "$HOME/.zshrc.before-nix"
+    run main --clean-backups <<< "y"
+    [ "$status" -eq 1 ]
+    [ -e "$HOME/.zshrc.before-nix" ]
 }
 
 # --- host_wsl -----------------------------------------------------------------

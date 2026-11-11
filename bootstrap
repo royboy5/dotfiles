@@ -23,12 +23,12 @@ unset host_file
 
 main() {
     parse_args "$@" || exit 2
+    check_user || return 1
     if [[ "$CLEAN_BACKUPS" == "1" ]]; then
         clean_backups
         return
     fi
 
-    check_user
     check_repo_path
     check_untracked
     load_nix_env
