@@ -19,7 +19,7 @@ Usage: project [NAME | list | off]
 Use a dev shell from $SHELLS_REF in the current directory.
 
   project           pick a shell with fzf
-  project NAME      write .envrc for shell NAME and allow it (e.g. project go)
+  project NAME      write .envrc for shell NAME and allow it (e.g. project node22)
   project list      list the available shells
   project off       remove the .envrc (only one created by project)
 EOF

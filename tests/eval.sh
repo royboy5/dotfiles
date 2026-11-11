@@ -111,7 +111,7 @@ json_eq 'xdg.configFile."nvim".enable' true
 grep -rqi mason "$ROOT/configs/nvim" && fail "configs/nvim still mentions Mason" || pass
 
 # --- Task 6: toolchains, dev shells, proto ----------------------------------
-for p in go gopls rustup zig zls uv ruff nodejs pnpm proto project; do has_pkg "$p"; done
+for p in go gopls gotools delve golangci-lint rustup zig zls uv ruff nodejs pnpm proto project; do has_pkg "$p"; done
 lacks_pkg python3
 lacks_pkg python3.13-jupyterlab
 lacks_pkg moon
@@ -129,7 +129,7 @@ files=$("${NIX[@]}" --json "$CFG.home.file" --apply builtins.attrNames 2>&1)
 vars=$("${NIX[@]}" --json "$CFG.home.sessionVariables" --apply builtins.attrNames 2>&1)
 [[ "$vars" != *GCP_* && "$vars" != *MOON_TOOLCHAIN_FORCE_GLOBALS* ]] && pass || fail "work or moon vars set: $vars"
 shells=$("${NIX[@]}" --json "$ROOT/nix/shells#devShells.x86_64-linux" --apply builtins.attrNames 2>&1)
-[[ "$shells" == '["go","node","node22","node24","python312","python313","rust"]' ]] && pass \
+[[ "$shells" == '["node","node22","node24","python312","python313"]' ]] && pass \
     || fail "dev shells: $shells"
 
 echo "eval checks: $PASSED passed, $FAILED failed"

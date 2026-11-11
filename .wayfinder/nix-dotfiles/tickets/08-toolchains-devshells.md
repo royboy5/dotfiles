@@ -18,7 +18,7 @@ From [Zsh: Nix-declared or linked files](07-zsh-shape.md): the old `env.zsh` PAT
 
 Proto/moon facts come from [Can proto/moon use toolchains already on PATH](11-proto-system-toolchains.md).
 
-- **Dev shells: adopted from `~/.dotfiles`.** Port the central `nix/shells` flake (its own `flake.lock`, `system = "x86_64-linux"`, paths pointing at this repo) with go, rust, node and python toolchain shells. `envs/` starts empty (`ma.nix` is work-only). Port direnv with nix-direnv (`hide_env_diff`) and the `project` fzf picker. Starship's `DEV_SHELL` segment stays, and so does the global git ignore (`.direnv/`, `.envrc`).
+- **Dev shells: adopted from `~/.dotfiles`.** Port the central `nix/shells` flake (its own `flake.lock`, `system = "x86_64-linux"`, paths pointing at this repo) with node and python toolchain shells. (Amended during plan 1: no go or rust shells. The global go has `GOTOOLCHAIN=auto` and rustup follows `rust-toolchain.toml`, so both already pin per repo; gotools, delve and golangci-lint are global instead. A repo needing native deps gets its own `flake.nix` + `.envrc`.) `envs/` starts empty (`ma.nix` is work-only). Port direnv with nix-direnv (`hide_env_diff`) and the `project` fzf picker. Starship's `DEV_SHELL` segment stays, and so does the global git ignore (`.direnv/`, `.envrc`).
 - **Global toolchains from Nix (user layer):**
   - **Go:** `go` and `gopls`, with `GOPATH=$HOME/src/go` and `$GOPATH/bin` on PATH.
   - **Rust:** `rustup` from Nix, with toolchains in `~/.rustup` and `~/.cargo/bin` on PATH. Bootstrap (or a home-manager activation step) runs `rustup default stable` and `rustup component add rust-analyzer`. The old `source ~/.cargo/env` goes.

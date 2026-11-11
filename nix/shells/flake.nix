@@ -8,7 +8,9 @@
 # after you edit any of them. List the shells with: project list
 #
 # Two kinds of shell:
-#   - Toolchains (node, go, rust, python…): defined inline below, rarely change.
+#   - Toolchains (node, python): defined inline below, rarely change. Go and
+#     Rust have none: the global go and rustup already follow a repo's go.mod
+#     / rust-toolchain.toml.
 #   - Project and combo shells: one file each in ./envs, discovered
 #     automatically. envs/foo.nix becomes the shell `foo`. New files must be
 #     `git add`ed before the flake can see them.
@@ -68,31 +70,6 @@
 
         python312 = mkPython pkgs.python312;
         python313 = mkPython pkgs.python313;
-
-        # Latest Go + language server, tools (goimports…), debugger, linter.
-        go = pkgs.mkShell {
-          packages = with pkgs; [
-            go
-            gopls
-            gotools
-            delve
-            golangci-lint
-          ];
-        };
-
-        # Latest stable Rust from nixpkgs (not rustup): fixed by this flake's
-        # lock, so it overrides your global rustup toolchain inside the project.
-        rust = pkgs.mkShell {
-          packages = with pkgs; [
-            rustc
-            cargo
-            clippy
-            rustfmt
-            rust-analyzer
-          ];
-          # Standard library source, for rust-analyzer's go-to-definition.
-          env.RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
-        };
       };
 
       # --- Project and combo shells: one file each in ./envs ----------------
