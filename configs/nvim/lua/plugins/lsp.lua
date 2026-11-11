@@ -23,7 +23,7 @@ return {
 			{ "<leader>lk", vim.diagnostic.goto_prev, desc = "Prev Diagnostic" },
 			{ "<leader>lq", vim.diagnostic.setloclist, desc = "Quickfix List" },
 			-- INFO & TOOLS
-			{ "<leader>li", "<cmd>LspInfo<cr>", desc = "LSP Info" },
+			{ "<leader>li", "<cmd>checkhealth vim.lsp<cr>", desc = "LSP Info" },
 		},
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
