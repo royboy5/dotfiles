@@ -46,6 +46,8 @@ Decided with the user on 2026-11-10.
 
 **`strike-freedom` (EndeavourOS / Arch path):** mainline kernel, no linux-surface. The pacman list gains COSMIC, Hyprland and thermald on top of the Arch list from [Which layer owns each package](04-package-ownership.md). No TLP; the power daemon is whatever COSMIC's packages bring (confirm during implementation).
 
+*Amended 2026-11-11 (user):* the dotfiles don't touch the EndeavourOS install itself. The installer's desktop choice, its login manager and greeter setup are out of scope. Bootstrap installs the COSMIC and Hyprland packages and links their configs: `configs/hypr/` per [What goes in the Hyprland config](13-hyprland-config.md). COSMIC stays stock and has no config in the repo.
+
 **Hyprland config** is a `linkConfig` link (`configs/hypr/`) on the GUI hosts `unicorn-rx0` and `strike-freedom` only, like ghostty. Its contents stay in the map's Hyprland fog.
 
 Sources (fetched 2026-11-10): the nixos-hardware `flake.nix`, `microsoft/surface-pro/3`, `surface/surface-pro-intel`, `dell/xps/13-9370` and `common/pc/laptop`; nixpkgs `nixos/modules/services/desktop-managers/cosmic.nix`; and the linux-surface README and supported-devices matrix.
