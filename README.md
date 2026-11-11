@@ -49,7 +49,7 @@ Fedora under WSL, CLI only.
    find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -print
    find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -delete
    rm -rf ~/.dotfiles
-   # nvim plugins and Mason tools from the old config; reinstalled on first start
+   # nvim plugins and tools the old config installed; reinstalled on first start
    rm -rf ~/.local/share/nvim/lazy ~/.local/share/nvim/mason
    ```
 2. **Turn on systemd and set the hostname.** The Nix daemon is a systemd
@@ -125,6 +125,10 @@ rebuild. The exception is zsh, which home-manager writes from
   (global ignores: `.direnv/`, `.envrc`).
 - **starship:** `configs/starship/starship.toml`. Shows the active dev shell
   as `[❄ <name>]`.
+
+Per-tool pages, for things that only matter while using that tool:
+[Neovim](docs/nvim.md), [Zellij](docs/zellij.md), [Zsh](docs/zsh.md),
+[Tmux](docs/tmux.md), [Dev shells](docs/dev-shells.md).
 
 ## Everyday use
 
@@ -214,14 +218,8 @@ reinstalling.
   for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
   sudo groupdel nixbld
   ```
-- **nvim errors on startup after migrating** (e.g. `attempt to call field
-  'get_installed' (a nil value)`): plugins checked out by the old config are
-  still there, and lazy.nvim doesn't switch an installed plugin to another
-  branch. Remove them; nvim reinstalls them at the versions in
-  `configs/nvim/lazy-lock.json`:
-  ```bash
-  rm -rf ~/.local/share/nvim/lazy ~/.local/share/nvim/mason
-  ```
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.
 - **`These files are not tracked by git`**: `git add nix/`, then re-run.
+- Tool-specific problems (nvim plugins, language servers…) are on that tool's
+  page under `docs/`.
