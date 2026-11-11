@@ -35,7 +35,7 @@ main() {
 
     local host
     host=$(resolve_host)
-    log_info "Setting up $host$([[ "$DRY_RUN" == 1 ]] && echo ' (dry run)')..."
+    log_info "Setting up $host$([[ "$BOOTSTRAP_DRY" == 1 ]] && echo ' (dry run)')..."
     "host_${host//-/_}"
 
     list_backups

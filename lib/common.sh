@@ -23,15 +23,15 @@ Set up this machine from the repo: system packages, Nix and home-manager
 USAGE
 }
 
-# Sets DRY_RUN, HOST_OVERRIDE and CLEAN_BACKUPS for main.
+# Sets BOOTSTRAP_DRY (not exported: home-manager treats any DRY_RUN as a dry run), HOST_OVERRIDE and CLEAN_BACKUPS for main.
 # shellcheck disable=SC2034
 parse_args() {
-    DRY_RUN=0
+    BOOTSTRAP_DRY=0
     HOST_OVERRIDE=""
     CLEAN_BACKUPS=0
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --dry) DRY_RUN=1 ;;
+            --dry) BOOTSTRAP_DRY=1 ;;
             --host)
                 [[ -n "${2:-}" ]] || { log_error "--host needs a host name"; return 2; }
                 HOST_OVERRIDE="$2"
@@ -43,7 +43,6 @@ parse_args() {
         esac
         shift
     done
-    export DRY_RUN
 }
 
 # Prints the host to set up: --host, else the short hostname.
@@ -126,7 +125,7 @@ ensure_flakes() {
         return 0
     fi
     log_info "Enabling flakes in $NIX_CONF..."
-    if [[ "${DRY_RUN:-0}" == "1" ]]; then
+    if [[ "${BOOTSTRAP_DRY:-0}" == "1" ]]; then
         execute sudo tee -a "$NIX_CONF" "<<< '$FLAKES_LINE'"
     else
         echo "$FLAKES_LINE" | sudo tee -a "$NIX_CONF" > /dev/null
@@ -145,7 +144,7 @@ lock_flake() {
 # because -b fails once a backup with that name exists. --dry only builds.
 hm_switch() {
     local ref="$DOTFILES_ROOT/nix#$REPO_USER@$1" action=switch
-    [[ "${DRY_RUN:-0}" == "1" ]] && action=build
+    [[ "${BOOTSTRAP_DRY:-0}" == "1" ]] && action=build
     if command -v home-manager &> /dev/null; then
         log_info "home-manager $action ($ref)..."
         home-manager "$action" --flake "$ref"
@@ -182,7 +181,7 @@ ensure_tpm() {
 # rustup comes from Nix; the toolchain itself lives in ~/.rustup.
 ensure_rustup() {
     if ! command -v rustup &> /dev/null; then
-        log_warn "rustup isn't on PATH yet (first --dry run?); skipping the toolchain."
+        log_warn "rustup isn't on PATH; skipping the toolchain (expected with --dry, which doesn't activate; otherwise open a new terminal and re-run)."
         return 0
     fi
     if rustup default 2> /dev/null | grep -q .; then

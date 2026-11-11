@@ -60,7 +60,7 @@ unstub() {
 
 @test "parse_args sets dry run, host override and clean-backups" {
     parse_args --dry --host wsl --clean-backups
-    [ "$DRY_RUN" = 1 ]
+    [ "$BOOTSTRAP_DRY" = 1 ]
     [ "$HOST_OVERRIDE" = wsl ]
     [ "$CLEAN_BACKUPS" = 1 ]
 }
@@ -154,14 +154,14 @@ unstub() {
 # --- execute ------------------------------------------------------------------
 
 @test "execute only prints the command in dry-run mode" {
-    DRY_RUN=1
+    BOOTSTRAP_DRY=1
     run execute touch "$TMP/f"
     [ ! -e "$TMP/f" ]
     [[ "$output" == *"[DRY] Would run: touch $TMP/f"* ]]
 }
 
 @test "execute runs the command normally" {
-    DRY_RUN=0
+    BOOTSTRAP_DRY=0
     execute touch "$TMP/f"
     [ -e "$TMP/f" ]
 }
@@ -202,7 +202,7 @@ unstub() {
     unstub nix
     PATH="$STUBS:/usr/bin:/bin"
     stub curl
-    DRY_RUN=1
+    BOOTSTRAP_DRY=1
     run ensure_nix ostree --persistence=/var/lib/nix
     [[ "$output" == *"https://artifacts.nixos.org/nix-installer"* ]]
     [[ "$output" == *"install ostree --persistence=/var/lib/nix"* ]]
@@ -241,8 +241,16 @@ unstub() {
     ! grep -q -- "-b before-nix" "$CALLS"
 }
 
+@test "hm_switch doesn't leak a dry-run variable into home-manager" {
+    printf '#!/usr/bin/env bash\necho "hm-env DRY_RUN=${DRY_RUN-unset}" >> "$CALLS"\n' > "$STUBS/home-manager"
+    chmod +x "$STUBS/home-manager"
+    parse_args
+    hm_switch wsl
+    grep -q "hm-env DRY_RUN=unset" "$CALLS"
+}
+
 @test "hm_switch only builds in dry-run mode" {
-    DRY_RUN=1
+    BOOTSTRAP_DRY=1
     hm_switch wsl
     grep -q "^home-manager build --flake $DOTFILES_ROOT/nix#roy@wsl" "$CALLS"
     ! grep -q "switch" "$CALLS"

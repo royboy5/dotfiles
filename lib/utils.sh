@@ -12,9 +12,9 @@ log_success() { echo -e "${GREEN}[OK]${NC} $*"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# execute <cmd> [args...]: run it, or with DRY_RUN=1 only print it.
+# execute <cmd> [args...]: run it, or with BOOTSTRAP_DRY=1 only print it.
 execute() {
-    if [[ "${DRY_RUN:-0}" == "1" ]]; then
+    if [[ "${BOOTSTRAP_DRY:-0}" == "1" ]]; then
         echo -e "${YELLOW}[DRY] Would run: $*${NC}"
         return 0
     fi
