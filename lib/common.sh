@@ -4,6 +4,7 @@
 
 : "${NIX_DAEMON_PROFILE:=/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh}"
 : "${NIX_CONF:=/etc/nix/nix.conf}"
+: "${NIX_DAEMON_UNIT:=/etc/systemd/system/nix-daemon.service}"
 NIX_INSTALLER_URL="https://artifacts.nixos.org/nix-installer"
 FLAKES_LINE="experimental-features = nix-command flakes"
 NIX_FLAGS=(--extra-experimental-features "nix-command flakes")
@@ -104,6 +105,13 @@ load_nix_env() {
 # planner when they need one (Bazzite: ostree --persistence=/var/lib/nix).
 ensure_nix() {
     if command -v nix &> /dev/null; then
+        # An install made some other way (e.g. while WSL had systemd off) has no
+        # daemon service, so flakes and home-manager can't work against it.
+        if [[ ! -e "$NIX_DAEMON_UNIT" ]]; then
+            log_error "Nix is installed but has no nix-daemon service ($NIX_DAEMON_UNIT)."
+            log_error "Remove it (README: Troubleshooting, 'no nix-daemon service'), then re-run."
+            return 1
+        fi
         log_success "Nix is installed ($(nix --version 2> /dev/null))."
         return 0
     fi

@@ -196,6 +196,22 @@ reinstalling.
   `configs/`) and run `nrs` again. The first `./bootstrap` does this for you
   with `*.before-nix` backups.
 - **`systemd isn't running`** (wsl): see step 2 of [wsl](#wsl).
+- **`Nix is installed but has no nix-daemon service`**: an older Nix install
+  (for example one made while WSL had systemd off) is in the way. Remove it,
+  open a new terminal, and re-run `./bootstrap`, which installs Nix again with
+  the service:
+  ```bash
+  # put back the shell files the old installer edited
+  for f in /etc/bashrc /etc/bash.bashrc /etc/zshrc /etc/zsh/zshrc; do
+    [ -e "$f.backup-before-nix" ] && sudo mv "$f.backup-before-nix" "$f"
+  done
+  sudo rm -rf /nix /etc/nix /etc/profile.d/nix.sh /etc/tmpfiles.d/nix-daemon.conf \
+    ~root/.nix-profile ~root/.nix-defexpr ~root/.nix-channels ~root/.cache/nix
+  rm -rf ~/.nix-profile ~/.nix-defexpr ~/.nix-channels ~/.local/state/nix ~/.cache/nix
+  # the build users, if `getent group nixbld` lists any
+  for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
+  sudo groupdel nixbld
+  ```
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.
 - **`These files are not tracked by git`**: `git add nix/`, then re-run.

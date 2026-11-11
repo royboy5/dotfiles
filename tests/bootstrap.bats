@@ -28,6 +28,8 @@ setup() {
     # shellcheck disable=SC1091
     source "$ROOT/bootstrap"
     DOTFILES_ROOT="$HOME/.dotfiles"
+    NIX_DAEMON_UNIT="$TMP/nix-daemon.service"
+    touch "$NIX_DAEMON_UNIT"
 }
 
 teardown() {
@@ -184,6 +186,15 @@ unstub() {
 @test "ensure_nix skips the installer when nix is on PATH" {
     run ensure_nix
     [ "$status" -eq 0 ]
+    ! grep -q nix-installer "$CALLS"
+}
+
+@test "ensure_nix stops when an existing Nix has no daemon service" {
+    NIX_DAEMON_UNIT="$TMP/missing.service"
+    run ensure_nix
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"nix-daemon"* ]]
+    [[ "$output" == *"README"* ]]
     ! grep -q nix-installer "$CALLS"
 }
 
