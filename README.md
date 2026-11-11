@@ -49,6 +49,8 @@ Fedora under WSL, CLI only.
    find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -print
    find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -delete
    rm -rf ~/.dotfiles
+   # nvim plugins and Mason tools from the old config; reinstalled on first start
+   rm -rf ~/.local/share/nvim/lazy ~/.local/share/nvim/mason
    ```
 2. **Turn on systemd and set the hostname.** The Nix daemon is a systemd
    service, and bootstrap picks the host by name. Add to `/etc/wsl.conf`
@@ -211,6 +213,14 @@ reinstalling.
   # the build users, if `getent group nixbld` lists any
   for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
   sudo groupdel nixbld
+  ```
+- **nvim errors on startup after migrating** (e.g. `attempt to call field
+  'get_installed' (a nil value)`): plugins checked out by the old config are
+  still there, and lazy.nvim doesn't switch an installed plugin to another
+  branch. Remove them; nvim reinstalls them at the versions in
+  `configs/nvim/lazy-lock.json`:
+  ```bash
+  rm -rf ~/.local/share/nvim/lazy ~/.local/share/nvim/mason
   ```
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.

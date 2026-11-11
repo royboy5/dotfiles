@@ -109,6 +109,10 @@ eq home.sessionVariables.EDITOR nvim
 eq home.shellAliases.v nvim
 json_eq 'xdg.configFile."nvim".enable' true
 grep -rqi mason "$ROOT/configs/nvim" && fail "configs/nvim still mentions Mason" || pass
+# A spec's `branch = "x"` must match its lazy-lock.json entry, or lazy.nvim
+# installs the wrong branch.
+grep -q '"nvim-treesitter": { "branch": "main"' "$ROOT/configs/nvim/lazy-lock.json" && pass \
+    || fail "lazy-lock.json pins nvim-treesitter to a branch other than main"
 
 # --- Task 6: toolchains, dev shells, proto ----------------------------------
 for p in go gopls gotools delve golangci-lint rustup zig zls uv ruff nodejs pnpm proto project; do has_pkg "$p"; done
