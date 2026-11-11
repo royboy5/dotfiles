@@ -237,7 +237,7 @@ Spec: ticket 14 (in-place host), ticket 10 (acceptance check), ticket 08 (proto 
 - [ ] **Step 5: Acceptance in a new Windows Terminal tab.**
   - zellij auto-starts, and `ZELLIJ_AUTOSTART=0 zsh` doesn't start it.
   - Ctrl-hjkl crosses nvim splits and zellij panes in both directions.
-  - `:LspInfo` in a `.lua` file and in a `.go` file shows an attached server.
+  - `:checkhealth vim.lsp` in a `.lua` file and in a `.go` file lists an attached client (`lua_ls`, `gopls`). (`:LspInfo` is gone on Neovim 0.12.)
   - `project python313` writes `.envrc`, and the prompt shows `DEV_SHELL`.
   - In a dir with `.prototools` pinning node, `node -v` is the pinned version; outside it, the Nix version. If `activate` leaks outside pinned dirs, apply ticket 08's fallback (per-repo `.envrc`) and tell the user.
   - tmux `prefix + I` installs plugins.
