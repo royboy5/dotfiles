@@ -476,3 +476,12 @@ stub_getent() {
     [ -n "$gpu" ]
     [ "$hm" -lt "$gpu" ]
 }
+
+@test "ensure_group dry run works before the group exists" {
+    printf '#!/usr/bin/env bash\nexit 2\n' > "$STUBS/getent"
+    chmod +x "$STUBS/getent"
+    BOOTSTRAP_DRY=1
+    run bash -c 'set -euo pipefail; source "$1/bootstrap"; BOOTSTRAP_DRY=1; ensure_group docker' _ "$ROOT"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"[DRY] Would run: sudo usermod -aG docker roy"* ]]
+}

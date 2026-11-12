@@ -194,7 +194,9 @@ ensure_service() {
 # not `id -nG`, which only changes after logging in again.
 ensure_group() {
     local group="$1" members
-    members=$(getent group "$group" | cut -d: -f4)
+    # The group may not exist yet (a --dry run on a fresh host never installed
+    # the package that creates it).
+    members=$(getent group "$group" | cut -d: -f4 || true)
     if [[ ",$members," == *",$USER,"* ]]; then
         log_success "$USER is in the $group group."
         return 0
