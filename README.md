@@ -116,9 +116,10 @@ Hyprland side by side.
    ./bootstrap
    ```
    It:
-   - installs with pacman: `zsh ghostty docker reflector wl-clipboard cosmic
-     hyprland thermald ttf-firacode-nerd ttf-jetbrains-mono-nerd` (`cosmic`
-     is the whole COSMIC group). This also upgrades the system (`pacman -Syu`).
+   - installs with pacman: `zsh ghostty bitwarden docker reflector wl-clipboard
+     cosmic hyprland thermald ttf-firacode-nerd ttf-jetbrains-mono-nerd`
+     (`cosmic` is the whole COSMIC group). This also upgrades the system
+     (`pacman -Syu`).
    - enables `docker.service`, `reflector.timer` (weekly mirror refresh) and
      `thermald.service`, and adds you to the `docker` group
    - makes zsh your login shell
@@ -281,6 +282,11 @@ reinstalling.
 - **`This non-NixOS system is not yet set up to use the GPU`** or **`GPU
   drivers require an update`** (printed by a switch): re-run `./bootstrap`,
   which runs the GPU setup. The warning also prints the exact `sudo` command.
+- **Red screen at boot on wing-zero**: the Surface Pro 3 shows it whenever
+  Secure Boot is off or the factory keys were replaced. To boot with Secure
+  Boot on and the factory keys kept, follow
+  [wing-zero Secure Boot](docs/wing-zero-secure-boot.md). It's done by hand,
+  once; bootstrap doesn't touch the bootloader.
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.
 - **`These files are not tracked by git`**: `git add nix/`, then re-run.

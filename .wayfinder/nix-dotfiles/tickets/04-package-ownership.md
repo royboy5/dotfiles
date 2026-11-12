@@ -52,3 +52,7 @@ The NixOS and Arch rows swap hosts. **`unicorn-rx0` is now NixOS:** its system l
 ## Amendment (2026-11-10, from [Which layer installs fonts](12-fonts.md))
 
 The system layer installs fonts too: FiraCode and JetBrains Mono Nerd Fonts go in `nixos/` on `unicorn-rx0` and in the pacman list on `wing-zero`. `wsl` and Bazzite install none.
+
+## Amendment (2026-11-12)
+
+Bitwarden's desktop app is a GUI app, so it's system layer on both GUI hosts: `bitwarden` in `wing-zero`'s pacman list, `bitwarden-desktop` in `nixos/` on `unicorn-rx0`. The Nix copy is newer than Arch's, but on Arch the distro package also brings the polkit policy and stable binary path that biometric unlock and the browser extension's native messaging depend on. The `bw` CLI isn't installed anywhere unless asked for (it would be Nix user layer).

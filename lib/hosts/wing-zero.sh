@@ -5,7 +5,7 @@
 
 # Everything here is in pacman's [extra]; no AUR. `cosmic` is a package group.
 PACMAN_PACKAGES_WING_ZERO=(
-    zsh ghostty docker reflector wl-clipboard
+    zsh ghostty bitwarden docker reflector wl-clipboard
     cosmic hyprland thermald
     ttf-firacode-nerd ttf-jetbrains-mono-nerd
 )

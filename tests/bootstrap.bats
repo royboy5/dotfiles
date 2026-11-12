@@ -454,7 +454,7 @@ stub_getent() {
     local pac
     pac=$(grep -n "sudo pacman -Syu --needed --noconfirm" "$CALLS" | cut -d: -f1)
     [ -n "$pac" ]
-    for p in cosmic hyprland ghostty ttf-firacode-nerd; do
+    for p in cosmic hyprland ghostty ttf-firacode-nerd bitwarden; do
         grep "sudo pacman" "$CALLS" | grep -qw "$p"
     done
     local hm
