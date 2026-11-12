@@ -138,5 +138,8 @@ Completion (insert mode): `<C-j>`/`<C-k>` next/previous, `<CR>` confirm,
 - **A plugin's branch changed** (for example `attempt to call field … (a nil
   value)` right after pulling): lazy.nvim doesn't switch an installed plugin to
   another branch. Delete `~/.local/share/nvim/lazy/<plugin>` and restart nvim.
+- **`fatal: gitfile does not point to a valid repository`** or **`could not
+  reset submodule index`** for a plugin: its checkout has a half-made git
+  submodule. Delete `~/.local/share/nvim/lazy/<plugin>` and restart nvim.
 - **Plugins broken after `:Lazy update`.** `git checkout configs/nvim/lazy-lock.json`,
   then `:Lazy restore`.

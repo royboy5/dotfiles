@@ -127,9 +127,11 @@ Hyprland side by side.
      Hyprland configs
    - runs the GPU setup, so Nix apps can use the GPU
    - clones TPM and sets up rustup
-4. **Log out and back in** (for the docker group, the login shell and the new
-   session variables). Pick COSMIC or Hyprland at the login screen. In
-   Hyprland, SUPER+Q opens Ghostty and SUPER+M exits.
+4. **Reboot** (or log out and back in) for the docker group, the login shell
+   and the new session variables. Until then, new terminals still start bash
+   with none of the config, because the session that opened them read the old
+   login shell. Pick COSMIC or Hyprland at the login screen. In Hyprland,
+   SUPER+Q opens Ghostty and SUPER+M exits.
 5. **Restore your secrets** into `~/.config/zsh/local_env.zsh` (see
    [Secrets](#secrets)) and zsh history into `~/.local/state/zsh/`.
 6. **Open Ghostty.** zellij starts automatically. In tmux, press
@@ -287,6 +289,10 @@ reinstalling.
   Boot on and the factory keys kept, follow
   [wing-zero Secure Boot](docs/wing-zero-secure-boot.md). It's done by hand,
   once; bootstrap doesn't touch the bootloader.
+- **New terminals still start bash after bootstrap** (none of the config
+  applies): the login shell changed, but this session started before that.
+  Reboot, or log out and back in. `getent passwd roy | cut -d: -f7` shows the
+  login shell; `exec zsh` switches the current terminal right away.
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.
 - **`These files are not tracked by git`**: `git add nix/`, then re-run.
