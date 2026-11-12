@@ -56,4 +56,5 @@ editors read your environment), no terminal attached, or `ZELLIJ_AUTOSTART=0`. U
 |---|---|
 | Generated config | `~/.config/zsh/.zshrc` (`ZDOTDIR=~/.config/zsh`) |
 | History | `~/.local/state/zsh/history` |
+| Recent directories (zsh-autocomplete) | `~/.local/share/zsh/chpwd-recent-dirs` |
 | Local settings | `~/.config/zsh/local_env.zsh` |

@@ -77,6 +77,7 @@ json_eq programs.zsh.history.save 10000
 eq programs.zsh.history.path /home/roy/.local/state/zsh/history
 json_eq programs.zsh.enableCompletion false
 contains programs.zsh.initContent "zsh-autocomplete.plugin.zsh"
+before programs.zsh.initContent "/home/roy/.local/share/zsh" "zsh-autocomplete.plugin.zsh"
 contains programs.zsh.initContent "setopt AUTO_CD"
 contains programs.zsh.initContent "HIST_REDUCE_BLANKS"
 contains programs.zsh.initContent "ZELLIJ_AUTOSTART"

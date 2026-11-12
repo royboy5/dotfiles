@@ -43,6 +43,12 @@
     initContent = lib.mkMerge [
       # Runs first in .zshrc, before completion setup.
       (lib.mkOrder 550 ''
+        # zsh-autocomplete 26.08.04 writes its recent-dirs file here without
+        # creating the folder first ("chpwd_recent_filehandler: no such file
+        # or directory"). Fixed upstream after that release; drop this once
+        # nixpkgs ships a newer one.
+        [[ -d ${config.xdg.dataHome}/zsh ]] || mkdir -p ${config.xdg.dataHome}/zsh
+
         # zsh-autocomplete must load before anything else touches completion.
         source ${pkgs.zsh-autocomplete}/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
       '')
