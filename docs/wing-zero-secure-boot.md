@@ -186,9 +186,9 @@ To verify that your configuration is robust and update-proof:
 
 2. **Verify Certificate Enrollment:**
    ```bash
-   sudo mokutil --import /efi/MOK.cer
+   sudo mokutil --test-key /efi/MOK.cer
    ```
-   If it outputs `skip: /efi/MOK.cer is already in db`, your certificate is successfully enrolled and updates will not break boot.
+   If it outputs `/efi/MOK.cer is already enrolled`, your certificate is successfully enrolled and updates will not break boot. `is not enrolled` means go back to Step 2. (`--test-key` only checks; `--import` would queue the key again.)
 
 3. **Verify Pacman Hook:**
    ```bash
