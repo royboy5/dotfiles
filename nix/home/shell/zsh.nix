@@ -79,7 +79,7 @@
 
       # Last: per-machine settings, then zellij (which may replace this shell).
       (lib.mkOrder 1500 ''
-        # Secrets and per-machine settings (gitignored, never in Nix: the store
+        # Secrets and per-machine settings (not in the repo, never in Nix: the store
         # is world-readable). Sample: configs/zsh/local_env.zsh.sample
         [[ -f "$ZDOTDIR/local_env.zsh" ]] && source "$ZDOTDIR/local_env.zsh"
 

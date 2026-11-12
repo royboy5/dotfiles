@@ -77,10 +77,11 @@ check_repo_path() {
     fi
 }
 
-# Flakes inside a git repo only see tracked files.
+# Flakes inside a git repo only see tracked files (any file under nix/, not
+# just .nix: scripts read with builtins.readFile count too).
 check_untracked() {
     local untracked
-    untracked=$(git -C "$DOTFILES_ROOT" ls-files --others --exclude-standard -- 'nix/*.nix' 'nix/**/*.nix')
+    untracked=$(git -C "$DOTFILES_ROOT" ls-files --others --exclude-standard -- nix/)
     if [[ -n "$untracked" ]]; then
         log_error "These files are not tracked by git, so Nix won't see them:"
         echo "        ${untracked//$'\n'/$'\n'        }" >&2
@@ -125,10 +126,13 @@ ensure_flakes() {
         return 0
     fi
     log_info "Enabling flakes in $NIX_CONF..."
+    # Start a new line if the file's last line has no newline.
+    local line="$FLAKES_LINE"
+    [[ -s "$NIX_CONF" && -n "$(tail -c1 "$NIX_CONF")" ]] && line=$'\n'"$line"
     if [[ "${BOOTSTRAP_DRY:-0}" == "1" ]]; then
         execute sudo tee -a "$NIX_CONF" "<<< '$FLAKES_LINE'"
     else
-        echo "$FLAKES_LINE" | sudo tee -a "$NIX_CONF" > /dev/null
+        echo "$line" | sudo tee -a "$NIX_CONF" > /dev/null
     fi
     execute sudo systemctl restart nix-daemon
 }
@@ -141,13 +145,14 @@ lock_flake() {
 
 # hm_switch <host>: standalone home-manager. The first switch (home-manager not
 # installed yet) moves clashing files aside as *.before-nix; later runs don't,
-# because -b fails once a backup with that name exists. --dry only builds.
+# because -b fails once a backup with that name exists. --dry only builds,
+# without a ./result link.
 hm_switch() {
-    local ref="$DOTFILES_ROOT/nix#$REPO_USER@$1" action=switch
-    [[ "${BOOTSTRAP_DRY:-0}" == "1" ]] && action=build
+    local ref="$DOTFILES_ROOT/nix#$REPO_USER@$1" action=switch opts=()
+    [[ "${BOOTSTRAP_DRY:-0}" == "1" ]] && { action=build; opts=(--no-out-link); }
     if command -v home-manager &> /dev/null; then
         log_info "home-manager $action ($ref)..."
-        home-manager "$action" --flake "$ref"
+        home-manager "$action" "${opts[@]}" --flake "$ref"
     else
         log_info "First home-manager $action ($ref)..."
         # A dry run on a fresh host never installed Nix, so there's nothing to
@@ -156,9 +161,8 @@ hm_switch() {
             execute nix "${NIX_FLAGS[@]}" run home-manager/master -- switch -b before-nix --flake "$ref"
             return 0
         fi
-        local backup=()
-        [[ "$action" == switch ]] && backup=(-b before-nix)
-        nix "${NIX_FLAGS[@]}" run home-manager/master -- "$action" "${backup[@]}" --flake "$ref"
+        [[ "$action" == switch ]] && opts=(-b before-nix)
+        nix "${NIX_FLAGS[@]}" run home-manager/master -- "$action" "${opts[@]}" --flake "$ref"
     fi
 }
 

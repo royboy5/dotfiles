@@ -151,6 +151,16 @@ unstub() {
     [ "$status" -eq 0 ]
 }
 
+@test "check_untracked refuses untracked non-nix files under nix/" {
+    DOTFILES_ROOT="$TMP/repo"
+    mkdir -p "$DOTFILES_ROOT/nix/home/scripts"
+    git -C "$DOTFILES_ROOT" init -q
+    touch "$DOTFILES_ROOT/nix/home/scripts/new.sh"
+    run check_untracked
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"new.sh"* ]]
+}
+
 # --- execute ------------------------------------------------------------------
 
 @test "execute only prints the command in dry-run mode" {
@@ -226,6 +236,16 @@ unstub() {
     grep -q "sudo systemctl restart nix-daemon" "$CALLS"
 }
 
+@test "ensure_flakes keeps an unterminated last line intact" {
+    NIX_CONF="$TMP/nix.conf"
+    printf 'build-users-group = nixbld' > "$NIX_CONF"
+    printf '#!/usr/bin/env bash\necho "sudo $*" >> "$CALLS"\n"$@"\n' > "$STUBS/sudo"
+    stub systemctl
+    ensure_flakes
+    [ "$(tail -n 1 "$NIX_CONF")" == "$FLAKES_LINE" ]
+    [ "$(grep -c '^build-users-group = nixbld$' "$NIX_CONF")" -eq 1 ]
+}
+
 # --- hm_switch ----------------------------------------------------------------
 
 @test "hm_switch backs up existing files on the first switch only" {
@@ -259,10 +279,21 @@ unstub() {
     [[ "$output" == *"[DRY] Would run:"*"switch -b before-nix --flake $DOTFILES_ROOT/nix#roy@wsl"* ]]
 }
 
+@test "hm_switch dry run doesn't leave a result link" {
+    BOOTSTRAP_DRY=1
+    hm_switch wsl
+    grep -q "^home-manager build --no-out-link" "$CALLS"
+    : > "$CALLS"
+    unstub home-manager
+    PATH="$STUBS:/usr/bin:/bin"
+    hm_switch wsl
+    grep -q -- "home-manager/master -- build --no-out-link" "$CALLS"
+}
+
 @test "hm_switch only builds in dry-run mode" {
     BOOTSTRAP_DRY=1
     hm_switch wsl
-    grep -q "^home-manager build --flake $DOTFILES_ROOT/nix#roy@wsl" "$CALLS"
+    grep -q "^home-manager build --no-out-link --flake $DOTFILES_ROOT/nix#roy@wsl" "$CALLS"
     ! grep -q "switch" "$CALLS"
 }
 
