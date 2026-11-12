@@ -178,6 +178,43 @@ ensure_login_shell() {
     execute sudo usermod -s "$want" "$USER"
 }
 
+# ensure_service <unit>...: enable and start each unit that isn't enabled yet.
+ensure_service() {
+    local unit
+    for unit in "$@"; do
+        if systemctl is-enabled --quiet "$unit" 2> /dev/null; then
+            log_success "$unit is enabled."
+        else
+            execute sudo systemctl enable --now "$unit"
+        fi
+    done
+}
+
+# ensure_group <group>: add the user to it. Checked against the group database,
+# not `id -nG`, which only changes after logging in again.
+ensure_group() {
+    local group="$1" members
+    members=$(getent group "$group" | cut -d: -f4)
+    if [[ ",$members," == *",$USER,"* ]]; then
+        log_success "$USER is in the $group group."
+        return 0
+    fi
+    execute sudo usermod -aG "$group" "$USER"
+    log_warn "Log out and back in for the $group group to apply."
+}
+
+# home-manager's GPU module (targets.genericLinux.gpu) links the Nix GL/Vulkan
+# drivers to /run/opengl-driver. sudo doesn't see the user's PATH, so it gets
+# the absolute store path. Idempotent: safe after every switch.
+ensure_gpu_setup() {
+    local setup
+    if ! setup=$(command -v non-nixos-gpu-setup); then
+        log_warn "non-nixos-gpu-setup isn't on PATH; skipping the GPU setup (expected with --dry, which doesn't activate; otherwise open a new terminal and re-run)."
+        return 0
+    fi
+    execute sudo "$(readlink -f "$setup")"
+}
+
 # tmux plugins are managed by TPM; install them with prefix + I.
 ensure_tpm() {
     local dir="$HOME/.tmux/plugins/tpm"

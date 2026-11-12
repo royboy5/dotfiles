@@ -9,8 +9,8 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 
 | Host | Target OS | Status |
 |---|---|---|
-| `wsl` | Fedora under WSL (CLI only) | being migrated |
-| `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | planned |
+| `wsl` | Fedora under WSL (CLI only) | migrated |
+| `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | being migrated |
 | `unicorn-rx0` | NixOS, Dell XPS 13 9370 | planned |
 | `qant-00` | Bazzite | planned |
 
@@ -18,6 +18,7 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 
 - [Install](#install)
   - [wsl](#wsl)
+  - [wing-zero](#wing-zero)
   - [Adding a new host](#adding-a-new-host)
 - [Layout](#layout)
 - [Everyday use](#everyday-use)
@@ -96,6 +97,43 @@ Fedora under WSL, CLI only.
 6. **Open a new terminal tab.** zellij starts automatically. In tmux, press
    `prefix + I` (prefix is Ctrl-Space) once to install its plugins.
 
+### wing-zero
+
+Surface Pro 3 on EndeavourOS (the Arch path), a GUI host with COSMIC and
+Hyprland side by side.
+
+1. **Before wiping:** follow [Reinstalling a host](#reinstalling-a-host).
+2. **Install EndeavourOS.** Any desktop option is fine; bootstrap adds COSMIC
+   and Hyprland either way. In the installer, set the hostname to `wing-zero`
+   (or pass `--host wing-zero` to bootstrap later) and create the user `roy`.
+3. **Restore `~/.ssh`** from the backup (`chmod 700 ~/.ssh; chmod 600 ~/.ssh/id_*`
+   for the private keys), then clone and bootstrap:
+   ```bash
+   # -b nix until the Nix port is merged to master
+   git clone -b nix git@github.com:royboy5/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
+   ./bootstrap --dry   # preview
+   ./bootstrap
+   ```
+   It:
+   - installs with pacman: `zsh ghostty docker reflector wl-clipboard cosmic
+     hyprland thermald ttf-firacode-nerd ttf-jetbrains-mono-nerd` (`cosmic`
+     is the whole COSMIC group). This also upgrades the system (`pacman -Syu`).
+   - enables `docker.service`, `reflector.timer` (weekly mirror refresh) and
+     `thermald.service`, and adds you to the `docker` group
+   - makes zsh your login shell
+   - installs Nix and applies home-manager, which links the ghostty and
+     Hyprland configs
+   - runs the GPU setup, so Nix apps can use the GPU
+   - clones TPM and sets up rustup
+4. **Log out and back in** (for the docker group, the login shell and the new
+   session variables). Pick COSMIC or Hyprland at the login screen. In
+   Hyprland, SUPER+Q opens Ghostty and SUPER+M exits.
+5. **Restore your secrets** into `~/.config/zsh/local_env.zsh` (see
+   [Secrets](#secrets)) and zsh history into `~/.local/state/zsh/`.
+6. **Open Ghostty.** zellij starts automatically. In tmux, press
+   `prefix + I` (prefix is Ctrl-Space) once to install its plugins.
+
 ### Adding a new host
 
 1. `nix/flake.nix`: add an output. Non-NixOS: `homeConfigurations."roy@<host>" = mkHome "<host>";`.
@@ -103,7 +141,9 @@ Fedora under WSL, CLI only.
    on non-NixOS) plus any host overrides.
 3. `lib/hosts/<host>.sh`: a `host_<host>` function with the system-layer
    package list and steps (see `lib/hosts/wsl.sh`), and add the host to
-   `KNOWN_HOSTS` in `./bootstrap`.
+   `KNOWN_HOSTS` in `./bootstrap`. A hyphen in the host name becomes an
+   underscore in the function name: `wing-zero` → `host_wing_zero`.
+   A GUI host also imports `../home/gui.nix` in step 2.
 4. `git add` the new files (flakes only see tracked files), then bootstrap.
 
 ## Layout
@@ -238,6 +278,9 @@ reinstalling.
   for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
   sudo groupdel nixbld
   ```
+- **`This non-NixOS system is not yet set up to use the GPU`** or **`GPU
+  drivers require an update`** (printed by a switch): re-run `./bootstrap`,
+  which runs the GPU setup. The warning also prints the exact `sudo` command.
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.
 - **`These files are not tracked by git`**: `git add nix/`, then re-run.

@@ -394,3 +394,85 @@ unstub() {
     grep -q "home-manager switch --flake $DOTFILES_ROOT/nix#roy@wsl" "$CALLS"
     ! grep -q "non-nixos-gpu-setup" "$CALLS"
 }
+
+# --- wing-zero helpers ----------------------------------------------------------
+
+# getent stub: "passwd" prints roy's entry with zsh, "group" prints $1.
+stub_getent() {
+    printf '#!/usr/bin/env bash\necho "getent $*" >> "$CALLS"\ncase "$1" in\n  passwd) echo "roy:x:1000:1000::/home/roy:/usr/bin/zsh" ;;\n  group) echo "%s" ;;\nesac\n' "$1" > "$STUBS/getent"
+    chmod +x "$STUBS/getent"
+}
+
+@test "resolve_host lists wing-zero for an unknown hostname" {
+    run resolve_host
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"wing-zero"* ]]
+}
+
+@test "ensure_service enables only units that aren't enabled" {
+    printf '#!/usr/bin/env bash\necho "systemctl $*" >> "$CALLS"\n[[ "$1" == is-enabled && "$*" == *docker.service* ]] && exit 1\nexit 0\n' > "$STUBS/systemctl"
+    chmod +x "$STUBS/systemctl"
+    ensure_service docker.service reflector.timer
+    [ "$(grep -c 'enable --now' "$CALLS")" -eq 1 ]
+    grep -q "sudo systemctl enable --now docker.service" "$CALLS"
+}
+
+@test "ensure_group adds roy when the group database lacks him" {
+    stub_getent "docker:x:970:"
+    run ensure_group docker
+    [ "$status" -eq 0 ]
+    grep -q "sudo usermod -aG docker roy" "$CALLS"
+    [[ "$output" == *"Log out"* ]]
+}
+
+@test "ensure_group skips when getent lists roy" {
+    stub_getent "docker:x:970:alice,roy"
+    run ensure_group docker
+    [ "$status" -eq 0 ]
+    ! grep -q usermod "$CALLS"
+}
+
+@test "ensure_gpu_setup runs the absolute store path with sudo" {
+    stub non-nixos-gpu-setup
+    ensure_gpu_setup
+    grep -q "^sudo $(readlink -f "$STUBS")/non-nixos-gpu-setup$" "$CALLS"
+}
+
+@test "ensure_gpu_setup warns and skips when it isn't installed" {
+    run ensure_gpu_setup
+    [ "$status" -eq 0 ]
+    ! grep -q "^sudo" "$CALLS"
+    [[ "$output" == *"--dry"* ]]
+}
+
+@test "host_wing_zero installs the pacman list, then switches roy@wing-zero" {
+    NIX_CONF="$TMP/nix.conf"
+    echo "experimental-features = nix-command flakes" > "$NIX_CONF"
+    stub_getent "docker:x:970:roy"
+    stub git
+    host_wing_zero
+    local pac
+    pac=$(grep -n "sudo pacman -Syu --needed --noconfirm" "$CALLS" | cut -d: -f1)
+    [ -n "$pac" ]
+    for p in cosmic hyprland ghostty ttf-firacode-nerd; do
+        grep "sudo pacman" "$CALLS" | grep -qw "$p"
+    done
+    local hm
+    hm=$(grep -n "home-manager switch --flake $DOTFILES_ROOT/nix#roy@wing-zero" "$CALLS" | cut -d: -f1)
+    [ -n "$hm" ]
+    [ "$pac" -lt "$hm" ]
+}
+
+@test "host_wing_zero runs the GPU setup after the switch" {
+    NIX_CONF="$TMP/nix.conf"
+    echo "experimental-features = nix-command flakes" > "$NIX_CONF"
+    stub_getent "docker:x:970:roy"
+    stub git
+    stub non-nixos-gpu-setup
+    host_wing_zero
+    local hm gpu
+    hm=$(grep -n "home-manager switch" "$CALLS" | cut -d: -f1)
+    gpu=$(grep -n "^sudo $(readlink -f "$STUBS")/non-nixos-gpu-setup" "$CALLS" | cut -d: -f1)
+    [ -n "$gpu" ]
+    [ "$hm" -lt "$gpu" ]
+}

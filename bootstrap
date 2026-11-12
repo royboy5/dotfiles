@@ -9,7 +9,7 @@
 DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # One entry per host, matching lib/hosts/<host>.sh and its flake output.
-KNOWN_HOSTS=(wsl)
+KNOWN_HOSTS=(wsl wing-zero)
 
 # shellcheck source=lib/utils.sh
 source "$DOTFILES_ROOT/lib/utils.sh"
