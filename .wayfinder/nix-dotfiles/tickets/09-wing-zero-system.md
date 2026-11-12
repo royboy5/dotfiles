@@ -8,8 +8,8 @@ blocked_by: []
 
 ## Question
 
-What goes in `nixos/` for `strike-freedom`, the NixOS host (x86_64)? Decide:
-- bootloader and hardware config: generate `hardware/strike-freedom.nix` from the live machine, or carry over the existing `/etc/nixos`
+What goes in `nixos/` for `wing-zero`, the NixOS host (x86_64)? Decide:
+- bootloader and hardware config: generate `hardware/wing-zero.nix` from the live machine, or carry over the existing `/etc/nixos`
 - GPU driver
 - desktop or window manager (whether Hyprland is declared here; see the Hyprland fog on the map)
 - system services (networking, audio, docker/podman, ssh)
@@ -26,7 +26,7 @@ From [Zsh: Nix-declared or linked files](07-zsh-shape.md): zsh is the login shel
 
 Decided with the user on 2026-11-10.
 
-**Host swap.** The NixOS host is **`unicorn-rx0`** (Dell XPS 13 9370, Intel Kaby Lake, laptop). **`strike-freedom`** (Surface Pro 3) runs **EndeavourOS**, which counts as Arch: it goes through the pacman bootstrap path and `targets/generic-linux.nix`, and EndeavourOS isn't named anywhere in the repo. Hostnames stay with the hardware. Reasons:
+**Host swap.** The NixOS host is **`unicorn-rx0`** (Dell XPS 13 9370, Intel Kaby Lake, laptop). **`wing-zero`** (Surface Pro 3) runs **EndeavourOS**, which counts as Arch: it goes through the pacman bootstrap path and `targets/generic-linux.nix`, and EndeavourOS isn't named anywhere in the repo. Hostnames stay with the hardware. Reasons:
 - The Surface Pro 3 works fully on mainline (per the linux-surface feature matrix), but the nixos-hardware `microsoft-surface-pro-3` module pulls in linux-surface, a kernel built from source that takes hours on that CPU.
 - NixOS rebuilds (evaluating the whole system and re-downloading changed closures) are heavy on weak hardware.
 - Arch reuses an existing path, so it means less code in the repo.
@@ -44,10 +44,12 @@ Decided with the user on 2026-11-10.
 - **Nix:** port the `~/.dotfiles` nix-darwin block (flakes, weekly gc `--delete-older-than 30d`, `nix.optimise.automatic`, an `allowUnfreePredicate` allowlist that starts empty). home-manager runs as a NixOS module with `useGlobalPkgs` and `useUserPackages`.
 - **nix-ld:** `programs.nix-ld.enable` with the default libraries. Add libraries only when a proto-downloaded binary fails.
 
-**`strike-freedom` (EndeavourOS / Arch path):** mainline kernel, no linux-surface. The pacman list gains COSMIC, Hyprland and thermald on top of the Arch list from [Which layer owns each package](04-package-ownership.md). No TLP; the power daemon is whatever COSMIC's packages bring (confirm during implementation).
+**`wing-zero` (EndeavourOS / Arch path):** mainline kernel, no linux-surface. The pacman list gains COSMIC, Hyprland and thermald on top of the Arch list from [Which layer owns each package](04-package-ownership.md). No TLP; the power daemon is whatever COSMIC's packages bring (confirm during implementation).
 
 *Amended 2026-11-11 (user):* the dotfiles don't touch the EndeavourOS install itself. The installer's desktop choice, its login manager and greeter setup are out of scope. Bootstrap installs the COSMIC and Hyprland packages and links their configs: `configs/hypr/` per [What goes in the Hyprland config](13-hyprland-config.md). COSMIC stays stock and has no config in the repo.
 
-**Hyprland config** is a `linkConfig` link (`configs/hypr/`) on the GUI hosts `unicorn-rx0` and `strike-freedom` only, like ghostty. Its contents stay in the map's Hyprland fog.
+**Hyprland config** is a `linkConfig` link (`configs/hypr/`) on the GUI hosts `unicorn-rx0` and `wing-zero` only, like ghostty. Its contents stay in the map's Hyprland fog.
 
 Sources (fetched 2026-11-10): the nixos-hardware `flake.nix`, `microsoft/surface-pro/3`, `surface/surface-pro-intel`, `dell/xps/13-9370` and `common/pc/laptop`; nixpkgs `nixos/modules/services/desktop-managers/cosmic.nix`; and the linux-surface README and supported-devices matrix.
+
+*Amended 2026-11-11 (user):* the Surface Pro 3 is renamed from `strike-freedom` to `wing-zero`. Every reference in the repo now uses `wing-zero`.

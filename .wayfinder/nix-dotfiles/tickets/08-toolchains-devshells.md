@@ -12,7 +12,7 @@ Which language toolchains (Go, Rust, Node, Python, Zig) are installed globally i
 
 From [Reconcile drifted configs](06-reconcile-configs.md): Nix (not Mason) provides nvim's language servers, so decide where gopls and rust-analyzer come from alongside their toolchains. Also decide whether starship's `DEV_SHELL` segment stays (only if dev shells are adopted). The global git ignore exists only for `.direnv/` and `.envrc`. If direnv isn't adopted, drop the global ignore and its `excludesfile` line.
 
-From [Zsh: Nix-declared or linked files](07-zsh-shape.md): the old `env.zsh` PATH entries for proto, pnpm, cargo, opencode, flutter and the Android SDK land here. **proto/moon:** the user's moon repos use proto for version management. proto and moon are both in nixpkgs (proto 0.63.2, moon 2.6.4 at time of writing). Decide whether Nix provides proto and moon, which toolchains proto manages versus Nix (global or dev shell), PATH order between proto shims and Nix toolchains, and whether `proto activate zsh` goes in `programs.zsh.initContent`. Research question: can moon/proto use toolchains already on PATH instead of downloading, even when a repo pins versions in `.prototools`? That answer decides whether `strike-freedom` needs nix-ld (see [The NixOS host's system layer](09-strike-freedom-system.md)).
+From [Zsh: Nix-declared or linked files](07-zsh-shape.md): the old `env.zsh` PATH entries for proto, pnpm, cargo, opencode, flutter and the Android SDK land here. **proto/moon:** the user's moon repos use proto for version management. proto and moon are both in nixpkgs (proto 0.63.2, moon 2.6.4 at time of writing). Decide whether Nix provides proto and moon, which toolchains proto manages versus Nix (global or dev shell), PATH order between proto shims and Nix toolchains, and whether `proto activate zsh` goes in `programs.zsh.initContent`. Research question: can moon/proto use toolchains already on PATH instead of downloading, even when a repo pins versions in `.prototools`? That answer decides whether `wing-zero` needs nix-ld (see [The NixOS host's system layer](09-wing-zero-system.md)).
 
 ## Resolution
 
@@ -33,8 +33,8 @@ Proto/moon facts come from [Can proto/moon use toolchains already on PATH](11-pr
   - A global `~/.proto/.prototools` with `auto-install = true` is linked from `configs/proto/`. Its contents are confirmed during implementation.
   - **Verify during implementation:** `activate` must change PATH only inside pinned directories. If it doesn't, fall back to running proto activation from each repo's `.envrc`.
   - Rejected: a hand-maintained dev shell mirroring `.prototools`, because it drifts.
-- **nix-ld is needed on `strike-freedom`:** proto downloads glibc builds (proto itself, Node, Python). Recorded on [The NixOS host's system layer](09-strike-freedom-system.md).
+- **nix-ld is needed on `wing-zero`:** proto downloads glibc builds (proto itself, Node, Python). Recorded on [The NixOS host's system layer](09-wing-zero-system.md).
 
-## Amendment (2026-11-10, from [The NixOS host's system layer](09-strike-freedom-system.md))
+## Amendment (2026-11-10, from [The NixOS host's system layer](09-wing-zero-system.md))
 
-The NixOS host is now `unicorn-rx0`, so nix-ld goes there. `strike-freedom` is now Arch and needs no nix-ld.
+The NixOS host is now `unicorn-rx0`, so nix-ld goes there. `wing-zero` is now Arch and needs no nix-ld.

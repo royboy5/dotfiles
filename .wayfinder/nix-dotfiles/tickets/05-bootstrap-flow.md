@@ -57,7 +57,7 @@ Also from [Which layer owns each package](04-package-ownership.md): Bazzite (`qa
 | `unicorn-rx0` (Arch) | pacman list and extra steps → Nix → home-manager switch → GPU setup |
 | `wsl` (Fedora) | Require systemd (`/run/systemd/system`). If it's missing, stop and print the `[boot] systemd=true` in `/etc/wsl.conf` + `wsl --shutdown` instruction (no `--init none` fallback). Then dnf list (`zsh` + installer prerequisites) → Nix → home-manager switch. No GPU setup. |
 | `qant-00` (Bazzite) | Check or apply `root.transient = true` in `/etc/ostree/prepare-root.conf` and `rpm-ostree initramfs-etc --track`. If anything changed, stop for a reboot. Then `install ostree --persistence=/var/lib/nix` (pass it explicitly; the default is `/var/home/nix`) → home-manager switch → GPU setup. |
-| `strike-freedom` (NixOS) | Check the hostname → `nix-shell -p git` if git is missing → `sudo nixos-rebuild switch --flake ~/.dotfiles/nix#strike-freedom` with flakes passed explicitly on the first run. If `nixos/hardware/strike-freedom.nix` is missing, fail and point at `nixos-generate-config --show-hardware-config`. |
+| `wing-zero` (NixOS) | Check the hostname → `nix-shell -p git` if git is missing → `sudo nixos-rebuild switch --flake ~/.dotfiles/nix#wing-zero` with flakes passed explicitly on the first run. If `nixos/hardware/wing-zero.nix` is missing, fail and point at `nixos-generate-config --show-hardware-config`. |
 
 - **First home-manager switch:** `nix run home-manager/master -- switch -b before-nix --flake ~/.dotfiles/nix#roy@<host>`. Later runs use the installed `home-manager`.
 - **GPU setup:** `sudo <absolute store path>/non-nixos-gpu-setup` after every switch on `unicorn-rx0` and `qant-00`. It is idempotent, and `sudo` doesn't see the user's PATH.
@@ -67,12 +67,12 @@ Also from [Which layer owns each package](04-package-ownership.md): Bazzite (`qa
   - Homebrew remains the documented fallback.
 
 **Everyday commands**
-- **`nrs`** (nix rebuild switch) runs `nixos-rebuild switch` on `strike-freedom` and `home-manager switch` elsewhere, with the host taken from the host or target files. It touches only Nix.
+- **`nrs`** (nix rebuild switch) runs `nixos-rebuild switch` on `wing-zero` and `home-manager switch` elsewhere, with the host taken from the host or target files. It touches only Nix.
 - **`nfu`** (flake update) carries over unchanged.
 - The system-layer lists are applied by re-running `./bootstrap`.
 
 Facts came from a fact-finding subagent on 2026-11-09 (sources: the bazzite and uupd repos, rpm-ostree `origin.rs` and its man page, bootc `utils.rs`, the NixOS/nix-installer README, releases and `ostree.rs`, nixos.org/download, Fedora `wsl-setup`, the home-manager standalone docs and `check-link-targets.sh`, and the gpu module). Nothing was committed. Unconfirmed: whether the tracking survives `rpm-ostree rebase`, and whether the official Fedora WSL image ships `wsl-setup`.
 
-## Amendment (2026-11-10, from [The NixOS host's system layer](09-strike-freedom-system.md))
+## Amendment (2026-11-10, from [The NixOS host's system layer](09-wing-zero-system.md))
 
-Hosts swap. The `unicorn-rx0` (Arch) row now applies to **`strike-freedom`** (EndeavourOS, on the Arch path), with COSMIC, Hyprland and thermald added to its pacman list. The NixOS row now applies to **`unicorn-rx0`** (`nixos-rebuild switch --flake ~/.dotfiles/nix#unicorn-rx0`, failing if `nixos/hardware/unicorn-rx0.nix` is missing). GPU setup runs on `strike-freedom` and `qant-00`. `nrs` runs `nixos-rebuild` on `unicorn-rx0`.
+Hosts swap. The `unicorn-rx0` (Arch) row now applies to **`wing-zero`** (EndeavourOS, on the Arch path), with COSMIC, Hyprland and thermald added to its pacman list. The NixOS row now applies to **`unicorn-rx0`** (`nixos-rebuild switch --flake ~/.dotfiles/nix#unicorn-rx0`, failing if `nixos/hardware/unicorn-rx0.nix` is missing). GPU setup runs on `wing-zero` and `qant-00`. `nrs` runs `nixos-rebuild` on `unicorn-rx0`.

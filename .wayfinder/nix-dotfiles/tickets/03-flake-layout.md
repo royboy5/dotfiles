@@ -16,7 +16,7 @@ What is the flake's shape? Decide: outputs (`homeConfigurations` per host vs per
 
 | Host | Target OS | Output |
 |---|---|---|
-| `strike-freedom` | NixOS | `nixosConfigurations.strike-freedom` (home-manager as a NixOS module) |
+| `wing-zero` | NixOS | `nixosConfigurations.wing-zero` (home-manager as a NixOS module) |
 | `unicorn-rx0` | Arch | `homeConfigurations."roy@unicorn-rx0"` |
 | `qant-00` | Bazzite | `homeConfigurations."roy@qant-00"` |
 | `wsl` | Fedora, running under WSL | `homeConfigurations."roy@wsl"` |
@@ -55,6 +55,6 @@ Sources for the Intel facts: the NixOS 26.05 announcement, the nixpkgs unstable 
 
 `stargazer` is removed, along with macOS as a target OS. That drops `darwinConfigurations`, `darwin/` and `home/targets/darwin.nix`, as well as the 26.05 pin. Every host follows `nixpkgs-unstable`, so shared `home/` modules only need to evaluate against unstable.
 
-## Amendment (2026-11-10, from [The NixOS host's system layer](09-strike-freedom-system.md))
+## Amendment (2026-11-10, from [The NixOS host's system layer](09-wing-zero-system.md))
 
-`unicorn-rx0` and `strike-freedom` swap roles. **`unicorn-rx0`** (Dell XPS 13 9370) is the NixOS host: `nixosConfigurations.unicorn-rx0`, with `nixos/hardware/unicorn-rx0.nix`. **`strike-freedom`** (Surface Pro 3, EndeavourOS, which counts as Arch) is `homeConfigurations."roy@strike-freedom"` on `targets/generic-linux.nix`. `nixos-hardware` joins the flake inputs.
+`unicorn-rx0` and `wing-zero` swap roles. **`unicorn-rx0`** (Dell XPS 13 9370) is the NixOS host: `nixosConfigurations.unicorn-rx0`, with `nixos/hardware/unicorn-rx0.nix`. **`wing-zero`** (Surface Pro 3, EndeavourOS, which counts as Arch) is `homeConfigurations."roy@wing-zero"` on `targets/generic-linux.nix`. `nixos-hardware` joins the flake inputs.

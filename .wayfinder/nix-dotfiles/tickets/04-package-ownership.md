@@ -32,7 +32,7 @@ On NixOS the system layer is `nixos/`. On macOS it is Homebrew: casks for GUI ap
 | `unicorn-rx0` (Arch) | pacman (AUR only when unavoidable) | `zsh`, `ghostty`, `docker` + service, `reflector`, `wl-clipboard` (replaces `xclip`); `hyprland` waits on the Hyprland fog |
 | `qant-00` (Bazzite) | Flatpak if a GUI app ever appears; `ujust` only as bootstrap recipes, never a package list | **none**: no Ghostty, no containers |
 | `wsl` (Fedora) | dnf | `zsh` plus whatever the Nix installer needs that the image lacks. No GUI apps. No containers from this repo (use Docker Desktop's WSL integration from Windows, if at all) |
-| `strike-freedom` (NixOS) | nixpkgs in `nixos/` | `ghostty`; containers via `virtualisation.*` (decided in [The NixOS host's system layer](09-strike-freedom-system.md)) |
+| `wing-zero` (NixOS) | nixpkgs in `nixos/` | `ghostty`; containers via `virtualisation.*` (decided in [The NixOS host's system layer](09-wing-zero-system.md)) |
 | `stargazer` (macOS) | nix-homebrew | casks `brave-browser`, `google-chrome`, `google-drive`, `obsidian`, `rectangle`, `ghostty`, `docker-desktop`; brews `automake`, `cmake`, `ninja`, `pkgconf` |
 
 **Containers:** the engine and the `docker` CLI are always system layer, never Nix, so client and daemon versions match.
@@ -45,10 +45,10 @@ On NixOS the system layer is `nixos/`. On macOS it is Homebrew: casks for GUI ap
 
 The `stargazer` row is void: macOS is no longer a target OS, so there's no nix-homebrew, cask list or brew list. Homebrew is the system layer nowhere. It survives only as Bazzite's documented fallback for Nix itself.
 
-## Amendment (2026-11-10, from [The NixOS host's system layer](09-strike-freedom-system.md))
+## Amendment (2026-11-10, from [The NixOS host's system layer](09-wing-zero-system.md))
 
-The NixOS and Arch rows swap hosts. **`unicorn-rx0` is now NixOS:** its system layer is `nixos/`, with `ghostty`, Docker, COSMIC and Hyprland. **`strike-freedom` (EndeavourOS) is now the Arch host:** its pacman list is the Arch list above plus COSMIC, Hyprland and thermald. Hyprland is no longer waiting on the fog: it's declared on both GUI hosts.
+The NixOS and Arch rows swap hosts. **`unicorn-rx0` is now NixOS:** its system layer is `nixos/`, with `ghostty`, Docker, COSMIC and Hyprland. **`wing-zero` (EndeavourOS) is now the Arch host:** its pacman list is the Arch list above plus COSMIC, Hyprland and thermald. Hyprland is no longer waiting on the fog: it's declared on both GUI hosts.
 
 ## Amendment (2026-11-10, from [Which layer installs fonts](12-fonts.md))
 
-The system layer installs fonts too: FiraCode and JetBrains Mono Nerd Fonts go in `nixos/` on `unicorn-rx0` and in the pacman list on `strike-freedom`. `wsl` and Bazzite install none.
+The system layer installs fonts too: FiraCode and JetBrains Mono Nerd Fonts go in `nixos/` on `unicorn-rx0` and in the pacman list on `wing-zero`. `wsl` and Bazzite install none.

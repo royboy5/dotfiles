@@ -8,7 +8,7 @@ blocked_by: []
 
 ## Question
 
-Which fonts does this repo install, and which layer installs them on each host (`unicorn-rx0` NixOS, `strike-freedom` Arch, `wsl` Fedora, Bazzite)? [Home-manager on non-NixOS distros](02-hm-on-non-nixos.md) found that Flatpaks can't see Nix-installed fonts, so decide whether GUI-facing fonts (terminal, bar, editor) come from Nix, the distro, or both, and what `wsl` needs given that Windows Terminal renders with Windows fonts.
+Which fonts does this repo install, and which layer installs them on each host (`unicorn-rx0` NixOS, `wing-zero` Arch, `wsl` Fedora, Bazzite)? [Home-manager on non-NixOS distros](02-hm-on-non-nixos.md) found that Flatpaks can't see Nix-installed fonts, so decide whether GUI-facing fonts (terminal, bar, editor) come from Nix, the distro, or both, and what `wsl` needs given that Windows Terminal renders with Windows fonts.
 
 ## Resolution
 
@@ -21,7 +21,7 @@ Which fonts does this repo install, and which layer installs them on each host (
 | Host | Fonts |
 |---|---|
 | `unicorn-rx0` (NixOS) | `fonts.packages = [ pkgs.nerd-fonts.fira-code pkgs.nerd-fonts.jetbrains-mono ]` in `nixos/` |
-| `strike-freedom` (Arch) | `ttf-firacode-nerd` and `ttf-jetbrains-mono-nerd` (`[extra]`) in the pacman list |
+| `wing-zero` (Arch) | `ttf-firacode-nerd` and `ttf-jetbrains-mono-nerd` (`[extra]`) in the pacman list |
 | `wsl` (Fedora) | none. Windows Terminal uses fonts installed on Windows, so the docs say to install both fonts there by hand |
 | Bazzite | none. Its system layer declares nothing |
 

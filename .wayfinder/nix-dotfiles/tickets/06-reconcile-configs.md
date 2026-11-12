@@ -36,7 +36,7 @@ Decided with the user on 2026-11-10, tool by tool. Every config stays a linked f
   - set the theme to `TokyoNight Storm`
   - drop the `super+h/j/k/l` split binds (they would clash with Hyprland)
 
-  Link it only on GUI hosts (Arch, Bazzite, `strike-freedom`), not `wsl`. The font stays `FiraCode Nerd Font Mono`; how it's installed is left to the Fonts fog.
+  Link it only on GUI hosts (Arch, Bazzite, `wing-zero`), not `wsl`. The font stays `FiraCode Nerd Font Mono`; how it's installed is left to the Fonts fog.
 - **starship:** port the `~/.dotfiles` `starship.toml` without the kubernetes module or its GKE context pattern. Keep the `DEV_SHELL` segment provisionally; [Language toolchains and dev shells](08-toolchains-devshells.md) keeps or drops it.
 
 Implementation still confirms each config with the user before adopting it (map Notes).

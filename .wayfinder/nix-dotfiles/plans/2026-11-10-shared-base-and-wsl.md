@@ -10,7 +10,7 @@
 
 **Spec:** `.wayfinder/nix-dotfiles/map.md` and the resolutions in `.wayfinder/nix-dotfiles/tickets/*.md`. Read the ticket a task cites before starting it. The reference repo is `~/.dotfiles` (work repo, macOS; read-only: never edit it).
 
-**Later plans (not this one):** `strike-freedom` (pacman list, GPU setup, ghostty/Hyprland links, fonts), `unicorn-rx0` (`nixos/`, merge to `master`), `qant-00` (Bazzite). Each is written after the previous host passes.
+**Later plans (not this one):** `wing-zero` (pacman list, GPU setup, ghostty/Hyprland links, fonts), `unicorn-rx0` (`nixos/`, merge to `master`), `qant-00` (Bazzite). Each is written after the previous host passes.
 
 ## Global Constraints
 
