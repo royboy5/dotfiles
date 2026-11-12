@@ -1,0 +1,30 @@
+# ~/.config/ghostty/config
+
+# --- Fonts ---
+# Use quotes for names with spaces to avoid parsing ambiguity
+font-family = "FiraCode Nerd Font Mono"
+font-size = 13
+
+# Enable Ligatures (standard FiraCode features)
+font-feature = "calt"
+font-feature = "liga"
+
+# --- Theme ---
+# You can list available themes with: ghostty +list-themes
+theme = "TokyoNight Storm"
+
+# --- Window ---
+window-padding-x = 10
+window-padding-y = 10
+window-decoration = true
+window-save-state = always
+unfocused-split-opacity = 0.7
+
+# --- Shell ---
+# Set the working directory to home
+working-directory = home
+
+# Zellij tab navigation: send Ctrl+Shift+h/l explicitly (kitty CSI-u) so they
+# can't collapse into plain Ctrl+h/l (backspace / pane nav) on the way through.
+# keybind = ctrl+shift+h=csi:104;6u
+# keybind = ctrl+shift+l=csi:108;6u

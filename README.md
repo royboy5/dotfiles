@@ -121,6 +121,7 @@ nix/
     default.nix           #   imports everything; defines linkConfig
     shell/                #   zsh (declared) and starship
     cli.nix  git.nix  terminal.nix  nvim.nix
+    gui.nix               #   GUI hosts only: ghostty and Hyprland config links
     dev/                  #   language toolchains, direnv, project, proto
     targets/generic-linux.nix   # non-NixOS: targets.genericLinux, nrs, ngc
   shells/                 # project dev shells (own flake.lock), see `project`
@@ -138,6 +139,11 @@ rebuild. The exception is zsh, which home-manager writes from
   (global ignores: `.direnv/`, `.envrc`).
 - **starship:** `configs/starship/starship.toml`. Shows the active dev shell
   as `[❄ <name>]`.
+- **ghostty:** `configs/ghostty/config`, GUI hosts only. Tokyo Night Storm,
+  FiraCode Nerd Font Mono.
+- **Hyprland:** `configs/hypr/hyprland.lua`, GUI hosts only. Hyprland's stock
+  example config with ghostty as the terminal (SUPER+Q). Its launcher and
+  file-manager binds point at apps that aren't installed.
 
 Per-tool pages, for things that only matter while using that tool:
 [Neovim](docs/nvim.md), [Zellij](docs/zellij.md), [Zsh](docs/zsh.md),
@@ -165,6 +171,7 @@ Per-tool pages, for things that only matter while using that tool:
 | A config file | `configs/<app>/…`, linked with `linkConfig` from that module. |
 | A shell function or zsh option | `nix/home/shell/zsh.nix` (or the topic module's `programs.zsh.initContent`). |
 | A GUI app, a daemon or system service, anything needing setuid/PAM, a driver or hardware tool, a font | the **system layer** of the host: its package list in `lib/hosts/<host>.sh`. Bazzite declares nothing. |
+| A config only GUI hosts use | `configs/<app>/`, linked from `nix/home/gui.nix`. |
 | Something only one host needs | `nix/hosts/<host>.nix`. |
 
 Commit (or at least `git add`) new `nix/` files before `nrs`; flakes ignore

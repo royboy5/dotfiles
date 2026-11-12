@@ -32,5 +32,8 @@
     {
       # Fedora under WSL. CLI only.
       homeConfigurations."${username}@wsl" = mkHome "wsl";
+
+      # Surface Pro 3, EndeavourOS. GUI host (COSMIC + Hyprland from pacman).
+      homeConfigurations."${username}@wing-zero" = mkHome "wing-zero";
     };
 }

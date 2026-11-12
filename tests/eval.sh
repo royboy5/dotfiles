@@ -51,7 +51,10 @@ contains() {
 eq home.username roy
 eq home.homeDirectory /home/roy
 json_eq targets.genericLinux.enable true
-json_eq targets.genericLinux.gpu.enable false
+case "$HOST" in
+    wsl) json_eq targets.genericLinux.gpu.enable false ;;
+    *) json_eq targets.genericLinux.gpu.enable true ;;
+esac
 
 # before <attr path> <first substring> <second substring>
 before() {
@@ -65,7 +68,7 @@ before() {
 # --- Task 2: shell ----------------------------------------------------------
 eq home.shellAliases.nfu "nix flake update --flake /home/roy/.dotfiles/nix"
 eq home.shellAliases.nus "nix flake update --flake /home/roy/.dotfiles/nix/shells"
-eq home.shellAliases.nrs "home-manager switch --flake /home/roy/.dotfiles/nix#roy@wsl"
+eq home.shellAliases.nrs "home-manager switch --flake /home/roy/.dotfiles/nix#roy@$HOST"
 eq home.shellAliases.ngc "nix-collect-garbage -d && sudo /nix/var/nix/profiles/default/bin/nix-collect-garbage -d"
 eq home.shellAliases.dot "cd /home/roy/.dotfiles"
 eq home.shellAliases.reload "exec zsh"
@@ -104,8 +107,6 @@ json_eq 'home.file.".tmux.conf".enable' true
 # Closing a terminal tab ends its auto-started session instead of leaving it running.
 grep -q '^on_force_close "quit"' "$ROOT/configs/zellij/config.kdl" && pass \
     || fail "zellij on_force_close must be quit"
-attrs=$("${NIX[@]}" --json "$CFG.xdg.configFile" --apply builtins.attrNames 2>&1)
-[[ "$attrs" != *'"ghostty"'* ]] && pass || fail "ghostty must not be linked on $HOST"
 
 # --- Task 5: nvim -----------------------------------------------------------
 for p in neovim tree-sitter lua-language-server typescript-language-server \
@@ -140,6 +141,34 @@ vars=$("${NIX[@]}" --json "$CFG.home.sessionVariables" --apply builtins.attrName
 shells=$("${NIX[@]}" --json "$ROOT/nix/shells#devShells.x86_64-linux" --apply builtins.attrNames 2>&1)
 [[ "$shells" == '["node","node22","node24","python312","python313"]' ]] && pass \
     || fail "dev shells: $shells"
+
+# --- GUI links (plan 2): ghostty and Hyprland on GUI hosts only -------------
+LINKS=""
+links() {
+    [[ -n "$LINKS" ]] || LINKS=$("${NIX[@]}" --json "$CFG.xdg.configFile" --apply builtins.attrNames 2>&1)
+    echo "$LINKS"
+}
+has_link() { links | grep -q "\"$1\"" && pass || fail "$1 must be linked on $HOST"; }
+lacks_link() { links | grep -q "\"$1\"" && fail "$1 must not be linked on $HOST" || pass; }
+case "$HOST" in
+    wsl)
+        lacks_link ghostty
+        lacks_link hypr
+        ;;
+    *)
+        has_link ghostty
+        has_link hypr
+        # The apps themselves come from the system layer (pacman / nixos).
+        lacks_pkg ghostty
+        lacks_pkg hyprland
+        ;;
+esac
+HYPR="$ROOT/configs/hypr/hyprland.lua"
+GHOSTTY="$ROOT/configs/ghostty/config"
+grep -qx 'local terminal    = "ghostty"' "$HYPR" 2> /dev/null && pass || fail "hyprland.lua must set the terminal to ghostty"
+[[ -f "$HYPR" ]] && ! grep -q kitty "$HYPR" && pass || fail "hyprland.lua must not mention kitty"
+grep -qx 'theme = "TokyoNight Storm"' "$GHOSTTY" 2> /dev/null && pass || fail "ghostty theme must be TokyoNight Storm"
+[[ -f "$GHOSTTY" ]] && ! grep -qE '^[^#]*(macos-|super\+)' "$GHOSTTY" && pass || fail "ghostty config has macOS or super+ lines"
 
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]
