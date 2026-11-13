@@ -10,7 +10,7 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 | Host | Target OS | Status |
 |---|---|---|
 | `wsl` | Fedora under WSL (CLI only) | migrated |
-| `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | being migrated |
+| `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | migrated |
 | `unicorn-rx0` | NixOS, Dell XPS 13 9370 | planned |
 | `qant-00` | Bazzite | planned |
 
