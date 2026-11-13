@@ -326,6 +326,12 @@ reinstalling.
   applies): the login shell changed, but this session started before that.
   Reboot, or log out and back in. `getent passwd roy | cut -d: -f7` shows the
   login shell; `exec zsh` switches the current terminal right away.
+- **`The user systemd session is degraded`** (printed by a switch): a user
+  service outside this repo failed, often a desktop's autostart helper
+  (`app-…` units come from `/etc/xdg/autostart/`). The switch still worked.
+  `systemctl --user list-units --failed` shows which one;
+  `systemctl --user status <unit>` says why. If the list is empty, it was a
+  one-off; `systemctl --user reset-failed` clears the record.
 - **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
   pass `--host <name>`.
 - **`These files are not tracked by git`**: `git add nix/`, then re-run.
