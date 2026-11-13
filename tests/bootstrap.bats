@@ -485,3 +485,80 @@ stub_getent() {
     [ "$status" -eq 0 ]
     [[ "$output" == *"[DRY] Would run: sudo usermod -aG docker roy"* ]]
 }
+
+# --- ensure_kernel_param ------------------------------------------------------
+
+# sudo that records and then really runs the command (here: tee into $TMP).
+sudo_runs() {
+    printf '#!/usr/bin/env bash\necho "sudo $*" >> "$CALLS"\n"$@"\n' > "$STUBS/sudo"
+    chmod +x "$STUBS/sudo"
+}
+
+@test "ensure_kernel_param appends to the systemd-boot cmdline and reinstalls kernels" {
+    KERNEL_CMDLINE="$TMP/cmdline"
+    GRUB_DEFAULTS="$TMP/grub"
+    echo "nvme_load=YES nowatchdog rw" > "$KERNEL_CMDLINE"
+    sudo_runs
+    stub reinstall-kernels
+    run ensure_kernel_param i915.enable_psr=0
+    [ "$status" -eq 0 ]
+    [ "$(cat "$KERNEL_CMDLINE")" == "nvme_load=YES nowatchdog rw i915.enable_psr=0" ]
+    grep -q "^sudo reinstall-kernels" "$CALLS"
+    [[ "$output" == *"Reboot"* ]]
+}
+
+@test "ensure_kernel_param leaves a cmdline that already has the option alone" {
+    KERNEL_CMDLINE="$TMP/cmdline"
+    echo "rw i915.enable_psr=0 quiet" > "$KERNEL_CMDLINE"
+    run ensure_kernel_param i915.enable_psr=0
+    [ "$status" -eq 0 ]
+    [ ! -s "$CALLS" ]
+}
+
+@test "ensure_kernel_param adds the option to GRUB's default line and regenerates grub.cfg" {
+    KERNEL_CMDLINE="$TMP/missing"
+    GRUB_DEFAULTS="$TMP/grub"
+    printf 'GRUB_TIMEOUT=5\nGRUB_CMDLINE_LINUX_DEFAULT="nowatchdog nvme_load=YES"\nGRUB_CMDLINE_LINUX=""\n' > "$GRUB_DEFAULTS"
+    sudo_runs
+    stub grub-mkconfig
+    run ensure_kernel_param i915.enable_psr=0
+    [ "$status" -eq 0 ]
+    grep -qx 'GRUB_CMDLINE_LINUX_DEFAULT="nowatchdog nvme_load=YES i915.enable_psr=0"' "$GRUB_DEFAULTS"
+    grep -qx 'GRUB_TIMEOUT=5' "$GRUB_DEFAULTS"
+    grep -qx 'GRUB_CMDLINE_LINUX=""' "$GRUB_DEFAULTS"
+    grep -q "^sudo grub-mkconfig -o /boot/grub/grub.cfg" "$CALLS"
+}
+
+@test "ensure_kernel_param warns when it finds no boot loader config" {
+    KERNEL_CMDLINE="$TMP/missing"
+    GRUB_DEFAULTS="$TMP/missing-too"
+    run ensure_kernel_param i915.enable_psr=0
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"i915.enable_psr=0"* ]]
+    [ ! -s "$CALLS" ]
+}
+
+@test "ensure_kernel_param only prints in dry-run mode" {
+    KERNEL_CMDLINE="$TMP/cmdline"
+    echo "rw" > "$KERNEL_CMDLINE"
+    sudo_runs
+    BOOTSTRAP_DRY=1
+    run ensure_kernel_param i915.enable_psr=0
+    [ "$status" -eq 0 ]
+    [ "$(cat "$KERNEL_CMDLINE")" == "rw" ]
+    [ ! -s "$CALLS" ]
+    [[ "$output" == *"[DRY]"* ]]
+}
+
+@test "host_wing_zero turns off Panel Self Refresh (the Surface Pro 3 freezes with it)" {
+    NIX_CONF="$TMP/nix.conf"
+    echo "experimental-features = nix-command flakes" > "$NIX_CONF"
+    KERNEL_CMDLINE="$TMP/cmdline"
+    echo "rw" > "$KERNEL_CMDLINE"
+    stub_getent "docker:x:970:roy"
+    stub git
+    sudo_runs
+    for cmd in pacman reinstall-kernels; do stub "$cmd"; done
+    host_wing_zero
+    [ "$(cat "$KERNEL_CMDLINE")" == "rw i915.enable_psr=0" ]
+}

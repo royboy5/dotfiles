@@ -123,11 +123,16 @@ Hyprland side by side.
    - enables `docker.service`, `reflector.timer` (weekly mirror refresh) and
      `thermald.service`, and adds you to the `docker` group
    - makes zsh your login shell
+   - turns off the graphics driver's Panel Self Refresh (`i915.enable_psr=0`
+     in the kernel options), without which the Surface Pro 3 freezes when
+     COSMIC or Hyprland starts. It edits `/etc/kernel/cmdline` and runs
+     `reinstall-kernels` (systemd-boot), or edits `/etc/default/grub` and runs
+     `grub-mkconfig` (GRUB)
    - installs Nix and applies home-manager, which links the ghostty and
      Hyprland configs
    - runs the GPU setup, so Nix apps can use the GPU
    - clones TPM and sets up rustup
-4. **Reboot** (or log out and back in) for the docker group, the login shell
+4. **Reboot** (or log out and back in) for the kernel option, the docker group, the login shell
    and the new session variables. Until then, new terminals still start bash
    with none of the config, because the session that opened them read the old
    login shell. Pick COSMIC or Hyprland at the login screen. In Hyprland,
@@ -285,6 +290,11 @@ reinstalling.
 - **`This non-NixOS system is not yet set up to use the GPU`** or **`GPU
   drivers require an update`** (printed by a switch): re-run `./bootstrap`,
   which runs the GPU setup. The warning also prints the exact `sudo` command.
+- **Black screen and a frozen machine when COSMIC or Hyprland starts**
+  (wing-zero): Panel Self Refresh is still on. `cat /proc/cmdline` should
+  include `i915.enable_psr=0`; if it doesn't, re-run `./bootstrap` and
+  reboot. To get in meanwhile, press `e` at the boot menu, add
+  ` i915.enable_psr=0` to the end of the kernel options, and boot.
 - **Red screen at boot on wing-zero**: the Surface Pro 3 shows it whenever
   Secure Boot is off or the factory keys were replaced. To boot with Secure
   Boot on and the factory keys kept, follow

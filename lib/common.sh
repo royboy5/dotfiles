@@ -5,6 +5,8 @@
 : "${NIX_DAEMON_PROFILE:=/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh}"
 : "${NIX_CONF:=/etc/nix/nix.conf}"
 : "${NIX_DAEMON_UNIT:=/etc/systemd/system/nix-daemon.service}"
+: "${KERNEL_CMDLINE:=/etc/kernel/cmdline}"
+: "${GRUB_DEFAULTS:=/etc/default/grub}"
 NIX_INSTALLER_URL="https://artifacts.nixos.org/nix-installer"
 FLAKES_LINE="experimental-features = nix-command flakes"
 NIX_FLAGS=(--extra-experimental-features "nix-command flakes")
@@ -215,6 +217,56 @@ ensure_gpu_setup() {
         return 0
     fi
     execute sudo "$(readlink -f "$setup")"
+}
+
+# ensure_kernel_param <option>: add a kernel command-line option for the next
+# boot. systemd-boot (EndeavourOS's default) reads /etc/kernel/cmdline when
+# reinstall-kernels rebuilds the boot entries; GRUB reads
+# GRUB_CMDLINE_LINUX_DEFAULT when grub-mkconfig regenerates grub.cfg.
+ensure_kernel_param() {
+    local param="$1" line new
+    if [[ -f "$KERNEL_CMDLINE" ]]; then
+        line=$(< "$KERNEL_CMDLINE")
+        if [[ " $line " == *" $param "* ]]; then
+            log_success "Kernel option $param is set."
+            return 0
+        fi
+        _sudo_write "$KERNEL_CMDLINE" "${line:+$line }$param"
+        execute sudo reinstall-kernels
+    elif [[ -f "$GRUB_DEFAULTS" ]]; then
+        local re='^(GRUB_CMDLINE_LINUX_DEFAULT=["'\''])(.*)(["'\''])$' found=0
+        new=""
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            if [[ "$line" =~ $re ]]; then
+                found=1
+                if [[ " ${BASH_REMATCH[2]} " == *" $param "* ]]; then
+                    log_success "Kernel option $param is set."
+                    return 0
+                fi
+                line="${BASH_REMATCH[1]}${BASH_REMATCH[2]:+${BASH_REMATCH[2]} }$param${BASH_REMATCH[3]}"
+            fi
+            new+="$line"$'\n'
+        done < "$GRUB_DEFAULTS"
+        if [[ "$found" == 0 ]]; then
+            log_warn "No GRUB_CMDLINE_LINUX_DEFAULT line in $GRUB_DEFAULTS; add $param to the kernel options by hand."
+            return 0
+        fi
+        _sudo_write "$GRUB_DEFAULTS" "${new%$'\n'}"
+        execute sudo grub-mkconfig -o /boot/grub/grub.cfg
+    else
+        log_warn "Found neither $KERNEL_CMDLINE (systemd-boot) nor $GRUB_DEFAULTS (GRUB); add $param to the kernel options by hand."
+        return 0
+    fi
+    log_warn "Reboot for the kernel option $param to apply."
+}
+
+# _sudo_write <file> <content>: replace a root-owned file's content.
+_sudo_write() {
+    if [[ "${BOOTSTRAP_DRY:-0}" == "1" ]]; then
+        execute sudo tee "$1" "<<< '$2'"
+    else
+        printf '%s\n' "$2" | sudo tee "$1" > /dev/null
+    fi
 }
 
 # tmux plugins are managed by TPM; install them with prefix + I.

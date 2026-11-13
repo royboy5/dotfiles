@@ -18,6 +18,9 @@ host_wing_zero() {
     ensure_service docker.service reflector.timer thermald.service
     ensure_group docker
     ensure_login_shell /usr/bin/zsh
+    # The Surface Pro 3 freezes when a Wayland desktop (COSMIC or Hyprland)
+    # starts, unless the i915 driver's Panel Self Refresh is off.
+    ensure_kernel_param i915.enable_psr=0
     ensure_nix
     ensure_flakes
     lock_flake

@@ -53,3 +53,7 @@ Decided with the user on 2026-11-10.
 Sources (fetched 2026-11-10): the nixos-hardware `flake.nix`, `microsoft/surface-pro/3`, `surface/surface-pro-intel`, `dell/xps/13-9370` and `common/pc/laptop`; nixpkgs `nixos/modules/services/desktop-managers/cosmic.nix`; and the linux-surface README and supported-devices matrix.
 
 *Amended 2026-11-11 (user):* the Surface Pro 3 is renamed from `strike-freedom` to `wing-zero`. Every reference in the repo now uses `wing-zero`.
+
+## Amendment (2026-11-13, from hardware acceptance)
+
+The Surface Pro 3 froze (black screen, no input, nothing logged) as soon as COSMIC or Hyprland started. Booting with `i915.enable_psr=0` fixed it, so bootstrap now sets that kernel option on `wing-zero` (`/etc/kernel/cmdline` + `reinstall-kernels` for systemd-boot, `/etc/default/grub` + `grub-mkconfig` for GRUB). It's the one boot-loader change bootstrap makes; the Secure Boot setup stays manual.
