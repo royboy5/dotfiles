@@ -57,3 +57,5 @@ Sources (fetched 2026-11-10): the nixos-hardware `flake.nix`, `microsoft/surface
 ## Amendment (2026-11-13, from hardware acceptance)
 
 The Surface Pro 3 froze (black screen, no input, nothing logged) as soon as COSMIC or Hyprland started. Booting with `i915.enable_psr=0` fixed it, so bootstrap now sets that kernel option on `wing-zero` (`/etc/kernel/cmdline` + `reinstall-kernels` for systemd-boot, `/etc/default/grub` + `grub-mkconfig` for GRUB). It's the one boot-loader change bootstrap makes; the Secure Boot setup stays manual.
+
+**Amendment (2026-11-13, later):** bootstrap also sets `i915.enable_fbc=0` (framebuffer compression off), added by Roy alongside PSR for the same freeze.

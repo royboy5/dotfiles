@@ -550,7 +550,7 @@ sudo_runs() {
     [[ "$output" == *"[DRY]"* ]]
 }
 
-@test "host_wing_zero turns off Panel Self Refresh (the Surface Pro 3 freezes with it)" {
+@test "host_wing_zero turns off Panel Self Refresh and framebuffer compression (the Surface Pro 3 freezes with them)" {
     NIX_CONF="$TMP/nix.conf"
     echo "experimental-features = nix-command flakes" > "$NIX_CONF"
     KERNEL_CMDLINE="$TMP/cmdline"
@@ -560,5 +560,5 @@ sudo_runs() {
     sudo_runs
     for cmd in pacman reinstall-kernels; do stub "$cmd"; done
     host_wing_zero
-    [ "$(cat "$KERNEL_CMDLINE")" == "rw i915.enable_psr=0" ]
+    [ "$(cat "$KERNEL_CMDLINE")" == "rw i915.enable_psr=0 i915.enable_fbc=0" ]
 }
