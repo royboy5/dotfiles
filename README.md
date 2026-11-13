@@ -258,6 +258,13 @@ home-manager generations              # newest first
 or `git checkout` the previous `nix/flake.lock` and run `nrs`. `ngc` deletes
 every old generation, so there is nothing to roll back to after it.
 
+**A package fails to build after `nfu`** (a long compile, then an error): it's
+usually broken in nixpkgs at that commit, so the binary cache has no copy and
+building it yourself fails the same way. Check
+`https://hydra.nixos.org/job/nixpkgs/unstable/<package>.x86_64-linux`. Go
+back with `git checkout HEAD~1 -- nix/flake.lock` (or `git revert` the update
+commit), run `nrs`, and try `nfu` again in a few days.
+
 ## Reinstalling a host
 
 Before wiping a machine, copy these to external storage:
