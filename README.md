@@ -132,8 +132,9 @@ Hyprland side by side.
      Hyprland configs
    - runs the GPU setup, so Nix apps can use the GPU
    - clones TPM and sets up rustup
-4. **Reboot** (or log out and back in) for the kernel option, the docker group, the login shell
-   and the new session variables. Until then, new terminals still start bash
+4. **Reboot** for the kernel option, the docker group, the login shell and
+   the new session variables (only the kernel option needs a full reboot;
+   logging out and back in covers the rest). Until then, new terminals still start bash
    with none of the config, because the session that opened them read the old
    login shell. Pick COSMIC or Hyprland at the login screen. In Hyprland,
    SUPER+Q opens Ghostty and SUPER+M exits.
