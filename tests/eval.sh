@@ -151,6 +151,8 @@ links() {
 }
 has_link() { links | grep -q "\"$1\"" && pass || fail "$1 must be linked on $HOST"; }
 lacks_link() { links | grep -q "\"$1\"" && fail "$1 must not be linked on $HOST" || pass; }
+# Plain `home-manager <command>` (news, generations…) finds the flake here.
+has_link home-manager
 case "$HOST" in
     wsl)
         lacks_link ghostty

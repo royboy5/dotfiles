@@ -166,7 +166,7 @@ nix/
     cli.nix  git.nix  terminal.nix  nvim.nix
     gui.nix               #   GUI hosts only: ghostty and Hyprland config links
     dev/                  #   language toolchains, direnv, project, proto
-    targets/generic-linux.nix   # non-NixOS: targets.genericLinux, nrs, ngc
+    targets/generic-linux.nix   # non-NixOS: targets.genericLinux, nrs, ngc, ~/.config/home-manager link
   shells/                 # project dev shells (own flake.lock), see `project`
 configs/                  # config files, linked live into ~/.config
 tests/                    # eval.sh (Nix checks) and bootstrap.bats
@@ -200,6 +200,7 @@ Per-tool pages, for things that only matter while using that tool:
 | `nfu` | Update `nix/flake.lock` (all packages) to the latest nixpkgs. Apply with `nrs`. |
 | `nus` | Update the dev shells' lock (`nix/shells/flake.lock`). |
 | `ngc` | Delete all old generations and free their space (no rollback afterwards). |
+| `home-manager news`, `home-manager generations` | Plain `home-manager` commands find this repo through `~/.config/home-manager` (a link to `nix/`) and pick `roy@<hostname>`. |
 | `./bootstrap` | Re-apply the system layer (package lists) as well as Nix. |
 | `./bootstrap --dry` | Show what bootstrap would change; builds without activating. |
 | `./bootstrap --clean-backups` | Delete the `*.before-nix` files from the first switch. |
