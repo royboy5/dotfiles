@@ -17,7 +17,7 @@ Each topic module owns its own shell settings instead of one big zshrc:
 |---|---|
 | History, options, `mkcd`/`extract`, navigation aliases, zellij auto-start | `nix/home/shell/zsh.nix` |
 | Prompt | `nix/home/shell/starship.nix`, `configs/starship/starship.toml` |
-| `ls`/`cat`/`grep`/`find` replacements, fzf settings | `nix/home/cli.nix` |
+| `ls`/`cat` replacements, fzf settings | `nix/home/cli.nix` |
 | git aliases, `git_current_branch` | `nix/home/git.nix` |
 | `v`/`vim`, `EDITOR` | `nix/home/nvim.nix` |
 | Toolchain `PATH`s, `proto activate` | `nix/home/dev/*.nix` |

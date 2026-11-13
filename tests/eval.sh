@@ -94,7 +94,12 @@ for p in bat eza fd fzf ripgrep jq yq-go httpie jless k9s tree curl wget htop \
     git git-lfs delta lazygit; do has_pkg "$p"; done
 lacks_pkg glab
 eq home.shellAliases.lg lazygit
-eq home.shellAliases.find fd
+# grep and find stay the real commands (pasted commands use their flags);
+# rg and fd are typed by name.
+aliases=$("${NIX[@]}" --json "$CFG.home.shellAliases" --apply builtins.attrNames 2>&1)
+for a in grep find; do
+    grep -q "\"$a\"" <<< "$aliases" && fail "$a must not be aliased" || pass
+done
 eq home.shellAliases.catp bat
 eq home.sessionVariables.FZF_DEFAULT_COMMAND "rg --files"
 contains programs.zsh.initContent "git_current_branch()"
