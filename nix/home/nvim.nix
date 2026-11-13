@@ -17,7 +17,7 @@
     typescript-language-server # ts_ls
     vscode-langservers-extracted # eslint
     # gopls and zls come from dev/; rust_analyzer from rustup (dev/rust.nix).
-    # kulala.nvim runs its own built-in LSP; biome runs per project via pnpm exec.
+    # biome runs per project via pnpm exec.
 
     # Formatters (conform.nvim)
     stylua

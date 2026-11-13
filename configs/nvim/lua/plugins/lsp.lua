@@ -36,7 +36,6 @@ return {
 			-- NOTE: "biome" is NOT installed by Nix. We run it via `pnpm exec biome`,
 			-- i.e. the copy in the project's own node_modules. See the
 			-- vim.lsp.config("biome", ...) block below for why this matters.
-			-- kulala.nvim runs its own built-in LSP for .http files.
 			local servers = {
 				"lua_ls",
 				"ts_ls",

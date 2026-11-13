@@ -48,7 +48,7 @@ configs/nvim/
 | [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Status line |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git signs in the gutter, hunk preview, blame |
 | [diffview-plus.nvim](https://github.com/dlyongemallo/diffview-plus.nvim) | Side-by-side git diffs |
-| [kulala.nvim](https://github.com/mistweaverco/kulala.nvim) | HTTP client for `.http`/`.rest` files (has its own built-in language server) |
+| [rest.nvim](https://github.com/rest-nvim/rest.nvim) | HTTP client for `.http` files. Installed without luarocks (`build = false`); see `plugins/rest.lua` |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | Shows the available keys after `<leader>` |
 | [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | Colorscheme |
 | [cloak.nvim](https://github.com/laytan/cloak.nvim) | Masks values in `.env*` files |
@@ -109,7 +109,7 @@ Leader is **Space**. Press it and wait to see everything in which-key.
 | `<leader>/` | Toggle comment |
 | `<leader>h` | Clear search highlight |
 | `<leader>C` | Toggle cloak |
-| `<leader>R…` | HTTP requests (kulala): `Rs` send, `Ra` send all, `Rc` copy as cURL |
+| `<leader>rr` / `<leader>rl` | HTTP request (rest.nvim): run the one under the cursor / re-run the last |
 | `<C-/>` | Floating terminal |
 | `<leader>n` | Notification history |
 | `<C-arrows>` | Resize split |

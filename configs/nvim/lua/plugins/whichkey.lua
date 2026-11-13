@@ -11,6 +11,7 @@ return {
                 { "<leader>f", group = "Find (Snacks)" },
 				{ "<leader>g", group = "Git" },
                 { "<leader>l", group = "LSP" },
+                { "<leader>r", group = "Rest (HTTP)" },
 			},
 		},
 	},

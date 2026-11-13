@@ -21,6 +21,7 @@ local ensure_installed = {
   "dockerfile",
   "go",
   "html",
+  "http",
   "javascript",
   "jsdoc",
   "json",
