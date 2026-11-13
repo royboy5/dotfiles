@@ -117,8 +117,9 @@ Hyprland side by side.
    ```
    It:
    - installs with pacman: `zsh ghostty bitwarden docker reflector wl-clipboard
-     cosmic hyprland thermald ttf-firacode-nerd ttf-jetbrains-mono-nerd`
-     (`cosmic` is the whole COSMIC group). This also upgrades the system
+     cosmic hyprland thermald iio-sensor-proxy ttf-firacode-nerd
+     ttf-jetbrains-mono-nerd` (`cosmic` is the whole COSMIC group;
+     `iio-sensor-proxy` reads the accelerometer for auto-rotate). This also upgrades the system
      (`pacman -Syu`).
    - enables `docker.service`, `reflector.timer` (weekly mirror refresh) and
      `thermald.service`, and adds you to the `docker` group
@@ -137,7 +138,8 @@ Hyprland side by side.
    logging out and back in covers the rest). Until then, new terminals still start bash
    with none of the config, because the session that opened them read the old
    login shell. Pick COSMIC or Hyprland at the login screen. In Hyprland,
-   SUPER+Q opens Ghostty and SUPER+M exits.
+   SUPER+Q opens Ghostty and SUPER+M exits. The screen turns with the
+   Surface in both desktops (`auto-rotate`, below).
 5. **Restore your secrets** into `~/.config/zsh/local_env.zsh` (see
    [Secrets](#secrets)) and zsh history into `~/.local/state/zsh/`.
 6. **Open Ghostty.** zellij starts automatically. In tmux, press
@@ -171,11 +173,13 @@ nix/
     shell/                #   zsh (declared) and starship
     cli.nix  git.nix  terminal.nix  nvim.nix
     gui.nix               #   GUI hosts only: ghostty and Hyprland config links
+    auto-rotate.nix       #   tablets only (wing-zero): auto-rotate and its COSMIC autostart
+    scripts/              #   shell scripts packaged by the modules (project, auto-rotate)
     dev/                  #   language toolchains, direnv, project, proto
     targets/generic-linux.nix   # non-NixOS: targets.genericLinux, nrs, ngc, ~/.config/home-manager link
   shells/                 # project dev shells (own flake.lock), see `project`
 configs/                  # config files, linked live into ~/.config
-tests/                    # eval.sh (Nix checks) and bootstrap.bats
+tests/                    # eval.sh (Nix checks), bootstrap.bats, auto-rotate.bats
 ```
 
 **Configs are live links.** `linkConfig "<app>"` in a module links
@@ -192,7 +196,17 @@ rebuild. The exception is zsh, which home-manager writes from
   FiraCode Nerd Font Mono.
 - **Hyprland:** `configs/hypr/hyprland.lua`, GUI hosts only. Hyprland's stock
   example config with ghostty as the terminal (SUPER+Q). Its launcher and
-  file-manager binds point at apps that aren't installed.
+  file-manager binds point at apps that aren't installed. It starts
+  `auto-rotate` where it's installed.
+- **auto-rotate** (wing-zero): `nix/home/scripts/auto-rotate.sh` follows the
+  accelerometer (`monitor-sensor`, from `iio-sensor-proxy`) and turns the
+  built-in screen: with `hyprctl` in Hyprland, which also turns touch and pen
+  input, and with `cosmic-randr` in COSMIC, which turns them by itself.
+  Hyprland starts it from `hyprland.lua`, COSMIC from
+  `~/.config/autostart/auto-rotate.desktop`. Defaults to the Surface Pro 3's
+  panel (`eDP-1`, 2160x1440); set `AUTO_ROTATE_OUTPUT` / `AUTO_ROTATE_MODE` to
+  change them. If the screen turns the wrong way, the mapping is
+  `quarter_turns` in the script.
 
 Per-tool pages, for things that only matter while using that tool:
 [Neovim](docs/nvim.md), [Zellij](docs/zellij.md), [Zsh](docs/zsh.md),

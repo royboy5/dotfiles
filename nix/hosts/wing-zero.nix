@@ -6,5 +6,6 @@
   imports = [
     ../home/targets/generic-linux.nix
     ../home/gui.nix
+    ../home/auto-rotate.nix # a tablet: follow the accelerometer
   ];
 }

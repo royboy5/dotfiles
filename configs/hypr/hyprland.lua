@@ -48,6 +48,12 @@ local menu        = "hyprlauncher"
 --   hl.exec_cmd("waybar & hyprpaper & firefox")
 -- end)
 
+-- Hosts with an accelerometer (wing-zero) install auto-rotate; elsewhere this
+-- does nothing.
+hl.on("hyprland.start", function ()
+  hl.exec_cmd("command -v auto-rotate > /dev/null && exec auto-rotate")
+end)
+
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----

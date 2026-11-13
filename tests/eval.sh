@@ -171,9 +171,21 @@ case "$HOST" in
         lacks_pkg hyprland
         ;;
 esac
+# Auto-rotate: only wing-zero (a tablet) has an accelerometer.
+case "$HOST" in
+    wing-zero)
+        has_pkg auto-rotate
+        has_link autostart/auto-rotate.desktop
+        ;;
+    *)
+        lacks_pkg auto-rotate
+        lacks_link autostart/auto-rotate.desktop
+        ;;
+esac
 HYPR="$ROOT/configs/hypr/hyprland.lua"
 GHOSTTY="$ROOT/configs/ghostty/config"
 grep -qx 'local terminal    = "ghostty"' "$HYPR" 2> /dev/null && pass || fail "hyprland.lua must set the terminal to ghostty"
+grep -q 'auto-rotate' "$HYPR" 2> /dev/null && pass || fail "hyprland.lua must start auto-rotate"
 [[ -f "$HYPR" ]] && ! grep -q kitty "$HYPR" && pass || fail "hyprland.lua must not mention kitty"
 grep -qx 'theme = "TokyoNight Storm"' "$GHOSTTY" 2> /dev/null && pass || fail "ghostty theme must be TokyoNight Storm"
 [[ -f "$GHOSTTY" ]] && ! grep -qE '^[^#]*(macos-|super\+)' "$GHOSTTY" && pass || fail "ghostty config has macOS or super+ lines"
