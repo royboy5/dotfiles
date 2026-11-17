@@ -13,5 +13,5 @@
 
   home.shellAliases = {
     zdt = "zellij action override-layout ~/.dotfiles/configs/zellij/layouts/dev.kdl";
-  }
+  };
 }

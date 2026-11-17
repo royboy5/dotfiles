@@ -68,6 +68,7 @@ switching tab, use `Alt-h/l` or `Ctrl-t` then `h/l`.
 ```bash
 zellij                          # new session
 zellij --layout dev             # new session with the dev layout
+zdt                             # apply the dev layout to the current tab
 zellij list-sessions
 zellij attach <name>
 zellij attach --create <name>   # attach, or create it if missing

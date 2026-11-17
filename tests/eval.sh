@@ -109,6 +109,7 @@ json_eq 'xdg.configFile."git".enable' true
 has_pkg tmux
 has_pkg zellij
 json_eq 'xdg.configFile."zellij".enable' true
+eq home.shellAliases.zdt "zellij action override-layout ~/.dotfiles/configs/zellij/layouts/dev.kdl"
 json_eq 'home.file.".tmux.conf".enable' true
 # Closing a terminal tab ends its auto-started session instead of leaving it running.
 grep -q '^on_force_close "quit"' "$ROOT/configs/zellij/config.kdl" && pass \
