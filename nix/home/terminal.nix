@@ -10,4 +10,8 @@
   xdg.configFile."zellij".source = linkConfig "zellij";
   # Plugins are managed by TPM (cloned by ./bootstrap; install with prefix + I).
   home.file.".tmux.conf".source = linkConfig "tmux/tmux.conf";
+
+  home.shellAliases = {
+    zdt = "zellij action override-layout ~/.dotfiles/configs/zellij/layouts/dev.kdl";
+  }
 }
