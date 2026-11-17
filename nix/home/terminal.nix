@@ -12,6 +12,6 @@
   home.file.".tmux.conf".source = linkConfig "tmux/tmux.conf";
 
   home.shellAliases = {
-    zdt = "zellij action override-layout ~/.dotfiles/configs/zellij/layouts/dev.kdl";
+    zdt = "zellij action override-layout --apply-only-to-active-tab ~/.dotfiles/configs/zellij/layouts/dev.kdl";
   };
 }
