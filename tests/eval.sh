@@ -10,6 +10,12 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOST="${1:-wsl}"
 CFG="$ROOT/nix#homeConfigurations.\"roy@$HOST\".config"
+SYS=""
+# unicorn-rx0 is NixOS: home-manager is a module of the system config.
+if [[ "$HOST" == unicorn-rx0 ]]; then
+    SYS="$ROOT/nix#nixosConfigurations.unicorn-rx0.config"
+    CFG="$SYS.home-manager.users.roy"
+fi
 NIX=(nix --extra-experimental-features "nix-command flakes" eval --no-warn-dirty)
 FAILED=0
 PASSED=0
@@ -31,6 +37,18 @@ json_eq() {
     [[ "$got" == "$2" ]] && pass || fail "$1: expected $2, got $got"
 }
 
+# sys_eq / sys_json_eq: like eq / json_eq, but on the NixOS system config.
+sys_eq() {
+    local got
+    got=$("${NIX[@]}" --raw "$SYS.$1" 2>&1) || { fail "sys $1: eval error: ${got##*$'\n'}"; return; }
+    [[ "$got" == "$2" ]] && pass || fail "sys $1: expected '$2', got '$got'"
+}
+sys_json_eq() {
+    local got
+    got=$("${NIX[@]}" --json "$SYS.$1" 2>&1) || { fail "sys $1: eval error: ${got##*$'\n'}"; return; }
+    [[ "$got" == "$2" ]] && pass || fail "sys $1: expected $2, got $got"
+}
+
 PKGS=""
 pkgs() {
     [[ -n "$PKGS" ]] || PKGS=$("${NIX[@]}" --json "$CFG.home.packages" \
@@ -50,10 +68,16 @@ contains() {
 # --- Task 1: skeleton -------------------------------------------------------
 eq home.username roy
 eq home.homeDirectory /home/roy
-json_eq targets.genericLinux.enable true
 case "$HOST" in
-    wsl) json_eq targets.genericLinux.gpu.enable false ;;
-    *) json_eq targets.genericLinux.gpu.enable true ;;
+    unicorn-rx0) json_eq targets.genericLinux.enable false ;;
+    wsl)
+        json_eq targets.genericLinux.enable true
+        json_eq targets.genericLinux.gpu.enable false
+        ;;
+    *)
+        json_eq targets.genericLinux.enable true
+        json_eq targets.genericLinux.gpu.enable true
+        ;;
 esac
 
 # before <attr path> <first substring> <second substring>
@@ -68,8 +92,16 @@ before() {
 # --- Task 2: shell ----------------------------------------------------------
 eq home.shellAliases.nfu "nix flake update --flake /home/roy/.dotfiles/nix"
 eq home.shellAliases.nus "nix flake update --flake /home/roy/.dotfiles/nix/shells"
-eq home.shellAliases.nrs "home-manager switch --flake /home/roy/.dotfiles/nix#roy@$HOST"
-eq home.shellAliases.ngc "nix-collect-garbage -d && sudo /nix/var/nix/profiles/default/bin/nix-collect-garbage -d"
+case "$HOST" in
+    unicorn-rx0)
+        eq home.shellAliases.nrs "sudo nixos-rebuild switch --flake /home/roy/.dotfiles/nix#unicorn-rx0"
+        eq home.shellAliases.ngc "sudo nix-collect-garbage -d && nix-collect-garbage -d"
+        ;;
+    *)
+        eq home.shellAliases.nrs "home-manager switch --flake /home/roy/.dotfiles/nix#roy@$HOST"
+        eq home.shellAliases.ngc "nix-collect-garbage -d && sudo /nix/var/nix/profiles/default/bin/nix-collect-garbage -d"
+        ;;
+esac
 eq home.shellAliases.dot "cd /home/roy/.dotfiles"
 eq home.shellAliases.reload "exec zsh"
 json_eq programs.zsh.history.size 10000
@@ -158,7 +190,10 @@ links() {
 has_link() { links | grep -q "\"$1\"" && pass || fail "$1 must be linked on $HOST"; }
 lacks_link() { links | grep -q "\"$1\"" && fail "$1 must not be linked on $HOST" || pass; }
 # Plain `home-manager <command>` (news, generations…) finds the flake here.
-has_link home-manager
+case "$HOST" in
+    unicorn-rx0) lacks_link home-manager ;; # standalone-mode only
+    *) has_link home-manager ;;
+esac
 case "$HOST" in
     wsl)
         lacks_link ghostty
@@ -190,6 +225,12 @@ grep -q 'auto-rotate' "$HYPR" 2> /dev/null && pass || fail "hyprland.lua must st
 [[ -f "$HYPR" ]] && ! grep -q kitty "$HYPR" && pass || fail "hyprland.lua must not mention kitty"
 grep -qx 'theme = "TokyoNight Storm"' "$GHOSTTY" 2> /dev/null && pass || fail "ghostty theme must be TokyoNight Storm"
 [[ -f "$GHOSTTY" ]] && ! grep -qE '^[^#]*(macos-|super\+)' "$GHOSTTY" && pass || fail "ghostty config has macOS or super+ lines"
+
+if [[ "$HOST" == unicorn-rx0 ]]; then
+    sys_json_eq home-manager.useGlobalPkgs true
+    sys_json_eq home-manager.useUserPackages true
+    sys_eq home-manager.backupFileExtension before-nix
+fi
 
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]

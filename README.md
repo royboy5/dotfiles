@@ -178,6 +178,10 @@ nix/
     scripts/              #   shell scripts packaged by the modules (project, auto-rotate)
     dev/                  #   language toolchains, direnv, project, proto
     targets/generic-linux.nix   # non-NixOS: targets.genericLinux, nrs, ngc, ~/.config/home-manager link
+    targets/nixos.nix     #   NixOS: nrs (nixos-rebuild) and ngc
+  nixos/                  # the NixOS system layer (unicorn-rx0)
+    default.nix  desktop.nix  unicorn-rx0.nix
+    hardware/
   shells/                 # project dev shells (own flake.lock), see `project`
 configs/                  # config files, linked live into ~/.config
 tests/                    # eval.sh (Nix checks), bootstrap.bats, auto-rotate.bats
