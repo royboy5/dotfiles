@@ -176,11 +176,17 @@ machine, so the first install takes one extra commit.
    ```
 4. **Hardware file and `stateVersion`**:
    ```bash
-   nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix
+   mkdir -p ~/.dotfiles/nix/nixos/hardware && nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix
    ```
    If `system.stateVersion` in `nix/nixos/unicorn-rx0.nix` (the placeholder
    is `26.05`) differs from the installer's value, set it to the installer's.
-   Then `git add nix/`, commit and push from the machine.
+   Then commit and push from the machine. There's no git identity until
+   home-manager applies, so pass one just for this commit:
+   ```bash
+   git add nix/
+   git -c user.name="Your Name" -c user.email="you@example.com" commit -m "unicorn-rx0: hardware file"
+   git push
+   ```
 5. **Bootstrap**, still inside `nix-shell -p git`:
    ```bash
    ./bootstrap --dry   # preview: builds the system, switches nothing
@@ -191,6 +197,9 @@ machine, so the first install takes one extra commit.
    - runs `sudo nixos-rebuild switch`, which applies the system layer (COSMIC,
      Hyprland, drivers, services, GUI apps) and home-manager together
    - clones TPM and sets up rustup
+
+   On the first run rustup may not be on PATH yet, so bootstrap warns and
+   skips it. Open a new terminal and re-run `./bootstrap` to finish.
 
    It doesn't run the Nix, flakes, login-shell or GPU steps: NixOS provides
    them.

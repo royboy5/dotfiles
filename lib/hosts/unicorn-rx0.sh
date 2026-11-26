@@ -20,9 +20,9 @@ nixos_switch() {
 host_unicorn_rx0() {
     local hw="$DOTFILES_ROOT/nix/nixos/hardware/unicorn-rx0.nix"
     if [[ ! -f "$hw" ]]; then
-        log_error "$hw is missing. Generate it on this machine:"
-        echo "        nixos-generate-config --show-hardware-config > $hw" >&2
-        echo "        git -C \"$DOTFILES_ROOT\" add nix/ && git -C \"$DOTFILES_ROOT\" commit" >&2
+        log_error "nix/nixos/hardware/unicorn-rx0.nix is missing. On unicorn-rx0, run:"
+        echo "        mkdir -p ~/.dotfiles/nix/nixos/hardware && nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix" >&2
+        echo "        then git add it (README: unicorn-rx0)." >&2
         return 1
     fi
     lock_flake

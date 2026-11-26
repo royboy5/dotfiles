@@ -15,7 +15,7 @@ in
   assertions = [
     {
       assertion = builtins.pathExists hardwareFile;
-      message = "nix/nixos/hardware/unicorn-rx0.nix is missing. On unicorn-rx0, run: nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix, then git add it (README: unicorn-rx0).";
+      message = "nix/nixos/hardware/unicorn-rx0.nix is missing. On unicorn-rx0, run: mkdir -p ~/.dotfiles/nix/nixos/hardware && nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix, then git add it (README: unicorn-rx0).";
     }
   ];
 
