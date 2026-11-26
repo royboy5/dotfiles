@@ -11,7 +11,7 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 |---|---|---|
 | `wsl` | Fedora under WSL (CLI only) | migrated |
 | `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | migrated |
-| `unicorn-rx0` | NixOS, Dell XPS 13 9370 | planned |
+| `unicorn-rx0` | NixOS, Dell XPS 13 9370 | being migrated |
 | `qant-00` | Bazzite | planned |
 
 ## Table of contents
@@ -240,6 +240,7 @@ Per-tool pages, for things that only matter while using that tool:
 | A config file | `configs/<app>/…`, linked with `linkConfig` from that module. |
 | A shell function or zsh option | `nix/home/shell/zsh.nix` (or the topic module's `programs.zsh.initContent`). |
 | A GUI app, a daemon or system service, anything needing setuid/PAM, a driver or hardware tool, a font | the **system layer** of the host: its package list in `lib/hosts/<host>.sh`. Bazzite declares nothing. |
+| The same, on NixOS | `nix/nixos/`: GUI apps, fonts, services and the login shell. `default.nix` for every NixOS host, `desktop.nix` for GUI hosts, `<host>.nix` for one host. |
 | A config only GUI hosts use | `configs/<app>/`, linked from `nix/home/gui.nix`. |
 | Something only one host needs | `nix/hosts/<host>.nix`. |
 

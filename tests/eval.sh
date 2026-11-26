@@ -232,5 +232,67 @@ if [[ "$HOST" == unicorn-rx0 ]]; then
     sys_eq home-manager.backupFileExtension before-nix
 fi
 
+# --- NixOS system layer (unicorn-rx0) ---------------------------------------
+if [[ "$HOST" == unicorn-rx0 ]]; then
+    sys_names() { # <attr> -> JSON list of package names
+        "${NIX[@]}" --json "$SYS.$1" \
+            --apply 'map (p: p.pname or (builtins.parseDrvName p.name).name)' 2>&1
+    }
+    sys_has() { # <attr> <substring of a package name>
+        sys_names "$1" | grep -q "$2" && pass || fail "sys $1 lacks a package matching $2"
+    }
+    sys_json_eq boot.loader.systemd-boot.enable true
+    sys_json_eq boot.loader.systemd-boot.configurationLimit 10
+    sys_json_eq boot.loader.efi.canTouchEfiVariables true
+    sys_json_eq services.power-profiles-daemon.enable true
+    sys_json_eq services.tlp.enable false
+    sys_json_eq hardware.system76.power-daemon.enable false
+    sys_json_eq services.thermald.enable true
+    sys_json_eq services.fwupd.enable true
+    sys_json_eq hardware.graphics.enable true
+    sys_eq networking.hostName unicorn-rx0
+    sys_json_eq services.desktopManager.cosmic.enable true
+    sys_json_eq services.displayManager.cosmic-greeter.enable true
+    sys_json_eq programs.hyprland.enable true
+    sys_json_eq networking.networkmanager.enable true
+    sys_json_eq services.pipewire.enable true
+    sys_json_eq services.pipewire.alsa.enable true
+    sys_json_eq services.pipewire.pulse.enable true
+    sys_json_eq security.rtkit.enable true
+    sys_json_eq hardware.bluetooth.enable true
+    sys_json_eq networking.firewall.enable true
+    sys_json_eq virtualisation.docker.enable true
+    sys_json_eq services.openssh.enable true
+    sys_json_eq services.openssh.settings.PasswordAuthentication false
+    sys_eq services.openssh.settings.PermitRootLogin no
+    # Keys are managed by hand in ~/.ssh/authorized_keys (sshd's default);
+    # none live in the repo, and the per-user file must stay honored.
+    sys_json_eq users.users.roy.openssh.authorizedKeys.keys '[]'
+    keyfiles=$("${NIX[@]}" --json "$SYS.services.openssh.authorizedKeysFiles" 2>&1)
+    [[ "$keyfiles" == *'"%h/.ssh/authorized_keys"'* ]] && pass \
+        || fail "sshd must read ~/.ssh/authorized_keys, got $keyfiles"
+    sys_json_eq users.users.roy.isNormalUser true
+    sys_eq users.users.roy.shell.shellPath /bin/zsh
+    sys_json_eq users.users.roy.extraGroups '["wheel","networkmanager","docker","video","audio"]'
+    sys_json_eq users.users.roy.hashedPassword null
+    sys_json_eq programs.zsh.enable true
+    sys_json_eq programs.zsh.enableCompletion false
+    sys_json_eq programs.zsh.enableBashCompletion false
+    sys_eq programs.zsh.promptInit ""
+    sys_json_eq nix.settings.experimental-features '["nix-command","flakes"]'
+    sys_json_eq nix.gc.automatic true
+    sys_json_eq nix.gc.dates '["Sun 03:00"]'
+    sys_eq nix.gc.options "--delete-older-than 30d"
+    sys_json_eq nix.optimise.automatic true
+    sys_json_eq programs.nix-ld.enable true
+    for p in ghostty bitwarden-desktop wl-clipboard; do sys_has environment.systemPackages "\"$p\""; done
+    sys_has fonts.packages fira-code
+    sys_has fonts.packages jetbrains-mono
+    sys_eq system.stateVersion 26.05
+    got=$("${NIX[@]}" --json "$SYS.assertions" --apply \
+        'a: builtins.any (x: !x.assertion && builtins.match ".*nixos-generate-config --show-hardware-config.*" x.message != null) a' 2>&1)
+    [[ "$got" == true ]] && pass || fail "missing-hardware assertion absent: $got"
+fi
+
 echo "eval checks: $PASSED passed, $FAILED failed"
 [[ $FAILED -eq 0 ]]
