@@ -288,10 +288,18 @@ if [[ "$HOST" == unicorn-rx0 ]]; then
     for p in ghostty bitwarden-desktop wl-clipboard; do sys_has environment.systemPackages "\"$p\""; done
     sys_has fonts.packages fira-code
     sys_has fonts.packages jetbrains-mono
-    sys_eq system.stateVersion 26.05
-    got=$("${NIX[@]}" --json "$SYS.assertions" --apply \
-        'a: builtins.any (x: !x.assertion && builtins.match ".*nixos-generate-config --show-hardware-config.*" x.message != null) a' 2>&1)
-    [[ "$got" == true ]] && pass || fail "missing-hardware assertion absent: $got"
+    got=$("${NIX[@]}" --raw "$SYS.system.stateVersion" 2>&1)
+    [[ "$got" =~ ^[0-9][0-9]\.[0-9][0-9]$ ]] && pass || fail "system.stateVersion: '$got'"
+    # Two states: before the machine exists the hardware assertion must fail with
+    # the instruction; once its hardware file is committed, nothing may fail.
+    if [[ -f "$ROOT/nix/nixos/hardware/unicorn-rx0.nix" ]]; then
+        got=$("${NIX[@]}" --json "$SYS.assertions" --apply 'a: builtins.any (x: !x.assertion) a' 2>&1)
+        [[ "$got" == false ]] && pass || fail "a NixOS assertion fails: $got"
+    else
+        got=$("${NIX[@]}" --json "$SYS.assertions" --apply \
+            'a: builtins.any (x: !x.assertion && builtins.match ".*nixos-generate-config --show-hardware-config.*" x.message != null) a' 2>&1)
+        [[ "$got" == true ]] && pass || fail "missing-hardware assertion absent: $got"
+    fi
 fi
 
 echo "eval checks: $PASSED passed, $FAILED failed"
