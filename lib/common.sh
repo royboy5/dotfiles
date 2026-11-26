@@ -79,6 +79,14 @@ check_repo_path() {
     fi
 }
 
+# A fresh NixOS has no git; check_untracked and the flake both need it.
+require_git() {
+    if ! command -v git &> /dev/null; then
+        log_error "git isn't installed. On a fresh NixOS: nix-shell -p git, then re-run ./bootstrap from inside that shell."
+        return 1
+    fi
+}
+
 # Flakes inside a git repo only see tracked files (any file under nix/, not
 # just .nix: scripts read with builtins.readFile count too).
 check_untracked() {

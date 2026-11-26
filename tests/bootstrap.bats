@@ -562,3 +562,63 @@ sudo_runs() {
     host_wing_zero
     [ "$(cat "$KERNEL_CMDLINE")" == "rw i915.enable_psr=0 i915.enable_fbc=0" ]
 }
+
+# --- unicorn-rx0 (NixOS) --------------------------------------------------------
+
+make_hardware_file() {
+    mkdir -p "$DOTFILES_ROOT/nix/nixos/hardware"
+    echo "{ }" > "$DOTFILES_ROOT/nix/nixos/hardware/unicorn-rx0.nix"
+}
+
+@test "require_git fails with the nix-shell hint when git isn't on PATH" {
+    run env PATH="$STUBS" /bin/bash -c 'source "$1/bootstrap"; require_git' _ "$ROOT"
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"nix-shell -p git"* ]]
+}
+
+@test "resolve_host lists unicorn-rx0 among the known hosts" {
+    run resolve_host
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"unicorn-rx0"* ]]
+}
+
+@test "host_unicorn_rx0 stops before nix or sudo when the hardware file is missing" {
+    run host_unicorn_rx0
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"nixos-generate-config --show-hardware-config"* ]]
+    ! grep -Eq "^(nix|sudo) " "$CALLS"
+}
+
+@test "host_unicorn_rx0 locks the flake, then runs nixos-rebuild switch" {
+    make_hardware_file
+    stub git
+    host_unicorn_rx0
+    local lock rebuild
+    lock=$(grep -n "^nix .*flake lock" "$CALLS" | cut -d: -f1)
+    rebuild=$(grep -n "^sudo nixos-rebuild switch --flake $DOTFILES_ROOT/nix#unicorn-rx0 --option experimental-features nix-command flakes$" "$CALLS" | cut -d: -f1)
+    [ -n "$lock" ]
+    [ -n "$rebuild" ]
+    [ "$lock" -lt "$rebuild" ]
+}
+
+@test "host_unicorn_rx0 --dry builds the toplevel without sudo" {
+    make_hardware_file
+    stub git
+    BOOTSTRAP_DRY=1
+    host_unicorn_rx0
+    grep -q "^nix .*build --no-link $DOTFILES_ROOT/nix#nixosConfigurations.unicorn-rx0.config.system.build.toplevel$" "$CALLS"
+    ! grep -q "^sudo" "$CALLS"
+}
+
+@test "host_unicorn_rx0 leaves the non-NixOS system layer and nix.conf alone" {
+    make_hardware_file
+    stub git
+    for cmd in pacman non-nixos-gpu-setup tee; do stub "$cmd"; done
+    NIX_CONF="$TMP/nix.conf"
+    echo "keep = me" > "$NIX_CONF"
+    host_unicorn_rx0
+    for cmd in pacman dnf usermod tee non-nixos-gpu-setup; do
+        ! grep -q "$cmd" "$CALLS"
+    done
+    [ "$(cat "$NIX_CONF")" == "keep = me" ]
+}

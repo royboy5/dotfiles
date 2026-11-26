@@ -19,6 +19,7 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 - [Install](#install)
   - [wsl](#wsl)
   - [wing-zero](#wing-zero)
+  - [unicorn-rx0](#unicorn-rx0)
   - [Adding a new host](#adding-a-new-host)
 - [Layout](#layout)
 - [Everyday use](#everyday-use)
@@ -146,6 +147,58 @@ Hyprland side by side.
 6. **Open Ghostty.** zellij starts automatically. In tmux, press
    `prefix + I` (prefix is Ctrl-Space) once to install its plugins.
 
+### unicorn-rx0
+
+Dell XPS 13 9370 on NixOS, a GUI host with COSMIC and Hyprland side by side.
+The system layer and home-manager are one `nixos-rebuild`, so bootstrap
+doesn't install packages or Nix itself. The hardware file comes from the
+machine, so the first install takes one extra commit.
+
+1. **Before wiping:** follow [Reinstalling a host](#reinstalling-a-host) (the
+   current Arch install's backups).
+2. **Install NixOS** from the graphical ISO. Set the hostname to
+   `unicorn-rx0`, create the user `roy`, and choose **No desktop**: COSMIC
+   and Hyprland come from this repo. At the partitioning step, check that the
+   drive selector at the top is the internal NVMe (`/dev/nvme0n1`), not the
+   USB stick, before choosing **Erase disk**. Afterwards, note
+   `system.stateVersion` in the installed `/etc/nixos/configuration.nix`.
+3. **Restore `~/.ssh`** from the backup (`chmod 700 ~/.ssh; chmod 600 ~/.ssh/id_*`
+   for the private keys). `~/.ssh/authorized_keys` must also hold the keys of
+   the machines that should ssh in (restore it or add keys by hand): the repo
+   has no keys and sshd refuses passwords, so until it does, ssh login to
+   unicorn-rx0 is impossible. A fresh NixOS has no git, so get it in a
+   shell, and stay in that shell for steps 4 and 5:
+   ```bash
+   nix-shell -p git
+   # -b nix until the Nix port is merged to master
+   git clone -b nix git@github.com:royboy5/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
+   ```
+4. **Hardware file and `stateVersion`**:
+   ```bash
+   nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix
+   ```
+   If `system.stateVersion` in `nix/nixos/unicorn-rx0.nix` (the placeholder
+   is `26.05`) differs from the installer's value, set it to the installer's.
+   Then `git add nix/`, commit and push from the machine.
+5. **Bootstrap**, still inside `nix-shell -p git`:
+   ```bash
+   ./bootstrap --dry   # preview: builds the system, switches nothing
+   ./bootstrap
+   ```
+   It:
+   - locks the flake inputs
+   - runs `sudo nixos-rebuild switch`, which applies the system layer (COSMIC,
+     Hyprland, drivers, services, GUI apps) and home-manager together
+   - clones TPM and sets up rustup
+
+   It doesn't run the Nix, flakes, login-shell or GPU steps: NixOS provides
+   them.
+6. **Reboot.** cosmic-greeter offers COSMIC and Hyprland. Then **restore your
+   secrets** into `~/.config/zsh/local_env.zsh` (see [Secrets](#secrets)) and
+   zsh history into `~/.local/state/zsh/`, open Ghostty, and press
+   `prefix + I` (prefix is Ctrl-Space) once in tmux to install its plugins.
+
 ### Adding a new host
 
 1. `nix/flake.nix`: add an output. Non-NixOS: `homeConfigurations."roy@<host>" = mkHome "<host>";`.
@@ -156,6 +209,10 @@ Hyprland side by side.
    `KNOWN_HOSTS` in `./bootstrap`. A hyphen in the host name becomes an
    underscore in the function name: `wing-zero` → `host_wing_zero`.
    A GUI host also imports `../home/gui.nix` in step 2.
+   A NixOS host instead gets `nix/nixos/<host>.nix`,
+   `nix/nixos/hardware/<host>.nix` (from `nixos-generate-config`),
+   `mkNixos "<host>"` in the flake, and a `lib/hosts/<host>.sh` that calls
+   `nixos_switch <host>`.
 4. `git add` the new files (flakes only see tracked files), then bootstrap.
 
 ## Layout
@@ -261,7 +318,11 @@ home-manager generations              # newest first
 /nix/store/<hash>-home-manager-generation/activate   # path from the list
 ```
 
-or `git checkout` the previous `nix/flake.lock` and run `nrs`. `ngc` deletes
+On NixOS (unicorn-rx0), `nrs` is `sudo nixos-rebuild switch`. Roll back with
+`sudo nixos-rebuild switch --rollback`, or pick an older generation in the
+boot menu (systemd-boot keeps 10).
+
+Or `git checkout` the previous `nix/flake.lock` and run `nrs`. `ngc` deletes
 every old generation, so there is nothing to roll back to after it.
 
 **A package fails to build after `nfu`** (a long compile, then an error): it's
@@ -324,6 +385,16 @@ reinstalling.
   if it doesn't, re-run `./bootstrap` and reboot. To get in meanwhile, press
   `e` at the boot menu, add ` i915.enable_psr=0 i915.enable_fbc=0` to the
   end of the kernel options, and boot.
+  On NixOS hosts, the same fix is `boot.kernelParams = [ "i915.enable_psr=0" ];`
+  in the host's `nix/nixos/<host>.nix` (the XPS is Intel too), then `nrs`.
+- **`nix/nixos/hardware/unicorn-rx0.nix is missing`** (bootstrap or the
+  build): the hardware file comes from the machine; see step 4 of
+  [unicorn-rx0](#unicorn-rx0).
+- **The old OS still boots after installing NixOS**: press F12 at the Dell
+  logo and pick "Linux Boot Manager". If there's no such entry, NixOS went to
+  the wrong disk (probably the USB stick): reinstall, checking the drive
+  selector. To make the order permanent, use F2, Boot Sequence, or
+  `sudo efibootmgr -o`.
 - **Red screen at boot on wing-zero**: the Surface Pro 3 shows it whenever
   Secure Boot is off or the factory keys were replaced. To boot with Secure
   Boot on and the factory keys kept, follow
