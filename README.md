@@ -24,6 +24,7 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 - [Layout](#layout)
 - [Everyday use](#everyday-use)
 - [Where does it go?](#where-does-it-go)
+  - [Tracking COSMIC settings](#tracking-cosmic-settings)
 - [Updating and rolling back](#updating-and-rolling-back)
 - [Reinstalling a host](#reinstalling-a-host)
 - [Secrets](#secrets)
@@ -318,10 +319,55 @@ Per-tool pages, for things that only matter while using that tool:
 | A GUI app, a daemon or system service, anything needing setuid/PAM, a driver or hardware tool, a font | the **system layer** of the host: its package list in `lib/hosts/<host>.sh`. Bazzite declares nothing. |
 | The same, on NixOS | `nix/nixos/`: GUI apps, fonts, services and the login shell. `default.nix` for every NixOS host, `desktop.nix` for GUI hosts, `<host>.nix` for one host. An unfree app (Chrome) also needs its name in the `allowUnfreePredicate` list in `default.nix`. |
 | A config only GUI hosts use | `configs/<app>/`, linked from `nix/home/gui.nix`. |
+| A COSMIC setting (idle, theme, panel, shortcuts) | `configs/cosmic/<component>/`, linked from `nix/home/gui.nix`. See [Tracking COSMIC settings](#tracking-cosmic-settings). |
 | Something only one host needs | `nix/hosts/<host>.nix`. |
 
 Commit (or at least `git add`) new `nix/` files before `nrs`; flakes ignore
 untracked files.
+
+### Tracking COSMIC settings
+
+None are tracked yet: COSMIC Settings saves to `~/.config/cosmic/` on each
+machine. To keep a setting in the repo, link its component like any other
+config.
+
+COSMIC stores one file per setting, at
+`~/.config/cosmic/<component>/v1/<setting>`, each holding one value. For
+example, turning the screen off after 15 minutes is
+`com.system76.CosmicIdle/v1/screen_off_time` holding `Some(900000)`
+(milliseconds). Components you're likely to want:
+
+| Component | Holds |
+|---|---|
+| `com.system76.CosmicIdle` | screen off and suspend timers |
+| `com.system76.CosmicTheme.*` | appearance: dark/light, accent, corners |
+| `com.system76.CosmicSettings.Shortcuts` | custom keyboard shortcuts |
+| `com.system76.CosmicComp` | window manager and input settings |
+| `com.system76.CosmicPanel.*` | panel and dock |
+
+1. Set things up in COSMIC Settings, then `ls ~/.config/cosmic/` to see the
+   components.
+2. Move each one you want into the repo, so the link has a free path:
+   ```bash
+   mkdir -p ~/.dotfiles/configs/cosmic
+   mv ~/.config/cosmic/com.system76.CosmicIdle ~/.dotfiles/configs/cosmic/
+   ```
+3. Link it, one line per component, in `nix/home/gui.nix`:
+   ```nix
+   xdg.configFile."cosmic/com.system76.CosmicIdle".source =
+     linkConfig "cosmic/com.system76.CosmicIdle";
+   ```
+4. `git add` it, `nrs`, then commit and push. From then on, a change in
+   COSMIC Settings writes straight into the repo and shows in `git diff`.
+
+Pick components rather than linking all of `~/.config/cosmic`: the rest is
+noisy state that would churn `git status`. `gui.nix` applies to every GUI
+host, so a linked component is shared by `wing-zero` and `unicorn-rx0`; keep
+per-machine ones (panel or display layout on the Surface's tablet screen)
+unlinked, or link them from `nix/hosts/<host>.nix`. On the other host, the
+first `nrs` after pulling meets that host's own copy of the component: on
+`wing-zero` the switch stops on it, so move it aside first; on NixOS it's
+renamed to `*.before-nix`.
 
 ## Updating and rolling back
 
