@@ -251,6 +251,7 @@ if [[ "$HOST" == unicorn-rx0 ]]; then
     sys_json_eq services.fwupd.enable true
     sys_json_eq hardware.graphics.enable true
     sys_eq networking.hostName unicorn-rx0
+    sys_eq time.timeZone America/New_York
     sys_json_eq services.desktopManager.cosmic.enable true
     sys_json_eq services.displayManager.cosmic-greeter.enable true
     sys_json_eq programs.hyprland.enable true

@@ -20,6 +20,8 @@ in
   ];
 
   networking.hostName = "unicorn-rx0";
+  # NixOS owns /etc/localtime, so `timedatectl set-timezone` doesn't stick.
+  time.timeZone = "America/New_York";
 
   boot.loader.systemd-boot = {
     enable = true;
