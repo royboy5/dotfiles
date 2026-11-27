@@ -36,7 +36,7 @@ in
   services.power-profiles-daemon.enable = true;
   services.fwupd.enable = true;
 
-  # Placeholder until the machine exists: replace with the installer ISO's
-  # release (README: unicorn-rx0). Never change it afterwards.
+  # The installer's value, committed from the machine (README: unicorn-rx0).
+  # Never change it. On a reinstall, set it from the new installer's config.
   system.stateVersion = "26.05";
 }

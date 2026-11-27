@@ -182,8 +182,10 @@ machine, so the first install takes one extra commit.
    ```bash
    mkdir -p ~/.dotfiles/nix/nixos/hardware && nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix
    ```
-   If `system.stateVersion` in `nix/nixos/unicorn-rx0.nix` (the placeholder
-   is `26.05`) differs from the installer's value, set it to the installer's.
+   `system.stateVersion` in `nix/nixos/unicorn-rx0.nix` is the installer's
+   value, committed from the machine. Never change it afterwards; on a
+   reinstall, set it from the new installer's config
+   (`grep stateVersion /etc/nixos/configuration.nix`).
    Then commit and push from the machine. There's no git identity until
    home-manager applies, so pass one just for this commit:
    ```bash
@@ -298,12 +300,12 @@ Per-tool pages, for things that only matter while using that tool:
 
 | Command | What it does |
 |---|---|
-| `nrs` | Apply the config after editing `nix/` (home-manager switch for this host). |
+| `nrs` | Apply the config after editing `nix/`: `home-manager switch` on non-NixOS hosts, `sudo nixos-rebuild switch` (system and home-manager together) on NixOS. |
 | `nfu` | Update `nix/flake.lock` (all packages) to the latest nixpkgs. Apply with `nrs`. |
 | `nus` | Update the dev shells' lock (`nix/shells/flake.lock`). |
 | `ngc` | Delete all old generations and free their space (no rollback afterwards). |
-| `home-manager news`, `home-manager generations` | Plain `home-manager` commands find this repo through `~/.config/home-manager` (a link to `nix/`) and pick `roy@<hostname>`. |
-| `./bootstrap` | Re-apply the system layer (package lists) as well as Nix. |
+| `home-manager news`, `home-manager generations` | Non-NixOS hosts only (NixOS has no `~/.config/home-manager` link). Plain `home-manager` commands find this repo through `~/.config/home-manager` (a link to `nix/`) and pick `roy@<hostname>`. |
+| `./bootstrap` | Re-apply the system layer (package lists) as well as Nix. On NixOS it runs the rebuild and sets up TPM and rustup; there are no package lists. |
 | `./bootstrap --dry` | Show what bootstrap would change; builds without activating. |
 | `./bootstrap --clean-backups` | Delete the `*.before-nix` files from the first switch. |
 | `dot` | `cd ~/.dotfiles` |
@@ -450,7 +452,8 @@ reinstalling.
   if it doesn't, re-run `./bootstrap` and reboot. To get in meanwhile, press
   `e` at the boot menu, add ` i915.enable_psr=0 i915.enable_fbc=0` to the
   end of the kernel options, and boot.
-  On NixOS hosts, the same fix is `boot.kernelParams = [ "i915.enable_psr=0" ];`
+  On NixOS hosts, the same fix is `boot.kernelParams = [ "i915.enable_psr=0" "i915.enable_fbc=0" ];`
+  (wing-zero needed both)
   in the host's `nix/nixos/<host>.nix` (the XPS is Intel too), then `nrs`.
 - **`nix/nixos/hardware/unicorn-rx0.nix is missing`** (bootstrap or the
   build): the hardware file comes from the machine; see step 4 of
