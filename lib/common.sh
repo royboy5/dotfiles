@@ -111,8 +111,7 @@ load_nix_env() {
     return 0
 }
 
-# ensure_nix [planner args...]: the NixOS community installer. Hosts pass a
-# planner when they need one (Bazzite: ostree --persistence=/var/lib/nix).
+# ensure_nix: the NixOS community installer, on the non-NixOS hosts.
 ensure_nix() {
     if command -v nix &> /dev/null; then
         # An install made some other way (e.g. while WSL had systemd off) has no
@@ -126,7 +125,7 @@ ensure_nix() {
         return 0
     fi
     log_info "Installing Nix..."
-    execute bash -c "curl -sSfL $NIX_INSTALLER_URL | sh -s -- install $*"
+    execute bash -c "curl -sSfL $NIX_INSTALLER_URL | sh -s -- install"
     load_nix_env
 }
 

@@ -38,3 +38,7 @@ After the install, the existing SSH keys are restored rather than regenerated, s
 **Failure.** If a wiped host can't finish a clean bootstrap, fix forward on `nix`; don't reinstall the old OS. The host order pauses until that host passes.
 
 **Merge.** `nix` merges to `master` with a merge commit once `unicorn-rx0` is done (no host needs the bash setup after that). `qant-00` then clones `master`. At the merge, delete the `nix` branch, `research/*`, and `origin/bash-only`, `origin/nvim-lua` and `origin/updated-ansible`. Local agent worktree branches are out of scope.
+
+## Amendment (2026-11-27)
+
+`qant-00` (Bazzite) is dropped from the migration at the user's request, so the order ends at `unicorn-rx0`, and every host is on Nix once `nix` merges. Its rows here and in tickets 01, 03, 04, 05 and 12 are void. bootstrap's installer-arguments hook (`ensure_nix ostree …`) existed only for it and was removed.

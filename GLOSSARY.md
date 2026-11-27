@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal machine provisioning across Arch, Fedora, Bazzite and NixOS: what gets installed and how each tool is configured.
+Personal machine provisioning across Arch, Fedora and NixOS: what gets installed and how each tool is configured.
 
 ## Language
 
@@ -13,7 +13,7 @@ Everything that differs per OS: the native package manager, desktop environment,
 _Avoid_: OS config, base system
 
 **Target OS**:
-One of the operating systems this repo supports: Arch, Fedora, Bazzite or NixOS. An Arch derivative such as EndeavourOS counts as Arch.
+One of the operating systems this repo supports: Arch, Fedora or NixOS. An Arch derivative such as EndeavourOS counts as Arch.
 _Avoid_: platform, distro (when meaning the supported set), EndeavourOS (as a separate target OS)
 
 **Host**:

@@ -208,14 +208,14 @@ unstub() {
     ! grep -q nix-installer "$CALLS"
 }
 
-@test "ensure_nix runs the installer with host-specific arguments when nix is missing" {
+@test "ensure_nix runs the installer when nix is missing" {
     unstub nix
     PATH="$STUBS:/usr/bin:/bin"
     stub curl
     BOOTSTRAP_DRY=1
-    run ensure_nix ostree --persistence=/var/lib/nix
+    run ensure_nix
     [[ "$output" == *"https://artifacts.nixos.org/nix-installer"* ]]
-    [[ "$output" == *"install ostree --persistence=/var/lib/nix"* ]]
+    [[ "$output" == *"sh -s -- install"* ]]
 }
 
 # --- ensure_flakes ------------------------------------------------------------

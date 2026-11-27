@@ -5,14 +5,14 @@ type: map
 
 ## Destination
 
-A decided spec for rebuilding this repo on Nix + home-manager, modelled on `~/.dotfiles`, for the four **target OSes**: Arch, Fedora, Bazzite, NixOS. The spec covers the target layout, module list, per-OS bootstrap flow and migration order, and is ready to hand to an implementation session.
+A decided spec for rebuilding this repo on Nix + home-manager, modelled on `~/.dotfiles`, for the three **target OSes**: Arch, Fedora, NixOS (Bazzite was a fourth until 2026-11-27; see Out of scope). The spec covers the target layout, module list, per-OS bootstrap flow and migration order, and is ready to hand to an implementation session.
 
 ## Notes
 
 - Domain: personal dotfiles. Vocabulary is in `GLOSSARY.md` (**user layer**, **system layer**, **target OS**).
 - Reference repo: `~/.dotfiles` (work, macOS, nix-darwin + home-manager, `linkConfig` live links, direnv dev shells). Read its `README.md` and `nix/` before deciding layout questions.
-- Shape decided while charting: **hybrid**. Nix/home-manager owns the user layer everywhere. A thin bash bootstrap handles the system layer on Arch, Fedora and Bazzite (a declared package list per distro). NixOS gets a full `nixosConfigurations` host with home-manager as a NixOS module.
-- One host per target OS exists today (see [Flake layout and outputs](tickets/03-flake-layout.md)). Fedora runs under WSL. NixOS is `unicorn-rx0` (Dell XPS 13 9370), and `wing-zero` (Surface Pro 3) runs EndeavourOS on the Arch path (renamed from `strike-freedom` on 2026-11-11; see [The NixOS host's system layer](tickets/09-wing-zero-system.md)). macOS was re-added on 2026-11-09 for the Intel Mac `stargazer`, then **removed again on 2026-11-10** (see [Bootstrap flow per target OS](tickets/05-bootstrap-flow.md)).
+- Shape decided while charting: **hybrid**. Nix/home-manager owns the user layer everywhere. A thin bash bootstrap handles the system layer on Arch and Fedora (a declared package list per distro). NixOS gets a full `nixosConfigurations` host with home-manager as a NixOS module.
+- One host per target OS exists today (see [Flake layout and outputs](tickets/03-flake-layout.md)). Fedora runs under WSL. NixOS is `unicorn-rx0` (Dell XPS 13 9370), and `wing-zero` (Surface Pro 3) runs EndeavourOS on the Arch path (renamed from `strike-freedom` on 2026-11-11; see [The NixOS host's system layer](tickets/09-wing-zero-system.md)). macOS was re-added on 2026-11-09 for the Intel Mac `stargazer`, then **removed again on 2026-11-10** (see [Bootstrap flow per target OS](tickets/05-bootstrap-flow.md)). Bazzite (`qant-00`) was **removed on 2026-11-27**: the user no longer needs it.
 - This repo stays **independent** of `~/.dotfiles`: a one-time port, no shared base.
 - Work-only content stays out: `gke-creds`, `cloud.nix` and its fp-ev clusters, `shells/envs/ma.nix`, internal package registry vars, the tmux k8s status segment.
 - Configs: `~/.dotfiles` versions are the starting baseline, but this repo's current configs must be weighed too. **During implementation, ask the user for confirmation before adopting any specific config.**
@@ -45,3 +45,4 @@ A decided spec for rebuilding this repo on Nix + home-manager, modelled on `~/.d
 - A shared base consumed by both this repo and `~/.dotfiles`: would be a separate effort.
 - Work-only tooling (see Notes).
 - macOS (`stargazer`, nix-darwin, Homebrew casks): removed 2026-11-10 because the Nix installer chosen in [Bootstrap flow per target OS](tickets/05-bootstrap-flow.md) has no Intel Mac build. A future Apple Silicon Mac would be a fresh effort modelled on `~/.dotfiles`.
+- Bazzite (`qant-00`): removed 2026-11-27 at the user's request, before its plan was written; the host isn't needed. The decisions about it stay in their tickets as the record: [Nix on Bazzite](tickets/01-nix-on-bazzite.md) and the Bazzite rows of tickets 03, 04, 05, 12 and 14 are void. Bringing it back would be a fresh plan built on those tickets.
