@@ -157,8 +157,11 @@ machine, so the first install takes one extra commit.
 1. **Before wiping:** follow [Reinstalling a host](#reinstalling-a-host) (the
    current Arch install's backups).
 2. **Install NixOS** from the graphical ISO. Set the hostname to
-   `unicorn-rx0`, create the user `roy`, and choose **No desktop**: COSMIC
-   and Hyprland come from this repo. At the partitioning step, check that the
+   `unicorn-rx0` (or pass `--host unicorn-rx0` to bootstrap later; the first
+   switch sets it), create the user `roy`, and choose **No desktop**: COSMIC
+   and Hyprland come from this repo. Anything else the installer's config adds
+   (a desktop, Firefox, printing) is replaced by this repo's on the first
+   switch. At the partitioning step, check that the
    drive selector at the top is the internal NVMe (`/dev/nvme0n1`), not the
    USB stick, before choosing **Erase disk**. Afterwards, note
    `system.stateVersion` in the installed `/etc/nixos/configuration.nix`.
@@ -200,6 +203,13 @@ machine, so the first install takes one extra commit.
 
    On the first run rustup may not be on PATH yet, so bootstrap warns and
    skips it. Open a new terminal and re-run `./bootstrap` to finish.
+
+   If you ran it from a desktop the installer set up (Plasma, GNOME…), the
+   switch removes that desktop under you, its portal fails to restart, and
+   the switch ends with `switch-to-configuration … returned non-zero exit
+   status 4`. The new system is installed anyway: reboot into cosmic-greeter
+   and re-run `./bootstrap` (no `nix-shell` or `--host` needed now) to finish
+   the TPM and rustup steps.
 
    It doesn't run the Nix, flakes, login-shell or GPU steps: NixOS provides
    them.

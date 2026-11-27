@@ -26,6 +26,11 @@
     pkgs.nerd-fonts.jetbrains-mono
   ];
 
+  # The browser. The NixOS module, not a bare package, so policies and native
+  # messaging hosts (Bitwarden's browser integration) work. Added 2026-11-27
+  # at unicorn-rx0's acceptance: the installer's config had it, this repo didn't.
+  programs.firefox.enable = true;
+
   environment.systemPackages = [
     pkgs.ghostty
     pkgs.bitwarden-desktop

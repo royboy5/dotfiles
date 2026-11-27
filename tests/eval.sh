@@ -254,6 +254,7 @@ if [[ "$HOST" == unicorn-rx0 ]]; then
     sys_json_eq services.desktopManager.cosmic.enable true
     sys_json_eq services.displayManager.cosmic-greeter.enable true
     sys_json_eq programs.hyprland.enable true
+    sys_json_eq programs.firefox.enable true
     sys_json_eq networking.networkmanager.enable true
     sys_json_eq services.pipewire.enable true
     sys_json_eq services.pipewire.alsa.enable true
