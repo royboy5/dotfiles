@@ -1,0 +1,7 @@
+# Copy to ~/.config/zsh/local_env.zsh (never commit it). Sourced at the end of
+# .zshrc, before zellij auto-start. Exports only: secrets and per-machine settings.
+
+# export GITHUB_TOKEN=...
+
+# Don't auto-start zellij on this machine.
+# export ZELLIJ_AUTOSTART=0

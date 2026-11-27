@@ -1,9 +1,12 @@
+// Dev layout: editor over shell on the left, AI pane full height on the right.
+// Usage: zellij --layout dev
 layout {
     pane size=1 {
         plugin location="zellij:tab-bar"
         borderless true
     }
     pane split_direction="vertical" {
+        // Left column, stacked: editor on top, shell underneath.
         pane size="65%" split_direction="horizontal" {
             pane size="70%" {
                 name "editor"
@@ -12,6 +15,7 @@ layout {
                 name "shell"
             }
         }
+        // Right column, full height.
         pane {
             name "llm"
         }

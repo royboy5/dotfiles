@@ -1,119 +1,485 @@
 # Dotfiles
 
-## Overview
-This repo simplifies provisioning your computer.  
+Personal machine setup for Linux, built on [Nix](https://nixos.org) and
+[home-manager](https://github.com/nix-community/home-manager). One repo sets up
+every **host**. The **user layer** (CLI tools, shell, editor, git, terminal
+multiplexers and their configs) is identical everywhere. The **system layer**
+(native packages, desktop, drivers, services, GUI apps) differs per **target
+OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 
-## TOC
-1. [Prerequisite](#prerequisite)
-2. [Installation](#installation)
-3. [Post Install](#post-install)
-4. [Links](#links)
+| Host | Target OS | Status |
+|---|---|---|
+| `wsl` | Fedora under WSL (CLI only) | migrated |
+| `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | migrated |
+| `unicorn-rx0` | NixOS, Dell XPS 13 9370 | migrated |
+| `qant-00` | Bazzite | planned |
 
-## Prerequisite
-- Make script executable
-```bash
-chmod +x bootstrap
+## Table of contents
+
+- [Install](#install)
+  - [wsl](#wsl)
+  - [wing-zero](#wing-zero)
+  - [unicorn-rx0](#unicorn-rx0)
+  - [Adding a new host](#adding-a-new-host)
+- [Layout](#layout)
+- [Everyday use](#everyday-use)
+- [Where does it go?](#where-does-it-go)
+  - [Tracking COSMIC settings](#tracking-cosmic-settings)
+- [Updating and rolling back](#updating-and-rolling-back)
+- [Reinstalling a host](#reinstalling-a-host)
+- [Secrets](#secrets)
+- [Troubleshooting](#troubleshooting)
+
+## Install
+
+Every host follows the same shape: clone to `~/.dotfiles` (the only path
+bootstrap accepts, because the config links point there), then run
+`./bootstrap`. It works out the host from `hostname -s` (override with
+`--host <name>`), installs the system-layer packages and Nix, then applies
+the config. It's safe to re-run: finished steps are skipped. When it needs
+a reboot or a restart it stops and says so; run it again afterwards.
+
+Run it as `roy`, not with `sudo` (it asks for sudo itself). Preview with
+`./bootstrap --dry`.
+
+### wsl
+
+Fedora under WSL, CLI only.
+
+1. **If an older clone of this repo is there,** save what lives only inside it,
+   then remove the links it made and the clone. The old setup kept secrets in
+   `configs/zsh/local_env*.zsh` inside the clone, so copy them out first, and
+   check for unpushed work:
+   ```bash
+   for f in ~/.dotfiles/configs/zsh/local_env*.zsh; do
+     [ -e "$f" ] && cp "$f" ~/"$(basename "$f").old"
+   done
+   git -C ~/.dotfiles status --short
+   git -C ~/.dotfiles log --branches --not --remotes --oneline   # unpushed commits
+   ```
+   Then check the list of links before deleting:
+   ```bash
+   find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -print
+   find ~ -maxdepth 3 -type l -lname '*/.dotfiles/*' -delete
+   rm -rf ~/.dotfiles
+   # nvim plugins and tools the old config installed; reinstalled on first start
+   rm -rf ~/.local/share/nvim/lazy ~/.local/share/nvim/mason
+   ```
+2. **Turn on systemd and set the hostname.** The Nix daemon is a systemd
+   service, and bootstrap picks the host by name. Add to `/etc/wsl.conf`
+   (with `sudo`, keeping anything already there):
+   ```ini
+   [boot]
+   systemd=true
+
+   [network]
+   hostname=wsl
+   ```
+   Then run `wsl --shutdown` from PowerShell and reopen WSL. Check with
+   `hostname -s` (prints `wsl`) and `ls -d /run/systemd/system`.
+3. **Clone and bootstrap:**
+   ```bash
+   # -b nix until the Nix port is merged to master
+   git clone -b nix https://github.com/royboy5/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
+   ./bootstrap --dry   # preview
+   ./bootstrap
+   ```
+   It installs zsh with dnf and makes it your login shell, installs Nix,
+   applies home-manager, clones TPM and sets up rustup. Existing files that
+   home-manager would replace are moved aside as `*.before-nix` and listed at
+   the end.
+4. **Fonts (on Windows).** Windows Terminal draws with Windows fonts, so
+   install [FiraCode Nerd Font and JetBrains Mono Nerd Font](https://www.nerdfonts.com/font-downloads)
+   on Windows (select the `.ttf` files → right-click → **Install**) and set
+   Windows Terminal's font for the WSL profile to `FiraCode Nerd Font Mono`.
+5. **Restore your secrets** (if step 1 saved any): copy the `export` lines from
+   `~/local_env*.zsh.old` into `~/.config/zsh/local_env.zsh` (see
+   [Secrets](#secrets)), then delete the `.old` files.
+6. **Open a new terminal tab.** zellij starts automatically. In tmux, press
+   `prefix + I` (prefix is Ctrl-Space) once to install its plugins.
+
+### wing-zero
+
+Surface Pro 3 on EndeavourOS (the Arch path), a GUI host with COSMIC and
+Hyprland side by side.
+
+1. **Before wiping:** follow [Reinstalling a host](#reinstalling-a-host).
+2. **Install EndeavourOS.** Any desktop option is fine; bootstrap adds COSMIC
+   and Hyprland either way. In the installer, set the hostname to `wing-zero`
+   (or pass `--host wing-zero` to bootstrap later) and create the user `roy`.
+3. **Restore `~/.ssh`** from the backup (`chmod 700 ~/.ssh; chmod 600 ~/.ssh/id_*`
+   for the private keys), then clone and bootstrap:
+   ```bash
+   # -b nix until the Nix port is merged to master
+   git clone -b nix git@github.com:royboy5/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
+   ./bootstrap --dry   # preview
+   ./bootstrap
+   ```
+   It:
+   - installs with pacman: `zsh ghostty bitwarden docker reflector wl-clipboard
+     cosmic hyprland thermald iio-sensor-proxy ttf-firacode-nerd
+     ttf-jetbrains-mono-nerd` (`cosmic` is the whole COSMIC group;
+     `iio-sensor-proxy` reads the accelerometer for auto-rotate). This also upgrades the system
+     (`pacman -Syu`).
+   - enables `docker.service`, `reflector.timer` (weekly mirror refresh) and
+     `thermald.service`, and adds you to the `docker` group
+   - makes zsh your login shell
+   - turns off the graphics driver's Panel Self Refresh and framebuffer
+     compression (`i915.enable_psr=0 i915.enable_fbc=0` in the kernel
+     options), without which the Surface Pro 3 freezes when COSMIC or
+     Hyprland starts. It edits `/etc/kernel/cmdline` and runs
+     `reinstall-kernels` (systemd-boot), or edits `/etc/default/grub` and runs
+     `grub-mkconfig` (GRUB)
+   - installs Nix and applies home-manager, which links the ghostty and
+     Hyprland configs
+   - runs the GPU setup, so Nix apps can use the GPU
+   - clones TPM and sets up rustup
+4. **Reboot** for the kernel option, the docker group, the login shell and
+   the new session variables (only the kernel option needs a full reboot;
+   logging out and back in covers the rest). Until then, new terminals still start bash
+   with none of the config, because the session that opened them read the old
+   login shell. Pick COSMIC or Hyprland at the login screen. In Hyprland,
+   SUPER+Q opens Ghostty and SUPER+M exits. The screen turns with the
+   Surface in both desktops (`auto-rotate`, below).
+5. **Restore your secrets** into `~/.config/zsh/local_env.zsh` (see
+   [Secrets](#secrets)) and zsh history into `~/.local/state/zsh/`.
+6. **Open Ghostty.** zellij starts automatically. In tmux, press
+   `prefix + I` (prefix is Ctrl-Space) once to install its plugins.
+
+### unicorn-rx0
+
+Dell XPS 13 9370 on NixOS, a GUI host with COSMIC and Hyprland side by side.
+The system layer and home-manager are one `nixos-rebuild`, so bootstrap
+doesn't install packages or Nix itself. The hardware file comes from the
+machine, so the first install takes one extra commit.
+
+1. **Before wiping:** follow [Reinstalling a host](#reinstalling-a-host) (the
+   current Arch install's backups).
+2. **Install NixOS** from the graphical ISO. Set the hostname to
+   `unicorn-rx0` (or pass `--host unicorn-rx0` to bootstrap later; the first
+   switch sets it), create the user `roy`, and choose **No desktop**: COSMIC
+   and Hyprland come from this repo. Anything else the installer's config adds
+   (a desktop, Firefox, printing) is replaced by this repo's on the first
+   switch. At the partitioning step, check that the
+   drive selector at the top is the internal NVMe (`/dev/nvme0n1`), not the
+   USB stick, before choosing **Erase disk**. Afterwards, note
+   `system.stateVersion` in the installed `/etc/nixos/configuration.nix`.
+3. **Restore `~/.ssh`** from the backup (`chmod 700 ~/.ssh; chmod 600 ~/.ssh/id_*`
+   for the private keys). `~/.ssh/authorized_keys` must also hold the keys of
+   the machines that should ssh in (restore it or add keys by hand): the repo
+   has no keys and sshd refuses passwords, so until it does, ssh login to
+   unicorn-rx0 is impossible. A fresh NixOS has no git, so get it in a
+   shell, and stay in that shell for steps 4 and 5:
+   ```bash
+   nix-shell -p git
+   # -b nix until the Nix port is merged to master
+   git clone -b nix git@github.com:royboy5/dotfiles.git ~/.dotfiles
+   cd ~/.dotfiles
+   ```
+4. **Hardware file and `stateVersion`**:
+   ```bash
+   mkdir -p ~/.dotfiles/nix/nixos/hardware && nixos-generate-config --show-hardware-config > ~/.dotfiles/nix/nixos/hardware/unicorn-rx0.nix
+   ```
+   `system.stateVersion` in `nix/nixos/unicorn-rx0.nix` is the installer's
+   value, committed from the machine. Never change it afterwards; on a
+   reinstall, set it from the new installer's config
+   (`grep stateVersion /etc/nixos/configuration.nix`).
+   Then commit and push from the machine. There's no git identity until
+   home-manager applies, so pass one just for this commit:
+   ```bash
+   git add nix/
+   git -c user.name="Your Name" -c user.email="you@example.com" commit -m "unicorn-rx0: hardware file"
+   git push
+   ```
+5. **Bootstrap**, still inside `nix-shell -p git`:
+   ```bash
+   ./bootstrap --dry   # preview: builds the system, switches nothing
+   ./bootstrap
+   ```
+   It:
+   - locks the flake inputs
+   - runs `sudo nixos-rebuild switch`, which applies the system layer (COSMIC,
+     Hyprland, drivers, services, GUI apps) and home-manager together
+   - clones TPM and sets up rustup
+
+   On the first run rustup may not be on PATH yet, so bootstrap warns and
+   skips it. Open a new terminal and re-run `./bootstrap` to finish.
+
+   If you ran it from a desktop the installer set up (Plasma, GNOME…), the
+   switch removes that desktop under you, its portal fails to restart, and
+   the switch ends with `switch-to-configuration … returned non-zero exit
+   status 4`. The new system is installed anyway: reboot into cosmic-greeter
+   and re-run `./bootstrap` (no `nix-shell` or `--host` needed now) to finish
+   the TPM and rustup steps.
+
+   It doesn't run the Nix, flakes, login-shell or GPU steps: NixOS provides
+   them.
+6. **Reboot.** cosmic-greeter offers COSMIC and Hyprland. Then **restore your
+   secrets** into `~/.config/zsh/local_env.zsh` (see [Secrets](#secrets)) and
+   zsh history into `~/.local/state/zsh/`, open Ghostty, and press
+   `prefix + I` (prefix is Ctrl-Space) once in tmux to install its plugins.
+
+### Adding a new host
+
+1. `nix/flake.nix`: add an output. Non-NixOS: `homeConfigurations."roy@<host>" = mkHome "<host>";`.
+2. `nix/hosts/<host>.nix`: import its target (`../home/targets/generic-linux.nix`
+   on non-NixOS) plus any host overrides.
+3. `lib/hosts/<host>.sh`: a `host_<host>` function with the system-layer
+   package list and steps (see `lib/hosts/wsl.sh`), and add the host to
+   `KNOWN_HOSTS` in `./bootstrap`. A hyphen in the host name becomes an
+   underscore in the function name: `wing-zero` → `host_wing_zero`.
+   A GUI host also imports `../home/gui.nix` in step 2.
+   A NixOS host instead gets `nix/nixos/<host>.nix`,
+   `nix/nixos/hardware/<host>.nix` (from `nixos-generate-config`),
+   `mkNixos "<host>"` in the flake, and a `lib/hosts/<host>.sh` that calls
+   `nixos_switch <host>`.
+4. `git add` the new files (flakes only see tracked files), then bootstrap.
+
+## Layout
+
+```
+bootstrap                 # entrypoint: ./bootstrap [--dry] [--host <name>] [--clean-backups]
+lib/
+  utils.sh                # logging and the --dry wrapper
+  common.sh               # steps shared by every host (Nix, flakes, home-manager, backups)
+  hosts/<host>.sh         # one per host: its system-layer packages and steps
+nix/
+  flake.nix               # one output per host
+  hosts/<host>.nix        # picks a target, plus host overrides
+  home/                   # the user layer, one module per topic
+    default.nix           #   imports everything; defines linkConfig
+    shell/                #   zsh (declared) and starship
+    cli.nix  git.nix  terminal.nix  nvim.nix
+    gui.nix               #   GUI hosts only: ghostty and Hyprland config links
+    auto-rotate.nix       #   tablets only (wing-zero): auto-rotate and its COSMIC autostart
+    scripts/              #   shell scripts packaged by the modules (project, auto-rotate)
+    dev/                  #   language toolchains, direnv, project, proto
+    targets/generic-linux.nix   # non-NixOS: targets.genericLinux, nrs, ngc, ~/.config/home-manager link
+    targets/nixos.nix     #   NixOS: nrs (nixos-rebuild) and ngc
+  nixos/                  # the NixOS system layer (unicorn-rx0)
+    default.nix  desktop.nix  unicorn-rx0.nix
+    hardware/
+  shells/                 # project dev shells (own flake.lock), see `project`
+configs/                  # config files, linked live into ~/.config
+tests/                    # eval.sh (Nix checks), bootstrap.bats, auto-rotate.bats
 ```
 
-## Quick Start
+**Configs are live links.** `linkConfig "<app>"` in a module links
+`configs/<app>` into place with a link to the repo, not a copy in the Nix
+store, so editing a file under `configs/` takes effect immediately, with no
+rebuild. The exception is zsh, which home-manager writes from
+`nix/home/shell/zsh.nix`.
 
-### Arch Linux
+- **git:** `configs/git/config` (delta as the pager) and `configs/git/ignore`
+  (global ignores: `.direnv/`, `.envrc`).
+- **starship:** `configs/starship/starship.toml`. Shows the active dev shell
+  as `[❄ <name>]`.
+- **ghostty:** `configs/ghostty/config`, GUI hosts only. Tokyo Night Storm,
+  FiraCode Nerd Font Mono.
+- **Hyprland:** `configs/hypr/hyprland.lua`, GUI hosts only. Hyprland's stock
+  example config with ghostty as the terminal (SUPER+Q). Its launcher and
+  file-manager binds point at apps that aren't installed. It starts
+  `auto-rotate` where it's installed.
+- **auto-rotate** (wing-zero): `nix/home/scripts/auto-rotate.sh` follows the
+  accelerometer (`monitor-sensor`, from `iio-sensor-proxy`) and turns the
+  built-in screen: with `hyprctl` in Hyprland, which also turns touch and pen
+  input, and with `cosmic-randr` in COSMIC, which turns them by itself.
+  Hyprland starts it from `hyprland.lua`, COSMIC from
+  `~/.config/autostart/auto-rotate.desktop`. Defaults to the Surface Pro 3's
+  panel (`eDP-1`, 2160x1440); set `AUTO_ROTATE_OUTPUT` / `AUTO_ROTATE_MODE` to
+  change them. If the screen turns the wrong way, the mapping is
+  `quarter_turns` in the script.
+
+Per-tool pages, for things that only matter while using that tool:
+[Neovim](docs/nvim.md), [Zellij](docs/zellij.md), [Zsh](docs/zsh.md),
+[Tmux](docs/tmux.md), [Dev shells](docs/dev-shells.md).
+
+## Everyday use
+
+| Command | What it does |
+|---|---|
+| `nrs` | Apply the config after editing `nix/`: `home-manager switch` on non-NixOS hosts, `sudo nixos-rebuild switch` (system and home-manager together) on NixOS. |
+| `nfu` | Update `nix/flake.lock` (all packages) to the latest nixpkgs. Apply with `nrs`. |
+| `nus` | Update the dev shells' lock (`nix/shells/flake.lock`). |
+| `ngc` | Delete all old generations and free their space (no rollback afterwards). |
+| `home-manager news`, `home-manager generations` | Non-NixOS hosts only (NixOS has no `~/.config/home-manager` link). Plain `home-manager` commands find this repo through `~/.config/home-manager` (a link to `nix/`) and pick `roy@<hostname>`. |
+| `./bootstrap` | Re-apply the system layer (package lists) as well as Nix. On NixOS it runs the rebuild and sets up TPM and rustup; there are no package lists. |
+| `./bootstrap --dry` | Show what bootstrap would change; builds without activating. |
+| `./bootstrap --clean-backups` | Delete the `*.before-nix` files from the first switch. |
+| `dot` | `cd ~/.dotfiles` |
+
+## Where does it go?
+
+| You want… | Put it in |
+|---|---|
+| A CLI tool | the matching `nix/home/*.nix` module (`cli.nix`, `git.nix`, `dev/…`), as `home.packages`. |
+| Its aliases, env vars, `PATH` entries | the same module: `home.shellAliases`, `home.sessionVariables`, `home.sessionPath`. |
+| A config file | `configs/<app>/…`, linked with `linkConfig` from that module. |
+| A shell function or zsh option | `nix/home/shell/zsh.nix` (or the topic module's `programs.zsh.initContent`). |
+| A GUI app, a daemon or system service, anything needing setuid/PAM, a driver or hardware tool, a font | the **system layer** of the host: its package list in `lib/hosts/<host>.sh`. Bazzite declares nothing. |
+| The same, on NixOS | `nix/nixos/`: GUI apps, fonts, services and the login shell. `default.nix` for every NixOS host, `desktop.nix` for GUI hosts, `<host>.nix` for one host. An unfree app (Chrome) also needs its name in the `allowUnfreePredicate` list in `default.nix`. |
+| A config only GUI hosts use | `configs/<app>/`, linked from `nix/home/gui.nix`. |
+| A COSMIC setting (idle, theme, panel, shortcuts) | `configs/cosmic/<component>/`, linked from `nix/home/gui.nix`. See [Tracking COSMIC settings](#tracking-cosmic-settings). |
+| Something only one host needs | `nix/hosts/<host>.nix`. |
+
+Commit (or at least `git add`) new `nix/` files before `nrs`; flakes ignore
+untracked files.
+
+### Tracking COSMIC settings
+
+None are tracked yet: COSMIC Settings saves to `~/.config/cosmic/` on each
+machine. To keep a setting in the repo, link its component like any other
+config.
+
+COSMIC stores one file per setting, at
+`~/.config/cosmic/<component>/v1/<setting>`, each holding one value. For
+example, turning the screen off after 15 minutes is
+`com.system76.CosmicIdle/v1/screen_off_time` holding `Some(900000)`
+(milliseconds). Components you're likely to want:
+
+| Component | Holds |
+|---|---|
+| `com.system76.CosmicIdle` | screen off and suspend timers |
+| `com.system76.CosmicTheme.*` | appearance: dark/light, accent, corners |
+| `com.system76.CosmicSettings.Shortcuts` | custom keyboard shortcuts |
+| `com.system76.CosmicComp` | window manager and input settings |
+| `com.system76.CosmicPanel.*` | panel and dock |
+
+1. Set things up in COSMIC Settings, then `ls ~/.config/cosmic/` to see the
+   components.
+2. Move each one you want into the repo, so the link has a free path:
+   ```bash
+   mkdir -p ~/.dotfiles/configs/cosmic
+   mv ~/.config/cosmic/com.system76.CosmicIdle ~/.dotfiles/configs/cosmic/
+   ```
+3. Link it, one line per component, in `nix/home/gui.nix`:
+   ```nix
+   xdg.configFile."cosmic/com.system76.CosmicIdle".source =
+     linkConfig "cosmic/com.system76.CosmicIdle";
+   ```
+4. `git add` it, `nrs`, then commit and push. From then on, a change in
+   COSMIC Settings writes straight into the repo and shows in `git diff`.
+
+Pick components rather than linking all of `~/.config/cosmic`: the rest is
+noisy state that would churn `git status`. `gui.nix` applies to every GUI
+host, so a linked component is shared by `wing-zero` and `unicorn-rx0`; keep
+per-machine ones (panel or display layout on the Surface's tablet screen)
+unlinked, or link them from `nix/hosts/<host>.nix`. On the other host, the
+first `nrs` after pulling meets that host's own copy of the component: on
+`wing-zero` the switch stops on it, so move it aside first; on NixOS it's
+renamed to `*.before-nix`.
+
+## Updating and rolling back
+
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
-./bootstrap arch
+nfu   # update the lock file
+nrs   # build and switch
 ```
 
-### macOS
+If something breaks, go back to the previous generation:
+
 ```bash
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
-./bootstrap macos
+home-manager generations              # newest first
+/nix/store/<hash>-home-manager-generation/activate   # path from the list
 ```
 
-### Ubuntu
-```bash
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
-./bootstrap ubuntu
-```
-### Install specific packages only
-```bash
-./bootstrap arch zsh tmux nvim git     # Only install these
-./bootstrap macos --list               # List available packages
-./bootstrap ubuntu --dry-run           # Dry run
-```
+On NixOS (unicorn-rx0), `nrs` is `sudo nixos-rebuild switch`. Roll back with
+`sudo nixos-rebuild switch --rollback`, or pick an older generation in the
+boot menu (systemd-boot keeps 10).
 
-## Structure
+Or `git checkout` the previous `nix/flake.lock` and run `nrs`. `ngc` deletes
+every old generation, so there is nothing to roll back to after it.
 
-- `configs/` - Configuration files (one per tool)
-- `os/arch/` - Arch-specific installation scripts
-- `os/macos/` - macOS-specific installation scripts  
-- `os/ubuntu/` - Ubuntu-specific installation scripts
-- `os/windows/` - Windows-specific installation scripts
+**A package fails to build after `nfu`** (a long compile, then an error): it's
+usually broken in nixpkgs at that commit, so the binary cache has no copy and
+building it yourself fails the same way. Check
+`https://hydra.nixos.org/job/nixpkgs/unstable/<package>.x86_64-linux`. Go
+back with `git checkout HEAD~1 -- nix/flake.lock` (or `git revert` the update
+commit), run `nrs`, and try `nfu` again in a few days.
 
-Each OS has its own installation scripts that handle dependencies,
-building from source, and symlinking configs appropriately.
+## Reinstalling a host
 
+Before wiping a machine, copy these to external storage:
 
-## Post Install
-- :LspInstallInfo to select languages for LSP.
+- every git repo under `~`, pushed: check for unpushed branches and stashes
+- `~/.ssh` and `~/.gnupg`
+- `~/.config/zsh/local_env.zsh` (see [Secrets](#secrets))
+- zsh history: `~/.local/state/zsh/`
 
-### Links
-- [nvim](configs/nvim/README.md)
-- [tmux](configs/tmux/README.md)
-- [zsh](configs/zsh/README.md)
+After the fresh install, restore `~/.ssh` (keep the existing keys rather than
+generating new ones, so GitHub and the hosts that trust them keep working),
+then follow the host's [Install](#install) section.
 
-## Important Directories
+## Secrets
 
-### nvim 
-config: `~/.config/nvim`
-data: `~/.local/share/nvim/`
-plugins: `~/.local/share/nvim/site/pack/packer/`
-logs: `~/.cache`
-state: `~/.local/state`
-
-### Linux
-fonts: `~/.local/share/fonts`
-
-## Installing nerd-fonts
-### Linux
-- Manual
-  - Goto [nerd-fonts](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/)
-  - pick and download font
-  - copy font files into `~/.local/share/fonts`
-- Script
-  - View `./scripts/install_firacode.sh` as an example and use your own font from nerd-fonts.
-- Package Manager
-  - Use your linux distro package manager to install font
-
-### MacOS
-In the downloaded TTF folder:
-
--  Select all font files
--  Right click and select Open (alternatively Open With Font Book)
--  Select "Install Font"
-
-### Windows
-In the ttf folder
-- double-click each font file, click “Install font”
-  - to install all at once, select all files, right-click, and choose “Install”
-
-*On some systems (especially Windows 10), you may need to "Unblock" each font file before installing. To do so, right-click each font file, click Properties, then check Unblock next to Security at the bottom of the General tab. Click OK, and then install.
-
-Or,
-- On Windows 10 open the System Settings, 
-- go to Fonts and drag and drop the the font files from the ttf folder into the drop area indicated at the top of the dialog.
-
-## Helpful Links
-- [nerd-fonts](https://www.nerdfonts.com/)
-- [awesome-dotfiles](https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/)
-- [https://starship.rs/](https://starship.rs/)
-- [https://github.com/ogham/exa](https://github.com/ogham/exa)
-
+Secrets and per-machine settings go in `~/.config/zsh/local_env.zsh`: plain
+`export` lines, sourced at the end of `.zshrc`. It's not in the repo and never
+goes in Nix (the Nix store is world-readable). Start from
+`configs/zsh/local_env.zsh.sample`. Restore it from your backup when
+reinstalling.
 
 ## Troubleshooting
-- error while reading shada
-  - clear `~/.local/share/nvim/shada` folder
-- Not sure why nvim-treesitter throws an error sometimes when installing for the 1st time.
-  - Restart nvim and let the languages install.
+
+- **`Existing file '…' would be clobbered`** on a switch: a real file sits
+  where home-manager wants to put a link. Move it away (or merge it into
+  `configs/`) and run `nrs` again. The first `./bootstrap` does this for you
+  with `*.before-nix` backups.
+- **`systemd isn't running`** (wsl): see step 2 of [wsl](#wsl).
+- **`Nix is installed but has no nix-daemon service`**: an older Nix install
+  (for example one made while WSL had systemd off) is in the way. Remove it,
+  open a new terminal, and re-run `./bootstrap`, which installs Nix again with
+  the service:
+  ```bash
+  # put back the shell files the old installer edited
+  for f in /etc/bashrc /etc/bash.bashrc /etc/zshrc /etc/zsh/zshrc; do
+    [ -e "$f.backup-before-nix" ] && sudo mv "$f.backup-before-nix" "$f"
+  done
+  sudo rm -rf /nix /etc/nix /etc/profile.d/nix.sh /etc/tmpfiles.d/nix-daemon.conf \
+    ~root/.nix-profile ~root/.nix-defexpr ~root/.nix-channels ~root/.cache/nix
+  rm -rf ~/.nix-profile ~/.nix-defexpr ~/.nix-channels ~/.local/state/nix ~/.cache/nix
+  # the build users, if `getent group nixbld` lists any
+  for i in $(seq 1 32); do sudo userdel "nixbld$i"; done
+  sudo groupdel nixbld
+  ```
+- **`This non-NixOS system is not yet set up to use the GPU`** or **`GPU
+  drivers require an update`** (printed by a switch): re-run `./bootstrap`,
+  which runs the GPU setup. The warning also prints the exact `sudo` command.
+- **Black screen and a frozen machine when COSMIC or Hyprland starts**
+  (wing-zero): Panel Self Refresh or framebuffer compression is still on.
+  `cat /proc/cmdline` should include `i915.enable_psr=0 i915.enable_fbc=0`;
+  if it doesn't, re-run `./bootstrap` and reboot. To get in meanwhile, press
+  `e` at the boot menu, add ` i915.enable_psr=0 i915.enable_fbc=0` to the
+  end of the kernel options, and boot.
+  On NixOS hosts, the same fix is `boot.kernelParams = [ "i915.enable_psr=0" "i915.enable_fbc=0" ];`
+  (wing-zero needed both)
+  in the host's `nix/nixos/<host>.nix` (the XPS is Intel too), then `nrs`.
+- **`nix/nixos/hardware/unicorn-rx0.nix is missing`** (bootstrap or the
+  build): the hardware file comes from the machine; see step 4 of
+  [unicorn-rx0](#unicorn-rx0).
+- **The old OS still boots after installing NixOS**: press F12 at the Dell
+  logo and pick "Linux Boot Manager". If there's no such entry, NixOS went to
+  the wrong disk (probably the USB stick): reinstall, checking the drive
+  selector. To make the order permanent, use F2, Boot Sequence, or
+  `sudo efibootmgr -o`.
+- **Red screen at boot on wing-zero**: the Surface Pro 3 shows it whenever
+  Secure Boot is off or the factory keys were replaced. To boot with Secure
+  Boot on and the factory keys kept, follow
+  [wing-zero Secure Boot](docs/wing-zero-secure-boot.md). It's done by hand,
+  once; bootstrap doesn't touch the bootloader.
+- **New terminals still start bash after bootstrap** (none of the config
+  applies): the login shell changed, but this session started before that.
+  Reboot, or log out and back in. `getent passwd roy | cut -d: -f7` shows the
+  login shell; `exec zsh` switches the current terminal right away.
+- **`The user systemd session is degraded`** (printed by a switch): a user
+  service outside this repo failed, often a desktop's autostart helper
+  (`app-…` units come from `/etc/xdg/autostart/`). The switch still worked.
+  `systemctl --user list-units --failed` shows which one;
+  `systemctl --user status <unit>` says why. If the list is empty, it was a
+  one-off; `systemctl --user reset-failed` clears the record.
+- **`Unknown host`**: the hostname doesn't match a host. Fix the hostname or
+  pass `--host <name>`.
+- **`These files are not tracked by git`**: `git add nix/`, then re-run.
+- Tool-specific problems (nvim plugins, language servers…) are on that tool's
+  page under `docs/`.

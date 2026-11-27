@@ -1,0 +1,17 @@
+# Single-line prompt with context on the right
+format = '${env_var.DEV_SHELL}$directory$git_branch$git_status$fill$time$line_break$character'
+
+[fill]
+symbol = ' '
+
+[time]
+disabled = false
+format = '[\[$time\]]($style)'
+style = 'dimmed white'
+
+# Dev shell loaded by direnv from ~/.dotfiles/nix/shells (each exports DEV_SHELL)
+# Shown first, in yellow: a color no other part of this prompt uses.
+[env_var.DEV_SHELL]
+format = '[\[❄ $env_value\]]($style) '
+style = 'bold #e0af68'
+
