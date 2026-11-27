@@ -252,7 +252,7 @@ unstub() {
     unstub home-manager
     PATH="$STUBS:/usr/bin:/bin"
     hm_switch wsl
-    grep -q -- "nix .*home-manager/master -- switch -b before-nix --flake $DOTFILES_ROOT/nix#roy@wsl" "$CALLS"
+    grep -q -- "nix .*run --inputs-from $DOTFILES_ROOT/nix home-manager -- switch -b before-nix --flake $DOTFILES_ROOT/nix#roy@wsl" "$CALLS"
 }
 
 @test "hm_switch uses the installed home-manager without -b afterwards" {
@@ -287,7 +287,7 @@ unstub() {
     unstub home-manager
     PATH="$STUBS:/usr/bin:/bin"
     hm_switch wsl
-    grep -q -- "home-manager/master -- build --no-out-link" "$CALLS"
+    grep -q -- "home-manager -- build --no-out-link" "$CALLS"
 }
 
 @test "hm_switch only builds in dry-run mode" {
@@ -441,7 +441,10 @@ stub_getent() {
 @test "ensure_gpu_setup warns and skips when it isn't installed" {
     run ensure_gpu_setup
     [ "$status" -eq 0 ]
-    ! grep -q "^sudo" "$CALLS"
+    if grep -Eq "^sudo( |$)" "$CALLS"; then
+        echo "unexpected sudo call" >&2
+        return 1
+    fi
     [[ "$output" == *"--dry"* ]]
 }
 
@@ -505,6 +508,14 @@ sudo_runs() {
     [ "$(cat "$KERNEL_CMDLINE")" == "nvme_load=YES nowatchdog rw i915.enable_psr=0" ]
     grep -q "^sudo reinstall-kernels" "$CALLS"
     [[ "$output" == *"Reboot"* ]]
+}
+
+@test "ensure_kernel_param rejects anything but exactly one option" {
+    run ensure_kernel_param i915.enable_psr=0 i915.enable_fbc=0
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"exactly one"* ]]
+    run ensure_kernel_param
+    [ "$status" -eq 1 ]
 }
 
 @test "ensure_kernel_param leaves a cmdline that already has the option alone" {
@@ -618,7 +629,10 @@ make_hardware_file() {
     echo "keep = me" > "$NIX_CONF"
     host_unicorn_rx0
     for cmd in pacman dnf usermod tee non-nixos-gpu-setup; do
-        ! grep -q "$cmd" "$CALLS"
+        if grep -Eq "^(sudo )?${cmd}( |$)" "$CALLS"; then
+            echo "unexpected call to $cmd" >&2
+            return 1
+        fi
     done
     [ "$(cat "$NIX_CONF")" == "keep = me" ]
 }

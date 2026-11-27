@@ -168,11 +168,11 @@ hm_switch() {
         # A dry run on a fresh host never installed Nix, so there's nothing to
         # build with: show the first switch instead.
         if [[ "$action" == build ]] && ! command -v nix &> /dev/null; then
-            execute nix "${NIX_FLAGS[@]}" run home-manager/master -- switch -b before-nix --flake "$ref"
+            execute nix "${NIX_FLAGS[@]}" run --inputs-from "$DOTFILES_ROOT/nix" home-manager -- switch -b before-nix --flake "$ref"
             return 0
         fi
         [[ "$action" == switch ]] && opts=(-b before-nix)
-        nix "${NIX_FLAGS[@]}" run home-manager/master -- "$action" "${opts[@]}" --flake "$ref"
+        nix "${NIX_FLAGS[@]}" run --inputs-from "$DOTFILES_ROOT/nix" home-manager -- "$action" "${opts[@]}" --flake "$ref"
     fi
 }
 
@@ -232,6 +232,10 @@ ensure_gpu_setup() {
 # reinstall-kernels rebuilds the boot entries; GRUB reads
 # GRUB_CMDLINE_LINUX_DEFAULT when grub-mkconfig regenerates grub.cfg.
 ensure_kernel_param() {
+    if [[ $# -ne 1 ]]; then
+        log_error "ensure_kernel_param takes exactly one option, got $#."
+        return 1
+    fi
     local param="$1" line new
     if [[ -f "$KERNEL_CMDLINE" ]]; then
         line=$(< "$KERNEL_CMDLINE")
