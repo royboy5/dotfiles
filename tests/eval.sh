@@ -286,7 +286,12 @@ if [[ "$HOST" == unicorn-rx0 ]]; then
     sys_eq nix.gc.options "--delete-older-than 30d"
     sys_json_eq nix.optimise.automatic true
     sys_json_eq programs.nix-ld.enable true
-    for p in ghostty bitwarden-desktop wl-clipboard; do sys_has environment.systemPackages "\"$p\""; done
+    for p in ghostty bitwarden-desktop wl-clipboard google-chrome; do sys_has environment.systemPackages "\"$p\""; done
+    # The unfree allowlist lets Chrome through and nothing else (vscode stands in
+    # for "any other unfree package"): drvPath only evaluates when it's allowed.
+    PKGS_ATTR="$ROOT/nix#nixosConfigurations.unicorn-rx0.pkgs"
+    "${NIX[@]}" --raw "$PKGS_ATTR.google-chrome.drvPath" > /dev/null 2>&1 && pass || fail "google-chrome must be allowed as unfree"
+    "${NIX[@]}" --raw "$PKGS_ATTR.vscode.drvPath" > /dev/null 2>&1 && fail "vscode must not be allowed as unfree" || pass
     sys_has fonts.packages fira-code
     sys_has fonts.packages jetbrains-mono
     got=$("${NIX[@]}" --raw "$SYS.system.stateVersion" 2>&1)

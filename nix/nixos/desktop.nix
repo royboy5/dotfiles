@@ -35,5 +35,6 @@
     pkgs.ghostty
     pkgs.bitwarden-desktop
     pkgs.wl-clipboard
+    pkgs.google-chrome # unfree: allowed by name in default.nix
   ];
 }

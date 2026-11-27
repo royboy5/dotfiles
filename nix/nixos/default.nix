@@ -13,8 +13,12 @@
     options = "--delete-older-than 30d";
   };
   nix.optimise.automatic = true;
-  # Free software only: the allowlist is empty on purpose.
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (pkgs.lib.getName pkg) [ ];
+  # Unfree packages are allowed one by one, by name. Nothing else unfree builds.
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (pkgs.lib.getName pkg) [
+      "google-chrome" # desktop.nix; Brave left nixpkgs on 2026-11-03
+    ];
 
   # --- The user (ticket 09) ---
   # isNormalUser also makes home-manager take home.homeDirectory from

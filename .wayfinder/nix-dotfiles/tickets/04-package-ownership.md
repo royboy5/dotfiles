@@ -56,3 +56,11 @@ The system layer installs fonts too: FiraCode and JetBrains Mono Nerd Fonts go i
 ## Amendment (2026-11-12)
 
 Bitwarden's desktop app is a GUI app, so it's system layer on both GUI hosts: `bitwarden` in `wing-zero`'s pacman list, `bitwarden-desktop` in `nixos/` on `unicorn-rx0`. The Nix copy is newer than Arch's, but on Arch the distro package also brings the polkit policy and stable binary path that biometric unlock and the browser extension's native messaging depend on. The `bw` CLI isn't installed anywhere unless asked for (it would be Nix user layer).
+
+## Amendment (2026-11-27, browsers, at `unicorn-rx0`'s acceptance)
+
+The first switch removed the installer's Firefox, which showed that no browser had been decided. On NixOS GUI hosts (`nix/nixos/desktop.nix`) the system layer now owns:
+- **Firefox**: through `programs.firefox.enable`, so policies and native messaging (Bitwarden) work.
+- **Google Chrome**: `pkgs.google-chrome`. It is unfree, so `google-chrome` is the first name in the `allowUnfreePredicate` allowlist, which ticket 09 left empty. Brave was the first choice, but it was removed from nixpkgs on 2026-11-03 for unpatched security issues, and a Flatpak was declined.
+
+`wing-zero` is unchanged.

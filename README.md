@@ -316,7 +316,7 @@ Per-tool pages, for things that only matter while using that tool:
 | A config file | `configs/<app>/…`, linked with `linkConfig` from that module. |
 | A shell function or zsh option | `nix/home/shell/zsh.nix` (or the topic module's `programs.zsh.initContent`). |
 | A GUI app, a daemon or system service, anything needing setuid/PAM, a driver or hardware tool, a font | the **system layer** of the host: its package list in `lib/hosts/<host>.sh`. Bazzite declares nothing. |
-| The same, on NixOS | `nix/nixos/`: GUI apps, fonts, services and the login shell. `default.nix` for every NixOS host, `desktop.nix` for GUI hosts, `<host>.nix` for one host. |
+| The same, on NixOS | `nix/nixos/`: GUI apps, fonts, services and the login shell. `default.nix` for every NixOS host, `desktop.nix` for GUI hosts, `<host>.nix` for one host. An unfree app (Chrome) also needs its name in the `allowUnfreePredicate` list in `default.nix`. |
 | A config only GUI hosts use | `configs/<app>/`, linked from `nix/home/gui.nix`. |
 | Something only one host needs | `nix/hosts/<host>.nix`. |
 
