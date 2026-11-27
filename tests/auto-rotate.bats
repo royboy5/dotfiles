@@ -98,6 +98,16 @@ EOF
     [ "$(grep -c '^cosmic-randr' "$CALLS")" -eq 2 ]
 }
 
+@test "retries the same orientation after a failed rotation" {
+    export XDG_CURRENT_DESKTOP=COSMIC
+    printf '#!/usr/bin/env bash\necho "cosmic-randr $*" >> "$CALLS"\nexit 1\n' > "$STUBS/cosmic-randr"
+    sensor "    Accelerometer orientation changed: left-up" \
+        "    Accelerometer orientation changed: left-up"
+    run_script
+    [ "$status" -eq 0 ]
+    [ "$(grep -c '^cosmic-randr' "$CALLS")" -eq 2 ]
+}
+
 @test "refuses to run outside Hyprland and COSMIC" {
     export XDG_CURRENT_DESKTOP=KDE
     sensor "    Accelerometer orientation changed: left-up"

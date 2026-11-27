@@ -58,8 +58,9 @@ while IFS= read -r line; do
     esac
     turns=$(quarter_turns "$orientation") || continue
     [[ "$turns" == "$last" ]] && continue
-    if ! rotate "$turns"; then
+    if rotate "$turns"; then
+        last="$turns"
+    else
         echo "auto-rotate: rotating to $orientation failed" >&2
     fi
-    last="$turns"
 done < <(monitor-sensor --accel)
