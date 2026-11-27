@@ -11,7 +11,7 @@ OS**. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 |---|---|---|
 | `wsl` | Fedora under WSL (CLI only) | migrated |
 | `wing-zero` | Arch (EndeavourOS), Surface Pro 3 | migrated |
-| `unicorn-rx0` | NixOS, Dell XPS 13 9370 | being migrated |
+| `unicorn-rx0` | NixOS, Dell XPS 13 9370 | migrated |
 | `qant-00` | Bazzite | planned |
 
 ## Table of contents
