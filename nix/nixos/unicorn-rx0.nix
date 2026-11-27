@@ -20,8 +20,10 @@ in
   ];
 
   networking.hostName = "unicorn-rx0";
-  # NixOS owns /etc/localtime, so `timedatectl set-timezone` doesn't stick.
-  time.timeZone = "America/New_York";
+  # A laptop: the timezone follows its location (geoclue, which COSMIC already
+  # turns on). This leaves time.timeZone null, so don't set one here; it would
+  # conflict, and the Settings app's timezone picker would be overridden.
+  services.automatic-timezoned.enable = true;
 
   boot.loader.systemd-boot = {
     enable = true;
